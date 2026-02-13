@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)https://thefamilywaters.com/chris/chris.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chris — Coming Soon</title>
+<link href="./Chris_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --sky-top: #0a0e27;
+    --sky-mid: #0f1b4d;
+    --sky-glow: #1a3a8a;
+    --cloud-white: #e8f0ff;
+    --jet-silver: #c0cfdf;
+    --thrust-orange: #ff6a00;
+    --thrust-yellow: #ffc107;
+    --contrail-blue: #64b5f6;
+    --neon-cyan: #00f0ff;
+    --runway-green: #00e676;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 40%, var(--sky-glow) 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Fredoka', sans-serif;
+    color: #fff;
+    position: relative;
+  }
+
+  /* === STARS === */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 3s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.5); }
+  }
+
+  /* === CLOUDS === */
+  .clouds {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cloud {
+    position: absolute;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: cloudDrift linear infinite;
+  }
+  @keyframes cloudDrift {
+    0% { transform: translateX(110vw); }
+    100% { transform: translateX(-30vw); }
+  }
+
+  /* === AIRPLANE === */
+  .airplane-container {
+    position: fixed;
+    z-index: 2;
+    pointer-events: none;
+    animation: flyAcross 14s linear infinite;
+    top: 18%;
+  }
+  @keyframes flyAcross {
+    0% { left: -15%; transform: rotate(-2deg); }
+    25% { transform: rotate(1deg); }
+    50% { transform: rotate(-1deg); }
+    75% { transform: rotate(2deg); }
+    100% { left: 115%; transform: rotate(-2deg); }
+  }
+
+  .airplane {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4));
+    animation: planeWobble 2s ease-in-out infinite;
+  }
+  @keyframes planeWobble {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .contrail {
+    position: absolute;
+    right: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 250px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5));
+    border-radius: 2px;
+    animation: contrailPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes contrailPulse {
+    0%, 100% { opacity: 0.3; width: 200px; }
+    50% { opacity: 0.7; width: 280px; }
+  }
+
+  /* === SECOND PLANE (smaller, background) === */
+  .airplane-bg {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+    animation: flyAcrossBg 22s linear infinite;
+    top: 45%;
+    font-size: 1.8rem;
+    opacity: 0.3;
+    filter: blur(1px);
+  }
+  @keyframes flyAcrossBg {
+    0% { left: 115%; }
+    100% { left: -10%; }
+  }
+
+  /* === RADAR PING === */
+  .radar {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    z-index: 5;
+    opacity: 0.5;
+  }
+  .radar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    animation: radarPing 3s ease-out infinite;
+  }
+  .radar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-cyan), transparent);
+    transform-origin: left center;
+    animation: radarSweep 3s linear infinite;
+  }
+  @keyframes radarPing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(2); opacity: 0; }
+  }
+  @keyframes radarSweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .radar-dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    top: 30%;
+    left: 60%;
+    animation: radarBlink 3s ease-in-out infinite;
+    box-shadow: 0 0 6px var(--neon-cyan);
+  }
+  @keyframes radarBlink {
+    0%, 40%, 100% { opacity: 0; }
+    50%, 60% { opacity: 1; }
+  }
+
+  /* === CONTENT === */
+  .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  /* === PILOT BADGE === */
+  .pilot-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    background: rgba(0, 240, 255, 0.06);
+    backdrop-filter: blur(8px);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeSlideDown 0.8s 0.2s ease forwards;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--neon-cyan);
+  }
+  .pilot-badge .wing { font-size: 1.2rem; }
+
+  /* === TITLE === */
+  .title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.4s ease forwards;
+    text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+  }
+  .title .line1 {
+    display: block;
+    background: linear-gradient(90deg, var(--cloud-white), var(--contrail-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .title .line2 {
+    display: block;
+    background: linear-gradient(90deg, var(--thrust-orange), var(--thrust-yellow), var(--neon-cyan));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleShimmer 4s ease infinite;
+  }
+  @keyframes titleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .tagline {
+    font-family: 'Righteous', cursive;
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideDown 1s 0.6s ease forwards;
+  }
+
+  /* === RUNWAY DIVIDER === */
+  .runway {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 0.8s ease forwards;
+  }
+  .runway-dash {
+    width: 30px;
+    height: 4px;
+    background: var(--thrust-yellow);
+    border-radius: 2px;
+    opacity: 0.6;
+    animation: runwayLight 2s ease-in-out infinite;
+  }
+  .runway-dash:nth-child(2) { animation-delay: 0.2s; }
+  .runway-dash:nth-child(3) { animation-delay: 0.4s; }
+  .runway-dash:nth-child(4) { animation-delay: 0.6s; }
+  .runway-dash:nth-child(5) { animation-delay: 0.8s; }
+  .runway-dash:nth-child(6) { animation-delay: 1.0s; }
+  .runway-dash:nth-child(7) { animation-delay: 1.2s; }
+  @keyframes runwayLight {
+    0%, 100% { opacity: 0.3; transform: scaleX(1); }
+    50% { opacity: 1; transform: scaleX(1.3); }
+  }
+
+  /* === INFO CARDS === */
+  .flight-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.0s ease forwards;
+  }
+  .info-card {
+    padding: 1.2rem 1.8rem;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    min-width: 160px;
+    transition: all 0.3s ease;
+  }
+  .info-card:hover {
+    border-color: var(--neon-cyan);
+    background: rgba(0, 240, 255, 0.05);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 240, 255, 0.1);
+  }
+  .info-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.4rem;
+  }
+  .info-value {
+    font-family: 'Righteous', cursive;
+    font-size: 1.2rem;
+    color: var(--neon-cyan);
+  }
+
+  /* === BOARDING PASS === */
+  .boarding-pass {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.5rem 2.5rem;
+    margin-bottom: 2.5rem;
+    max-width: 420px;
+    position: relative;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.2s ease forwards;
+  }
+  .boarding-pass::before,
+  .boarding-pass::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--sky-mid);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .boarding-pass::before { left: -13px; }
+  .boarding-pass::after { right: -13px; }
+
+  .boarding-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.55rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 0.3rem;
+  }
+  .boarding-name {
+    font-family: 'Righteous', cursive;
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--contrail-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.2rem;
+  }
+  .boarding-dest {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* === BACK LINK === */
+  .back-link {
+    opacity: 0;
+    animation: fadeSlideUp 0.8s 1.4s ease forwards;
+  }
+  .back-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s ease;
+  }
+  .back-link a:hover {
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    background: rgba(0, 240, 255, 0.05);
+  }
+
+  /* === ANIMATIONS === */
+  @keyframes fadeSlideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .flight-info { flex-direction: column; align-items: center; }
+    .radar { display: none; }
+    .boarding-pass { margin-left: 1rem; margin-right: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"><div class="star" style="left: 14.722%; top: 59.366%; animation-delay: 2.87368s; animation-duration: 4.94812s; height: 1.43915px; width: 1.43915px;"></div><div class="star" style="left: 8.51209%; top: 11.6486%; animation-delay: 1.36243s; animation-duration: 4.9084s; height: 2.16811px; width: 2.16811px;"></div><div class="star" style="left: 74.1826%; top: 32.9642%; animation-delay: 1.76588s; animation-duration: 3.66765s; height: 2.0848px; width: 2.0848px;"></div><div class="star" style="left: 24.8764%; top: 21.1965%; animation-delay: 0.981677s; animation-duration: 2.67557s; height: 2.80002px; width: 2.80002px;"></div><div class="star" style="left: 30.5313%; top: 56.192%; animation-delay: 2.48034s; animation-duration: 2.94672s; height: 1.3565px; width: 1.3565px;"></div><div class="star" style="left: 82.309%; top: 31.2876%; animation-delay: 1.42973s; animation-duration: 3.21598s; height: 1.18012px; width: 1.18012px;"></div><div class="star" style="left: 5.49353%; top: 38.6178%; animation-delay: 0.385805s; animation-duration: 4.06774s; height: 2.09065px; width: 2.09065px;"></div><div class="star" style="left: 20.978%; top: 40.012%; animation-delay: 2.94116s; animation-duration: 3.74715s; height: 2.30058px; width: 2.30058px;"></div><div class="star" style="left: 15.1747%; top: 2.84446%; animation-delay: 2.13265s; animation-duration: 3.02445s; height: 1.45918px; width: 1.45918px;"></div><div class="star" style="left: 39.9648%; top: 1.88433%; animation-delay: 2.97988s; animation-duration: 2.61616s; height: 1.7244px; width: 1.7244px;"></div><div class="star" style="left: 10.8213%; top: 54.2598%; animation-delay: 0.956143s; animation-duration: 4.21615s; height: 2.90693px; width: 2.90693px;"></div><div class="star" style="left: 77.3713%; top: 11.9059%; animation-delay: 2.32838s; animation-duration: 4.20174s; height: 2.28657px; width: 2.28657px;"></div><div class="star" style="left: 73.184%; top: 40.5815%; animation-delay: 1.95229s; animation-duration: 3.19668s; height: 2.44908px; width: 2.44908px;"></div><div class="star" style="left: 75.4363%; top: 9.48411%; animation-delay: 2.66656s; animation-duration: 4.62675s; height: 1.37042px; width: 1.37042px;"></div><div class="star" style="left: 70.349%; top: 57.4866%; animation-delay: 1.59012s; animation-duration: 4.53795s; height: 2.72833px; width: 2.72833px;"></div><div class="star" style="left: 3.16463%; top: 45.418%; animation-delay: 2.06756s; animation-duration: 3.25678s; height: 2.73195px; width: 2.73195px;"></div><div class="star" style="left: 70.7359%; top: 20.3509%; animation-delay: 0.646123s; animation-duration: 3.12683s; height: 1.68203px; width: 1.68203px;"></div><div class="star" style="left: 34.2243%; top: 21.7275%; animation-delay: 1.47865s; animation-duration: 3.45495s; height: 2.31429px; width: 2.31429px;"></div><div class="star" style="left: 75.3533%; top: 26.6184%; animation-delay: 0.70236s; animation-duration: 3.60295s; height: 2.14257px; width: 2.14257px;"></div><div class="star" style="left: 0.844908%; top: 52.4818%; animation-delay: 1.28482s; animation-duration: 2.34909s; height: 1.83487px; width: 1.83487px;"></div><div class="star" style="left: 17.403%; top: 48.5274%; animation-delay: 0.999323s; animation-duration: 3.89988s; height: 2.44397px; width: 2.44397px;"></div><div class="star" style="left: 42.6993%; top: 31.2767%; animation-delay: 0.914266s; animation-duration: 4.26664s; height: 2.94464px; width: 2.94464px;"></div><div class="star" style="left: 94.06%; top: 47.0778%; animation-delay: 1.49109s; animation-duration: 4.95628s; height: 1.28694px; width: 1.28694px;"></div><div class="star" style="left: 82.8354%; top: 20.7629%; animation-delay: 2.7814s; animation-duration: 3.91495s; height: 1.57138px; width: 1.57138px;"></div><div class="star" style="left: 70.3145%; top: 58.1972%; animation-delay: 2.54996s; animation-duration: 3.59016s; height: 2.28867px; width: 2.28867px;"></div><div class="star" style="left: 50.8154%; top: 51.2282%; animation-delay: 2.87688s; animation-duration: 4.65599s; height: 1.53228px; width: 1.53228px;"></div><div class="star" style="left: 93.4856%; top: 41.5642%; animation-delay: 2.02332s; animation-duration: 4.06025s; height: 2.14272px; width: 2.14272px;"></div><div class="star" style="left: 8.65745%; top: 3.44651%; animation-delay: 0.172995s; animation-duration: 4.27643s; height: 2.54799px; width: 2.54799px;"></div><div class="star" style="left: 18.9115%; top: 33.7924%; animation-delay: 2.56935s; animation-duration: 4.11636s; height: 2.99985px; width: 2.99985px;"></div><div class="star" style="left: 77.6443%; top: 22.4919%; animation-delay: 0.568146s; animation-duration: 2.22743s; height: 1.42811px; width: 1.42811px;"></div><div class="star" style="left: 21.0812%; top: 10.6929%; animation-delay: 1.9635s; animation-duration: 4.76399s; height: 1.96211px; width: 1.96211px;"></div><div class="star" style="left: 87.1306%; top: 3.94176%; animation-delay: 2.92049s; animation-duration: 4.59751s; height: 1.47802px; width: 1.47802px;"></div><div class="star" style="left: 63.9298%; top: 21.4586%; animation-delay: 2.21423s; animation-duration: 4.21683s; height: 2.91585px; width: 2.91585px;"></div><div class="star" style="left: 53.7241%; top: 33.2695%; animation-delay: 1.6246s; animation-duration: 4.90643s; height: 1.90875px; width: 1.90875px;"></div><div class="star" style="left: 73.0366%; top: 31.5859%; animation-delay: 2.23644s; animation-duration: 3.91175s; height: 2.32184px; width: 2.32184px;"></div><div class="star" style="left: 99.0226%; top: 56.3708%; animation-delay: 2.00728s; animation-duration: 3.71418s; height: 1.21882px; width: 1.21882px;"></div><div class="star" style="left: 17.0347%; top: 32.7175%; animation-delay: 2.81343s; animation-duration: 2.95087s; height: 2.21684px; width: 2.21684px;"></div><div class="star" style="left: 52.2951%; top: 47.4279%; animation-delay: 1.08373s; animation-duration: 3.86248s; height: 2.02083px; width: 2.02083px;"></div><div class="star" style="left: 18.1588%; top: 33.1016%; animation-delay: 0.883597s; animation-duration: 3.45592s; height: 1.91903px; width: 1.91903px;"></div><div class="star" style="left: 67.7354%; top: 41.5499%; animation-delay: 2.79604s; animation-duration: 4.01697s; height: 1.90052px; width: 1.90052px;"></div><div class="star" style="left: 9.37422%; top: 43.6695%; animation-delay: 2.03981s; animation-duration: 2.9696s; height: 1.93072px; width: 1.93072px;"></div><div class="star" style="left: 76.8557%; top: 23.2193%; animation-delay: 1.88757s; animation-duration: 4.72823s; height: 2.13131px; width: 2.13131px;"></div><div class="star" style="left: 45.0871%; top: 3.16392%; animation-delay: 1.59909s; animation-duration: 2.68529s; height: 1.03578px; width: 1.03578px;"></div><div class="star" style="left: 37.4498%; top: 20.7457%; animation-delay: 1.83854s; animation-duration: 4.82377s; height: 1.46567px; width: 1.46567px;"></div><div class="star" style="left: 67.6572%; top: 46.1846%; animation-delay: 1.15051s; animation-duration: 2.81462s; height: 2.58447px; width: 2.58447px;"></div><div class="star" style="left: 94.5283%; top: 45.3506%; animation-delay: 2.12773s; animation-duration: 3.14536s; height: 1.03786px; width: 1.03786px;"></div><div class="star" style="left: 5.91076%; top: 5.10493%; animation-delay: 2.70069s; animation-duration: 2.85801s; height: 1.77893px; width: 1.77893px;"></div><div class="star" style="left: 17.0325%; top: 16.5809%; animation-delay: 1.03538s; animation-duration: 4.22427s; height: 2.97815px; width: 2.97815px;"></div><div class="star" style="left: 74.1416%; top: 27.9078%; animation-delay: 1.30133s; animation-duration: 2.70268s; height: 1.46129px; width: 1.46129px;"></div><div class="star" style="left: 0.88793%; top: 25.7033%; animation-delay: 0.907156s; animation-duration: 3.93462s; height: 1.58755px; width: 1.58755px;"></div><div class="star" style="left: 16.4604%; top: 32.6918%; animation-delay: 2.62357s; animation-duration: 3.40114s; height: 1.13011px; width: 1.13011px;"></div><div class="star" style="left: 62.9936%; top: 59.7596%; animation-delay: 0.268914s; animation-duration: 2.10792s; height: 2.25402px; width: 2.25402px;"></div><div class="star" style="left: 58.8557%; top: 43.043%; animation-delay: 1.50232s; animation-duration: 2.24335s; height: 2.30467px; width: 2.30467px;"></div><div class="star" style="left: 51.714%; top: 47.06%; animation-delay: 1.55339s; animation-duration: 3.34117s; height: 2.05079px; width: 2.05079px;"></div><div class="star" style="left: 7.86444%; top: 9.01859%; animation-delay: 2.76314s; animation-duration: 2.23271s; height: 2.68856px; width: 2.68856px;"></div><div class="star" style="left: 96.2091%; top: 27.9659%; animation-delay: 0.338787s; animation-duration: 2.98667s; height: 1.72218px; width: 1.72218px;"></div><div class="star" style="left: 75.1478%; top: 42.4801%; animation-delay: 0.413878s; animation-duration: 4.71439s; height: 1.11803px; width: 1.11803px;"></div><div class="star" style="left: 96.0268%; top: 42.169%; animation-delay: 2.3875s; animation-duration: 4.55075s; height: 2.76045px; width: 2.76045px;"></div><div class="star" style="left: 25.7707%; top: 52.5238%; animation-delay: 2.85106s; animation-duration: 2.54938s; height: 1.62784px; width: 1.62784px;"></div><div class="star" style="left: 4.35103%; top: 21.3774%; animation-delay: 1.52005s; animation-duration: 3.72172s; height: 2.2959px; width: 2.2959px;"></div><div class="star" style="left: 52.9331%; top: 17.8446%; animation-delay: 0.102919s; animation-duration: 3.60718s; height: 2.65105px; width: 2.65105px;"></div><div class="star" style="left: 27.4032%; top: 58.9517%; animation-delay: 1.27648s; animation-duration: 2.52139s; height: 1.97938px; width: 1.97938px;"></div><div class="star" style="left: 62.8092%; top: 37.6395%; animation-delay: 0.872238s; animation-duration: 3.12095s; height: 2.20861px; width: 2.20861px;"></div><div class="star" style="left: 8.57112%; top: 49.0163%; animation-delay: 1.41723s; animation-duration: 4.34387s; height: 2.09079px; width: 2.09079px;"></div><div class="star" style="left: 44.9284%; top: 11.8392%; animation-delay: 1.77684s; animation-duration: 4.22906s; height: 1.75974px; width: 1.75974px;"></div><div class="star" style="left: 27.9783%; top: 55.3443%; animation-delay: 0.589402s; animation-duration: 3.21279s; height: 2.60743px; width: 2.60743px;"></div><div class="star" style="left: 9.46274%; top: 34.0075%; animation-delay: 0.311764s; animation-duration: 4.60843s; height: 2.92087px; width: 2.92087px;"></div><div class="star" style="left: 25.9585%; top: 58.3229%; animation-delay: 0.198345s; animation-duration: 4.68762s; height: 2.32467px; width: 2.32467px;"></div><div class="star" style="left: 3.49673%; top: 5.99503%; animation-delay: 1.8366s; animation-duration: 4.09646s; height: 1.06189px; width: 1.06189px;"></div><div class="star" style="left: 89.2884%; top: 46.2613%; animation-delay: 2.66934s; animation-duration: 2.61032s; height: 2.3596px; width: 2.3596px;"></div><div class="star" style="left: 44.2026%; top: 16.2741%; animation-delay: 1.41114s; animation-duration: 2.22231s; height: 2.51006px; width: 2.51006px;"></div><div class="star" style="left: 86.0579%; top: 20.3963%; animation-delay: 2.12207s; animation-duration: 4.41004s; height: 1.98496px; width: 1.98496px;"></div><div class="star" style="left: 59.5805%; top: 13.7258%; animation-delay: 2.01253s; animation-duration: 4.85095s; height: 1.43438px; width: 1.43438px;"></div><div class="star" style="left: 70.1055%; top: 2.734%; animation-delay: 2.6397s; animation-duration: 2.36176s; height: 1.94744px; width: 1.94744px;"></div><div class="star" style="left: 41.3718%; top: 50.2934%; animation-delay: 1.39576s; animation-duration: 3.66349s; height: 1.55836px; width: 1.55836px;"></div><div class="star" style="left: 48.4933%; top: 16.7354%; animation-delay: 1.80331s; animation-duration: 2.87582s; height: 1.54257px; width: 1.54257px;"></div><div class="star" style="left: 38.2375%; top: 14.6196%; animation-delay: 0.202084s; animation-duration: 3.22244s; height: 2.49653px; width: 2.49653px;"></div><div class="star" style="left: 58.447%; top: 54.9345%; animation-delay: 2.24157s; animation-duration: 2.63484s; height: 1.35332px; width: 1.35332px;"></div><div class="star" style="left: 26.3167%; top: 52.834%; animation-delay: 1.46599s; animation-duration: 3.81586s; height: 1.93918px; width: 1.93918px;"></div><div class="star" style="left: 31.8316%; top: 14.9199%; animation-delay: 2.49336s; animation-duration: 3.50758s; height: 1.10696px; width: 1.10696px;"></div><div class="star" style="left: 8.90198%; top: 30.3545%; animation-delay: 1.8663s; animation-duration: 3.8425s; height: 2.41292px; width: 2.41292px;"></div><div class="star" style="left: 43.4892%; top: 33.7196%; animation-delay: 0.480832s; animation-duration: 3.14003s; height: 1.23135px; width: 1.23135px;"></div><div class="star" style="left: 24.5098%; top: 21.9882%; animation-delay: 0.799338s; animation-duration: 2.93052s; height: 2.01679px; width: 2.01679px;"></div><div class="star" style="left: 78.8999%; top: 29.7168%; animation-delay: 1.33633s; animation-duration: 3.73462s; height: 2.69408px; width: 2.69408px;"></div><div class="star" style="left: 24.5426%; top: 39.2448%; animation-delay: 0.583066s; animation-duration: 4.81015s; height: 1.60691px; width: 1.60691px;"></div><div class="star" style="left: 83.1687%; top: 4.70614%; animation-delay: 2.05719s; animation-duration: 3.53303s; height: 1.97321px; width: 1.97321px;"></div><div class="star" style="left: 67.8464%; top: 21.5965%; animation-delay: 2.92071s; animation-duration: 3.2742s; height: 2.40093px; width: 2.40093px;"></div><div class="star" style="left: 76.7441%; top: 45.5036%; animation-delay: 0.149223s; animation-duration: 3.22789s; height: 2.86732px; width: 2.86732px;"></div><div class="star" style="left: 56.4276%; top: 45.7033%; animation-delay: 2.51741s; animation-duration: 2.59416s; height: 1.03143px; width: 1.03143px;"></div><div class="star" style="left: 68.8651%; top: 13.7851%; animation-delay: 1.79522s; animation-duration: 4.62891s; height: 1.5409px; width: 1.5409px;"></div><div class="star" style="left: 58.5218%; top: 16.8883%; animation-delay: 1.64978s; animation-duration: 4.51838s; height: 2.93509px; width: 2.93509px;"></div><div class="star" style="left: 7.18642%; top: 26.2751%; animation-delay: 0.293163s; animation-duration: 3.05008s; height: 2.4038px; width: 2.4038px;"></div><div class="star" style="left: 52.7692%; top: 19.4552%; animation-delay: 1.849s; animation-duration: 3.35995s; height: 2.57454px; width: 2.57454px;"></div><div class="star" style="left: 24.849%; top: 41.2681%; animation-delay: 1.89951s; animation-duration: 2.82752s; height: 2.63318px; width: 2.63318px;"></div><div class="star" style="left: 55.6485%; top: 10.1577%; animation-delay: 2.00721s; animation-duration: 2.30021s; height: 1.45478px; width: 1.45478px;"></div><div class="star" style="left: 9.57478%; top: 3.66649%; animation-delay: 2.27567s; animation-duration: 3.16709s; height: 2.43088px; width: 2.43088px;"></div><div class="star" style="left: 14.8854%; top: 46.1742%; animation-delay: 0.98489s; animation-duration: 2.00134s; height: 1.64075px; width: 1.64075px;"></div><div class="star" style="left: 78.0986%; top: 59.3995%; animation-delay: 2.45909s; animation-duration: 2.97068s; height: 1.71277px; width: 1.71277px;"></div><div class="star" style="left: 64.1433%; top: 54.6818%; animation-delay: 1.54393s; animation-duration: 3.17675s; height: 2.79148px; width: 2.79148px;"></div><div class="star" style="left: 8.98672%; top: 35.9081%; animation-delay: 1.82245s; animation-duration: 2.58408s; height: 1.22269px; width: 1.22269px;"></div><div class="star" style="left: 82.7956%; top: 36.1127%; animation-delay: 0.876347s; animation-duration: 4.38527s; height: 2.34657px; width: 2.34657px;"></div><div class="star" style="left: 8.78931%; top: 41.0315%; animation-delay: 0.420224s; animation-duration: 2.55029s; height: 1.14492px; width: 1.14492px;"></div><div class="star" style="left: 64.115%; top: 42.7805%; animation-delay: 1.85396s; animation-duration: 3.13537s; height: 2.87887px; width: 2.87887px;"></div><div class="star" style="left: 69.2214%; top: 53.6245%; animation-delay: 2.33675s; animation-duration: 2.71241s; height: 1.73144px; width: 1.73144px;"></div><div class="star" style="left: 64.5681%; top: 56.9715%; animation-delay: 0.835476s; animation-duration: 4.07837s; height: 1.4107px; width: 1.4107px;"></div><div class="star" style="left: 86.9404%; top: 13.9058%; animation-delay: 1.68477s; animation-duration: 2.95959s; height: 1.00942px; width: 1.00942px;"></div><div class="star" style="left: 49.4956%; top: 42.2766%; animation-delay: 0.0377011s; animation-duration: 2.44692s; height: 1.132px; width: 1.132px;"></div><div class="star" style="left: 28.9804%; top: 5.01962%; animation-delay: 2.10622s; animation-duration: 2.59755s; height: 1.31343px; width: 1.31343px;"></div><div class="star" style="left: 7.5737%; top: 45.2643%; animation-delay: 1.18088s; animation-duration: 2.6627s; height: 2.92198px; width: 2.92198px;"></div><div class="star" style="left: 12.876%; top: 38.0804%; animation-delay: 1.2346s; animation-duration: 4.13632s; height: 2.42853px; width: 2.42853px;"></div><div class="star" style="left: 4.09114%; top: 21.6268%; animation-delay: 2.55498s; animation-duration: 2.97098s; height: 1.3458px; width: 1.3458px;"></div><div class="star" style="left: 56.2776%; top: 1.72095%; animation-delay: 1.80664s; animation-duration: 3.48963s; height: 2.44037px; width: 2.44037px;"></div><div class="star" style="left: 31.3981%; top: 15.2369%; animation-delay: 0.862048s; animation-duration: 2.48419s; height: 2.54197px; width: 2.54197px;"></div><div class="star" style="left: 35.1397%; top: 36.5752%; animation-delay: 2.46296s; animation-duration: 4.82109s; height: 1.12547px; width: 1.12547px;"></div><div class="star" style="left: 18.399%; top: 43.0713%; animation-delay: 1.33044s; animation-duration: 3.73452s; height: 2.03419px; width: 2.03419px;"></div><div class="star" style="left: 21.2038%; top: 44.4535%; animation-delay: 0.552106s; animation-duration: 2.32923s; height: 1.1975px; width: 1.1975px;"></div><div class="star" style="left: 7.82122%; top: 31.0008%; animation-delay: 1.67762s; animation-duration: 2.07959s; height: 2.18654px; width: 2.18654px;"></div><div class="star" style="left: 51.895%; top: 45.1819%; animation-delay: 2.3609s; animation-duration: 3.99534s; height: 1.29869px; width: 1.29869px;"></div><div class="star" style="left: 42.136%; top: 15.1281%; animation-delay: 0.772886s; animation-duration: 2.95075s; height: 2.52672px; width: 2.52672px;"></div><div class="star" style="left: 76.5625%; top: 19.4592%; animation-delay: 0.110275s; animation-duration: 4.39509s; height: 2.94548px; width: 2.94548px;"></div></div>
+
+<!-- Clouds -->
+<div class="clouds">
+  <div class="cloud" style="width:300px;height:80px;top:25%;animation-duration:25s;"></div>
+  <div class="cloud" style="width:400px;height:100px;top:55%;animation-duration:35s;animation-delay:-10s;"></div>
+  <div class="cloud" style="width:250px;height:70px;top:75%;animation-duration:28s;animation-delay:-18s;"></div>
+  <div class="cloud" style="width:350px;height:90px;top:10%;animation-duration:32s;animation-delay:-5s;"></div>
+</div>
+
+<!-- Airplanes -->
+<div class="airplane-container">
+  <div class="contrail"></div>
+  <div class="airplane">✈️</div>
+</div>
+<div class="airplane-bg">🛩️</div>
+
+<!-- Radar -->
+<div class="radar">
+  <div class="radar-dot"></div>
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <div class="pilot-badge">
+    <span class="wing">🛫</span>
+    <span>Captain Chris</span>
+    <span class="wing">🛬</span>
+  </div>
+
+  <div class="title">
+    <span class="line1">This Page Is</span>
+    <span class="line2">About To Take Off</span>
+  </div>
+
+  <p class="tagline">Fasten your seatbelt — something epic is on approach 🛫</p>
+
+  <div class="runway">
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+    <div class="runway-dash"></div>
+  </div>
+
+  <div class="flight-info">
+    <div class="info-card">
+      <div class="info-label">Flight Status</div>
+      <div class="info-value">✈️ Boarding</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Destination</div>
+      <div class="info-value">🌍 Awesome</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">ETA</div>
+      <div class="info-value">🕐 Soon™</div>
+    </div>
+  </div>
+
+  <div class="boarding-pass">
+    <div class="boarding-label">Boarding Pass — First Class</div>
+    <div class="boarding-name">Chris</div>
+    <div class="boarding-dest">Cleared for takeoff · Gate C1 · Seat 1A</div>
+  </div>
+
+  <div class="back-link">
+    <a href="https://thefamilywaters.com/">← Back to Home Base</a>
+  </div>
+
+</div>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 60 + '%';
+    star.style.animationDelay = (Math.random() * 3) + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+    starsEl.appendChild(star);
+  }
+</script>
+
+
+</body></html>
