@@ -13,598 +13,482 @@
       --green: #6BCB77;
       --blue: #4D96FF;
       --red: #FF4757;
-      --cream: #FFF8EC;
-      --dark: #1E1E2E;
-      --card-bg: #FFFFFF;
+      --purple: #A78BFA;
+      --dark: #0f0c29;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: var(--cream);
-      color: var(--dark);
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
       min-height: 100vh;
+      color: white;
       overflow-x: hidden;
     }
 
-    /* ── WELCOME SCREEN ── */
+    /* ═══ WELCOME ═══ */
     #welcome-screen {
       position: fixed; inset: 0;
-      background: var(--dark);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      padding: 2rem;
-      transition: opacity 0.5s, transform 0.5s;
+      background: linear-gradient(135deg,#0f0c29 0%,#302b63 60%,#1a0533 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 1000; padding: 2rem;
+      transition: opacity 0.6s, transform 0.6s;
     }
+    #welcome-screen.hide { opacity: 0; transform: scale(1.06); pointer-events: none; }
 
-    #welcome-screen.hide {
-      opacity: 0;
-      transform: scale(1.05);
-      pointer-events: none;
+    .welcome-glow {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle,rgba(255,217,61,0.15) 0%,transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
     }
 
     .welcome-egg {
-      font-size: 6rem;
-      animation: wobble 2s infinite;
-      display: block;
-      margin-bottom: 1rem;
+      font-size: 6rem; animation: wobble 2.5s ease-in-out infinite;
+      display: block; margin-bottom: 1rem; position: relative; z-index: 1;
+      filter: drop-shadow(0 0 30px rgba(255,217,61,0.5));
     }
-
-    @keyframes wobble {
-      0%,100% { transform: rotate(-5deg) scale(1); }
-      50%      { transform: rotate(5deg) scale(1.08); }
-    }
+    @keyframes wobble { 0%,100%{transform:rotate(-6deg) scale(1);} 50%{transform:rotate(6deg) scale(1.1);} }
 
     .welcome-title {
       font-family: 'Fredoka One', cursive;
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      color: var(--sun);
-      text-align: center;
-      margin-bottom: 0.4rem;
+      font-size: clamp(2.2rem,7vw,3.8rem);
+      background: linear-gradient(90deg,#FFD93D,#FF9EBC,#4D96FF);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-align: center; margin-bottom: 0.3rem; position: relative; z-index: 1;
     }
-
     .welcome-sub {
-      color: #aaa;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 2.5rem;
-      font-size: 1rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      color: rgba(255,255,255,0.4); font-weight: 700; text-align: center;
+      margin-bottom: 2.5rem; font-size: 0.88rem; letter-spacing: 3px;
+      text-transform: uppercase; position: relative; z-index: 1;
     }
-
     .welcome-box {
-      background: #2a2a3e;
-      border: 3px solid #3a3a55;
-      border-radius: 24px;
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 28px; padding: 2.5rem; width: 100%; max-width: 420px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative; z-index: 1;
     }
-
     .welcome-box label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--sun);
-      margin-bottom: 0.75rem;
+      display: block; font-size: 0.8rem; font-weight: 800;
+      letter-spacing: 2.5px; text-transform: uppercase; color: var(--sun); margin-bottom: 0.75rem;
     }
-
-    .name-input-wrap {
-      position: relative;
+    .welcome-box input {
+      width: 100%; padding: 1rem 1.25rem; border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);
+      color: white; font-family: 'Nunito',sans-serif; font-size: 1.2rem; font-weight: 700;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     }
-
-    .name-input-wrap input {
-      width: 100%;
-      padding: 1rem 1.25rem;
-      border-radius: 14px;
-      border: 3px solid #3a3a55;
-      background: #1a1a2e;
-      color: white;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .name-input-wrap input:focus {
-      border-color: var(--sun);
-    }
-
-    .name-input-wrap input::placeholder { color: #555; }
-
-    #name-error {
-      color: var(--pink);
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-top: 0.5rem;
-      min-height: 1.2em;
-    }
-
+    .welcome-box input:focus { border-color: var(--sun); box-shadow: 0 0 0 4px rgba(255,217,61,0.12); }
+    .welcome-box input::placeholder { color: rgba(255,255,255,0.2); }
+    #name-error { color: var(--pink); font-size: 0.83rem; font-weight: 700; margin-top: 0.6rem; min-height: 1.2em; }
     .join-btn {
-      width: 100%;
-      margin-top: 1.25rem;
-      padding: 1rem;
-      border-radius: 14px;
-      border: none;
-      background: var(--sun);
-      color: var(--dark);
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.3rem;
-      cursor: pointer;
+      width: 100%; margin-top: 1.25rem; padding: 1rem; border-radius: 16px; border: none;
+      background: linear-gradient(135deg,#FFD93D,#FF9EBC); color: #1a0533;
+      font-family: 'Fredoka One',cursive; font-size: 1.3rem; cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 0 #c9a800;
+      box-shadow: 0 8px 30px rgba(255,217,61,0.35);
     }
+    .join-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,217,61,0.5); }
 
-    .join-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #c9a800;
-    }
-
-    .join-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #c9a800;
-    }
-
-    /* ── HEADER ── */
+    /* ═══ HEADER ═══ */
     header {
-      background: var(--dark);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: rgba(15,12,41,0.9); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.85rem 1.25rem; display: flex; align-items: center;
+      justify-content: space-between; gap: 0.5rem;
+      position: sticky; top: 0; z-index: 200;
     }
-
     .header-logo {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.6rem;
-      color: var(--sun);
+      font-family: 'Fredoka One',cursive; font-size: 1.4rem;
+      background: linear-gradient(90deg,#FFD93D,#FF9EBC);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      white-space: nowrap;
     }
+    .header-right { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 
-    .header-logo span { color: white; font-size: 1.1rem; }
+    .notif-btn {
+      position: relative; background: rgba(255,255,255,0.08);
+      border: 1.5px solid rgba(255,255,255,0.12); border-radius: 50px;
+      padding: 0.5rem 1rem; color: white; font-family: 'Fredoka One',cursive;
+      font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 0.4rem; white-space: nowrap;
+    }
+    .notif-btn:hover { background: rgba(255,217,61,0.15); border-color: var(--sun); color: var(--sun); }
+    .notif-dot {
+      position: absolute; top: -3px; right: -3px; width: 10px; height: 10px;
+      background: var(--red); border-radius: 50%; border: 2px solid var(--dark); display: none;
+    }
+    .notif-dot.show { display: block; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.3);opacity:0.7;} }
+
+    .cart-indicator {
+      background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 50px; padding: 0.5rem 0.9rem; font-weight: 800;
+      font-size: 0.82rem; color: rgba(255,255,255,0.65); white-space: nowrap;
+    }
+    .cart-indicator b { color: var(--sun); font-family: 'Fredoka One',cursive; font-size: 1rem; }
 
     .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: #2a2a3e;
-      border: 2px solid #3a3a55;
-      border-radius: 50px;
-      padding: 0.4rem 1rem 0.4rem 0.5rem;
-      cursor: pointer;
-      transition: border-color 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 50px; padding: 0.35rem 0.85rem 0.35rem 0.4rem;
+      cursor: pointer; transition: border-color 0.2s;
     }
-
     .user-pill:hover { border-color: var(--sun); }
-
     .user-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--sun);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-      color: var(--dark);
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg,var(--sun),var(--orange));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fredoka One',cursive; font-size: 0.9rem; color: #1a0533;
     }
+    .user-name-display { font-weight: 800; font-size: 0.88rem; }
+    .change-name-hint  { color: rgba(255,255,255,0.3); font-size: 0.62rem; font-weight: 700; }
 
-    .user-name-display {
-      color: white;
-      font-weight: 800;
-      font-size: 0.95rem;
+    /* ═══ NOTIF PANEL ═══ */
+    #notif-panel {
+      position: fixed; top: 0; right: -420px; width: min(400px,100vw); height: 100vh;
+      background: rgba(13,10,35,0.98); backdrop-filter: blur(30px);
+      border-left: 1px solid rgba(255,255,255,0.1);
+      z-index: 800; transition: right 0.35s cubic-bezier(0.34,1.2,0.64,1);
+      display: flex; flex-direction: column;
+      box-shadow: -20px 0 60px rgba(0,0,0,0.5);
     }
+    #notif-panel.open { right: 0; }
 
-    .change-name-hint {
-      color: #666;
-      font-size: 0.7rem;
-      font-weight: 700;
+    .panel-header {
+      padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
     }
+    .panel-title {
+      font-family: 'Fredoka One',cursive; font-size: 1.35rem;
+      background: linear-gradient(90deg,var(--sun),var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .panel-close {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%; width: 34px; height: 34px; color: white;
+      font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .panel-close:hover { background: rgba(255,255,255,0.15); }
 
-    /* ── NOTIFICATION FEED ── */
+    #panel-orders {
+      flex: 1; overflow-y: auto; padding: 1rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+    .panel-empty {
+      text-align: center; color: rgba(255,255,255,0.25);
+      font-weight: 700; padding: 3rem 1rem; font-size: 0.95rem;
+    }
+    .panel-entry {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid var(--sun); border-radius: 14px; padding: 0.85rem 1rem;
+      animation: slideRight 0.3s ease;
+    }
+    @keyframes slideRight { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+    .pe-top { display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; font-weight:800; margin-bottom:0.2rem; flex-wrap:wrap; }
+    .pe-who  { color: var(--sun); }
+    .pe-item { color: rgba(255,255,255,0.8); }
+    .pe-x3   { color: var(--pink); font-family:'Fredoka One',cursive; }
+    .pe-time { color: rgba(255,255,255,0.28); font-size:0.72rem; font-weight:700; }
+
+    #panel-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      z-index: 799; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    #panel-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* ═══ TOASTS ═══ */
     #notif-feed {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 500;
-      display: flex;
-      flex-direction: column-reverse;
-      gap: 0.5rem;
-      align-items: center;
-      pointer-events: none;
-      width: min(500px, 90vw);
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 500; display: flex; flex-direction: column-reverse;
+      gap: 0.5rem; align-items: center; pointer-events: none; width: min(480px,92vw);
     }
-
     .notif-toast {
-      background: var(--dark);
-      border: 2.5px solid var(--sun);
-      color: white;
-      padding: 0.75rem 1.25rem;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 0.9rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      background: rgba(13,10,35,0.95); border: 1.5px solid rgba(255,217,61,0.45);
+      color: white; padding: 0.75rem 1.25rem; border-radius: 50px;
+      font-weight: 800; font-size: 0.88rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4),0 0 20px rgba(255,217,61,0.08);
       animation: toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      white-space: nowrap;
+      display: flex; align-items: center; gap: 0.5rem;
+      white-space: nowrap; backdrop-filter: blur(20px);
     }
+    .notif-toast.fade-out { animation: toastOut 0.4s ease forwards; }
+    @keyframes toastIn  { from{opacity:0;transform:translateY(20px) scale(0.88)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes toastOut { to{opacity:0;transform:translateY(-10px) scale(0.94)} }
+    .notif-name { color: var(--sun); }
+    .notif-x3   { color: var(--pink); font-family:'Fredoka One',cursive; }
 
-    .notif-toast.fade-out {
-      animation: toastOut 0.4s ease forwards;
-    }
-
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.9); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes toastOut {
-      to { opacity: 0; transform: translateY(-10px) scale(0.95); }
-    }
-
-    .notif-toast .notif-name { color: var(--sun); }
-    .notif-toast .notif-x3 {
-      color: var(--pink);
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-    }
-
-    /* ── TABS ── */
+    /* ═══ TABS ═══ */
     .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      padding: 2rem 1rem 1rem;
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 0.55rem; padding: 1.75rem 1rem 0.75rem;
     }
-
     .tab-btn {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-      padding: 0.55rem 1.35rem;
-      border-radius: 50px;
-      border: 2.5px solid var(--dark);
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 3px 3px 0 var(--dark);
+      font-family: 'Fredoka One',cursive; font-size: 0.95rem;
+      padding: 0.5rem 1.25rem; border-radius: 50px;
+      border: 1.5px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65);
+      cursor: pointer; transition: all 0.2s; backdrop-filter: blur(10px);
     }
+    .tab-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+    .tab-btn.active { color: #1a0533; border-color: transparent; }
+    .tab-btn[data-cat="all"].active      { background: linear-gradient(135deg,#FFD93D,#FF9EBC); }
+    .tab-btn[data-cat="classics"].active { background: linear-gradient(135deg,#FF6B35,#FF9EBC); }
+    .tab-btn[data-cat="healthy"].active  { background: linear-gradient(135deg,#6BCB77,#4D96FF); }
+    .tab-btn[data-cat="sweet"].active    { background: linear-gradient(135deg,#FF9EBC,#A78BFA); }
+    .tab-btn[data-cat="drinks"].active   { background: linear-gradient(135deg,#4D96FF,#A78BFA); }
 
-    .tab-btn:hover, .tab-btn.active {
-      transform: translate(-2px,-2px);
-      box-shadow: 5px 5px 0 var(--dark);
+    /* ═══ CART BAR ═══ */
+    .cart-bar-wrap { max-width: 1100px; margin: 0.75rem auto 0; padding: 0 1.25rem; }
+    .cart-bar {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 50px; padding: 0.55rem 1.2rem;
+      display: flex; align-items: center; gap: 0.7rem;
+      font-size: 0.82rem; font-weight: 800; color: rgba(255,255,255,0.55);
+      backdrop-filter: blur(10px);
     }
+    .cart-bar-track { flex:1; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden; }
+    .cart-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg,#6BCB77,#FFD93D,#FF6B35);
+      transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .cart-bar-fill.full { background: linear-gradient(90deg,#FF4757,#FF9EBC); }
 
-    .tab-btn[data-cat="all"].active     { background: var(--sun); }
-    .tab-btn[data-cat="classics"].active { background: var(--orange); color: white; }
-    .tab-btn[data-cat="healthy"].active  { background: var(--green); }
-    .tab-btn[data-cat="sweet"].active    { background: var(--pink); }
-    .tab-btn[data-cat="drinks"].active   { background: var(--blue); color: white; }
-
-    /* ── MENU GRID ── */
+    /* ═══ MENU ═══ */
     .menu {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1rem 1.25rem 8rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 1.25rem;
+      max-width: 1100px; margin: 0 auto; padding: 0.75rem 1.25rem 8rem;
+      display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 1.2rem;
     }
-
     .card {
-      background: var(--card-bg);
-      border: 3px solid var(--dark);
-      border-radius: 22px;
-      padding: 1.5rem;
-      box-shadow: 5px 5px 0 var(--dark);
-      transition: transform 0.2s, box-shadow 0.2s;
-      animation: popIn 0.4s ease both;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 24px; padding: 1.5rem; backdrop-filter: blur(20px);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: popIn 0.4s ease both; position: relative;
+      overflow: hidden; display: flex; flex-direction: column;
     }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.88) translateY(12px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
+    .card::before {
+      content:''; position:absolute; top:0;left:0;right:0;
+      height:3px; border-radius:24px 24px 0 0;
     }
+    .cat-classics .card::before { background:linear-gradient(90deg,#FF6B35,#FF9EBC); }
+    .cat-healthy  .card::before { background:linear-gradient(90deg,#6BCB77,#4D96FF); }
+    .cat-sweet    .card::before { background:linear-gradient(90deg,#FF9EBC,#A78BFA); }
+    .cat-drinks   .card::before { background:linear-gradient(90deg,#4D96FF,#A78BFA); }
+    @keyframes popIn { from{opacity:0;transform:scale(0.88) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .card:hover { transform:translateY(-5px); border-color:rgba(255,255,255,0.2); box-shadow:0 20px 50px rgba(0,0,0,0.35); }
 
-    .card:hover {
-      transform: translate(-3px,-3px);
-      box-shadow: 8px 8px 0 var(--dark);
+    .card-emoji { font-size:2.8rem; margin-bottom:0.65rem; display:block; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+    .card-name  { font-family:'Fredoka One',cursive; font-size:1.22rem; margin-bottom:0.3rem; }
+    .card-desc  { font-size:0.84rem; color:rgba(255,255,255,0.48); font-weight:600; line-height:1.5; flex-grow:1; margin-bottom:0.8rem; }
+
+    .card-actions { display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap; }
+    .badge { font-size:0.67rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:0.22rem 0.6rem; border-radius:50px; }
+    .badge-fav     { background:linear-gradient(135deg,#FF9EBC,#FF6B35); color:white; }
+    .badge-new     { background:linear-gradient(135deg,#FFD93D,#FF9EBC); color:#1a0533; }
+    .badge-healthy { background:linear-gradient(135deg,#6BCB77,#4D96FF); color:#1a0533; }
+
+    .btn-row { display:flex; gap:0.45rem; align-items:center; }
+
+    .recipe-btn {
+      padding: 0.48rem 0.85rem; border-radius:50px;
+      border: 1.5px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.08);
+      color:rgba(255,255,255,0.8); font-family:'Fredoka One',cursive;
+      font-size:0.83rem; cursor:pointer; transition:all 0.2s;
     }
-
-    .card-stripe {
-      position: absolute;
-      top: 0; right: 0;
-      width: 8px; height: 100%;
-      border-radius: 0 19px 19px 0;
-    }
-
-    .cat-classics .card-stripe { background: var(--orange); }
-    .cat-healthy  .card-stripe { background: var(--green); }
-    .cat-sweet    .card-stripe { background: var(--pink); }
-    .cat-drinks   .card-stripe { background: var(--blue); }
-
-    .card-emoji { font-size: 2.75rem; margin-bottom: 0.6rem; display: block; }
-
-    .card-name {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.25rem;
-      margin-bottom: 0.3rem;
-    }
-
-    .card-desc {
-      font-size: 0.875rem;
-      color: #777;
-      font-weight: 600;
-      line-height: 1.5;
-      flex-grow: 1;
-      margin-bottom: 1rem;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .card-price {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.4rem;
-      color: var(--orange);
-    }
-
-    .badge {
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 0.25rem 0.65rem;
-      border-radius: 50px;
-      border: 2px solid var(--dark);
-    }
-
-    .badge-fav     { background: var(--pink); }
-    .badge-new     { background: var(--sun); }
-    .badge-healthy { background: var(--green); }
+    .recipe-btn:hover { background:rgba(255,255,255,0.16); color:white; }
 
     .order-btn {
-      padding: 0.6rem 1.25rem;
-      border-radius: 50px;
-      border: 2.5px solid var(--dark);
-      background: var(--sun);
-      color: var(--dark);
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.15s;
-      box-shadow: 3px 3px 0 var(--dark);
-      position: relative;
+      position:relative; padding:0.52rem 1.05rem; border-radius:50px; border:none;
+      background:linear-gradient(135deg,#FFD93D,#FF9EBC); color:#1a0533;
+      font-family:'Fredoka One',cursive; font-size:0.95rem; cursor:pointer;
+      transition:all 0.2s; box-shadow:0 4px 18px rgba(255,217,61,0.3);
+    }
+    .order-btn:hover { transform:scale(1.06); box-shadow:0 6px 26px rgba(255,217,61,0.5); }
+    .order-btn:active { transform:scale(0.97); }
+    .order-btn:disabled {
+      background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.28);
+      cursor:not-allowed; box-shadow:none; transform:none;
+    }
+    .x3-badge {
+      position:absolute; top:-9px; right:-9px; background:var(--red); color:white;
+      font-family:'Fredoka One',cursive; font-size:0.63rem; padding:0.1rem 0.38rem;
+      border-radius:50px; border:2px solid rgba(13,10,35,0.9); white-space:nowrap;
+      animation:popIn 0.3s ease;
     }
 
-    .order-btn:hover {
-      transform: translate(-2px,-2px);
-      box-shadow: 5px 5px 0 var(--dark);
+    /* ═══ RECIPE MODAL ═══ */
+    #recipe-modal {
+      position:fixed;inset:0;background:rgba(0,0,0,0.78);
+      display:flex;align-items:center;justify-content:center;
+      z-index:900;padding:1rem;opacity:0;pointer-events:none;
+      transition:opacity 0.25s;backdrop-filter:blur(8px);
+    }
+    #recipe-modal.open { opacity:1; pointer-events:all; }
+    .recipe-box {
+      background:linear-gradient(160deg,#1a1535,#0f0c29);
+      border:1px solid rgba(255,255,255,0.12); border-radius:28px;
+      width:100%; max-width:560px; max-height:88vh; overflow-y:auto;
+      padding:2rem; box-shadow:0 40px 100px rgba(0,0,0,0.6);
+      scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.1) transparent;
+    }
+    .recipe-box-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.4rem;gap:1rem; }
+    .recipe-emoji-big  { font-size:3.2rem;line-height:1; }
+    .recipe-box h2 {
+      font-family:'Fredoka One',cursive; font-size:1.55rem;
+      background:linear-gradient(90deg,#FFD93D,#FF9EBC);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:0.2rem;
+    }
+    .recipe-sub { font-size:0.77rem;color:rgba(255,255,255,0.32);font-weight:700;letter-spacing:1px;text-transform:uppercase; }
+
+    .modal-close-btn {
+      background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);
+      border-radius:50%;width:36px;height:36px;min-width:36px;color:white;font-size:1rem;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;
+    }
+    .modal-close-btn:hover { background:rgba(255,255,255,0.15); }
+
+    .recipe-section-title {
+      font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--sun);
+      margin:1.2rem 0 0.7rem;display:flex;align-items:center;gap:0.4rem;
+    }
+    .recipe-ingredient-list { list-style:none;display:flex;flex-direction:column;gap:0.42rem; }
+    .recipe-ingredient-list li {
+      display:flex;align-items:flex-start;gap:0.55rem;
+      font-size:0.88rem;font-weight:700;color:rgba(255,255,255,0.78);line-height:1.4;
+    }
+    .ing-checkbox {
+      width:18px;height:18px;min-width:18px;border:2px solid rgba(255,255,255,0.22);
+      border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      margin-top:1px;transition:all 0.15s;
+    }
+    .ing-checkbox.checked { background:var(--green);border-color:var(--green); }
+    .ing-checkbox.checked::after { content:'✓';font-size:0.63rem;color:white;font-weight:900; }
+    .ing-key { color:var(--sun); }
+
+    .recipe-step-list { list-style:none;display:flex;flex-direction:column;gap:0.72rem; }
+    .recipe-step-list li { display:flex;gap:0.7rem;font-size:0.87rem;font-weight:700;color:rgba(255,255,255,0.72);line-height:1.55; }
+    .step-num {
+      min-width:26px;height:26px;background:linear-gradient(135deg,#FFD93D,#FF9EBC);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      font-family:'Fredoka One',cursive;font-size:0.78rem;color:#1a0533;margin-top:1px;
     }
 
-    .order-btn:active {
-      transform: translate(1px,1px);
-      box-shadow: 2px 2px 0 var(--dark);
-    }
-
-    .order-btn .x3-badge {
-      position: absolute;
-      top: -10px; right: -10px;
-      background: var(--red);
-      color: white;
-      font-family: 'Fredoka One', cursive;
-      font-size: 0.7rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 50px;
-      border: 2px solid white;
-      white-space: nowrap;
-      animation: popIn 0.3s ease;
-    }
-
-    /* ── ORDER LOG ── */
-    #order-log {
-      position: fixed;
-      top: 70px; right: 1rem;
-      width: 280px;
-      max-height: calc(100vh - 100px);
-      overflow-y: auto;
-      z-index: 200;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      scrollbar-width: none;
-    }
-
-    #order-log::-webkit-scrollbar { display: none; }
-
-    .log-entry {
-      background: var(--dark);
-      color: white;
-      border-radius: 14px;
-      padding: 0.65rem 0.9rem;
-      font-size: 0.82rem;
-      font-weight: 700;
-      border-left: 4px solid var(--sun);
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(20px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    .log-entry .log-who { color: var(--sun); }
-    .log-entry .log-item { color: #ddd; }
-    .log-entry .log-time { color: #666; font-size: 0.72rem; font-weight: 600; }
-    .log-entry .log-x3   { color: var(--pink); font-family: 'Fredoka One', cursive; }
-
-    @media (max-width: 768px) {
-      #order-log { display: none; }
-    }
-
-    /* ── CHANGE NAME MODAL ── */
+    /* ═══ NAME MODAL ═══ */
     #name-modal {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 900;
-      padding: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
+      position:fixed;inset:0;background:rgba(0,0,0,0.72);
+      display:flex;align-items:center;justify-content:center;
+      z-index:950;padding:1rem;opacity:0;pointer-events:none;
+      transition:opacity 0.2s;backdrop-filter:blur(6px);
     }
-
-    #name-modal.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
+    #name-modal.open { opacity:1;pointer-events:all; }
     .modal-box {
-      background: var(--dark);
-      border: 3px solid var(--sun);
-      border-radius: 24px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 380px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      background:linear-gradient(160deg,#1a1535,#0f0c29);
+      border:1px solid rgba(255,255,255,0.12);border-radius:24px;
+      padding:2rem;width:100%;max-width:380px;box-shadow:0 30px 80px rgba(0,0,0,0.6);
     }
-
     .modal-box h2 {
-      font-family: 'Fredoka One', cursive;
-      color: var(--sun);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+      font-family:'Fredoka One',cursive;font-size:1.35rem;
+      background:linear-gradient(90deg,#FFD93D,#FF9EBC);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:1rem;
     }
-
     .modal-box input {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      border: 2.5px solid #3a3a55;
-      background: #1a1a2e;
-      color: white;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      outline: none;
-      margin-bottom: 0.5rem;
+      width:100%;padding:0.85rem 1rem;border-radius:14px;
+      border:1.5px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.3);
+      color:white;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;
+      outline:none;transition:border-color 0.2s;
     }
-
-    .modal-box input:focus { border-color: var(--sun); }
-
-    #modal-error {
-      color: var(--pink);
-      font-size: 0.82rem;
-      font-weight: 700;
-      min-height: 1.2em;
-      margin-bottom: 0.75rem;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 0.75rem;
-    }
-
+    .modal-box input:focus { border-color:var(--sun); }
+    #modal-error { color:var(--pink);font-size:0.82rem;font-weight:700;min-height:1.2em;margin:0.5rem 0; }
+    .modal-actions { display:flex;gap:0.7rem; }
     .modal-actions button {
-      flex: 1;
-      padding: 0.75rem;
-      border-radius: 12px;
-      border: none;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: transform 0.15s;
+      flex:1;padding:0.72rem;border-radius:12px;border:none;
+      font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;transition:transform 0.15s;
     }
-
-    .modal-actions button:hover { transform: scale(1.03); }
-
-    .btn-confirm { background: var(--sun); color: var(--dark); }
-    .btn-cancel  { background: #2a2a3e; color: white; border: 2px solid #3a3a55 !important; }
+    .modal-actions button:hover { transform:scale(1.03); }
+    .btn-confirm { background:linear-gradient(135deg,#FFD93D,#FF9EBC);color:#1a0533; }
+    .btn-cancel  { background:rgba(255,255,255,0.08);color:white;border:1.5px solid rgba(255,255,255,0.12)!important; }
 
     footer {
-      text-align: center;
-      background: var(--dark);
-      color: #555;
-      padding: 1.25rem;
-      font-weight: 700;
-      font-size: 0.85rem;
-      letter-spacing: 1px;
+      text-align:center;background:rgba(15,12,41,0.92);
+      border-top:1px solid rgba(255,255,255,0.06);
+      color:rgba(255,255,255,0.28);padding:1.2rem;
+      font-weight:700;font-size:0.8rem;letter-spacing:1px;backdrop-filter:blur(10px);
     }
-
-    footer span { color: var(--sun); }
+    footer span { color:var(--sun); }
   </style>
 </head>
 <body>
 
-<!-- WELCOME SCREEN -->
+<!-- WELCOME -->
 <div id="welcome-screen">
+  <div class="welcome-glow"></div>
   <span class="welcome-egg">🍳</span>
   <h1 class="welcome-title">GE Breakfast Menu</h1>
-  <p class="welcome-sub">The breakfast spot for everyone</p>
+  <p class="welcome-sub">Order · Discover · Enjoy</p>
   <div class="welcome-box">
     <label for="name-input">What's your name?</label>
-    <div class="name-input-wrap">
-      <input id="name-input" type="text" maxlength="24" placeholder="e.g. Tim, Sarah, Chef Bob…" autocomplete="off"/>
-    </div>
+    <input id="name-input" type="text" maxlength="24" placeholder="e.g. Tim, Sarah, Chef Bob…" autocomplete="off"/>
     <div id="name-error"></div>
     <button class="join-btn" onclick="joinAs()">Let's Eat! 🍽</button>
   </div>
 </div>
 
-<!-- CHANGE NAME MODAL -->
+<!-- NAME MODAL -->
 <div id="name-modal">
   <div class="modal-box">
     <h2>✏️ Change Your Name</h2>
     <input id="modal-name-input" type="text" maxlength="24" placeholder="New name…" autocomplete="off"/>
     <div id="modal-error"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-cancel" onclick="closeNameModal()">Cancel</button>
       <button class="btn-confirm" onclick="confirmNameChange()">Save ✓</button>
     </div>
   </div>
 </div>
 
+<!-- RECIPE MODAL -->
+<div id="recipe-modal">
+  <div class="recipe-box" id="recipe-box-inner"></div>
+</div>
+
+<!-- PANEL OVERLAY -->
+<div id="panel-overlay" onclick="closeNotifPanel()"></div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div id="notif-panel">
+  <div class="panel-header">
+    <div class="panel-title">📣 All Public Orders</div>
+    <button class="panel-close" onclick="closeNotifPanel()">✕</button>
+  </div>
+  <div id="panel-orders"><div class="panel-empty">No orders yet — be the first! 🍳</div></div>
+</div>
+
 <!-- HEADER -->
 <header id="main-header" style="display:none">
   <div class="header-logo">🍳 GE Breakfast Menu</div>
-  <div class="user-pill" onclick="openModal()" title="Click to change name">
-    <div class="user-avatar" id="hdr-avatar">?</div>
-    <div>
-      <div class="user-name-display" id="hdr-name">—</div>
-      <div class="change-name-hint">tap to change name</div>
+  <div class="header-right">
+    <div class="cart-indicator">Cart: <b id="hdr-cart">0</b>/5</div>
+    <button class="notif-btn" onclick="openNotifPanel()">
+      📣 Notifications
+      <div class="notif-dot" id="notif-dot"></div>
+    </button>
+    <div class="user-pill" onclick="openNameModal()">
+      <div class="user-avatar" id="hdr-avatar">?</div>
+      <div>
+        <div class="user-name-display" id="hdr-name">—</div>
+        <div class="change-name-hint">tap to change</div>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- NOTIFICATION TOASTS -->
+<!-- TOASTS -->
 <div id="notif-feed"></div>
-
-<!-- ORDER LOG (desktop sidebar) -->
-<div id="order-log"></div>
 
 <!-- TABS -->
 <div class="tabs" id="tabs-bar" style="display:none">
@@ -615,399 +499,519 @@
   <button class="tab-btn" data-cat="drinks">☕ Drinks</button>
 </div>
 
+<!-- CART BAR -->
+<div class="cart-bar-wrap" id="cart-bar-wrap" style="display:none">
+  <div class="cart-bar">
+    <span id="cart-bar-text">0 / 5 items</span>
+    <div class="cart-bar-track"><div class="cart-bar-fill" id="cart-bar-fill" style="width:0%"></div></div>
+    <span id="cart-bar-emoji">🛒</span>
+  </div>
+</div>
+
 <!-- MENU -->
 <div class="menu" id="menu" style="display:none"></div>
 
 <footer id="main-footer" style="display:none">
-  Open 7am – 3pm Daily · GE Breakfast Menu · Made with <span>☀️</span> & butter
+  Open 7am – 3pm Daily · GE Breakfast Menu · Made with <span>☀️</span> & love
 </footer>
 
 <script>
-/* ══════════════════════════════════════════
-   DATA
-══════════════════════════════════════════ */
+/* ════ DATA ════ */
 const ITEMS = [
-  { name:"Classic Eggs Benedict", emoji:"🍳", desc:"Poached eggs, Canadian bacon, hollandaise on English muffin.", price:"$14", cat:"classics", badge:"fav" },
-  { name:"Buttermilk Pancakes",   emoji:"🥞", desc:"Fluffy stack of three with maple syrup & powdered sugar.",        price:"$11", cat:"classics", badge:null },
-  { name:"The Big Breakfast",     emoji:"🍽", desc:"Two eggs any style, bacon, sausage, hash browns & toast.",        price:"$16", cat:"classics", badge:"fav" },
-  { name:"Denver Omelette",       emoji:"🫕", desc:"Bell peppers, ham, onions & melted cheddar.",                     price:"$13", cat:"classics", badge:null },
-  { name:"Avocado Toast",         emoji:"🥑", desc:"Smashed avo on sourdough with cherry tomatoes & chili flakes.",  price:"$12", cat:"healthy",  badge:"new" },
-  { name:"Acai Smoothie Bowl",    emoji:"🫐", desc:"Thick acai blend with granola, banana & fresh berries.",         price:"$13", cat:"healthy",  badge:"healthy" },
-  { name:"Egg White Veggie Wrap", emoji:"🌯", desc:"Egg whites, spinach, roasted peppers & hummus in a wheat wrap.", price:"$11", cat:"healthy",  badge:"healthy" },
-  { name:"Overnight Oats",        emoji:"🌾", desc:"Chia oats with almond milk, topped with fruit & nuts.",          price:"$9",  cat:"healthy",  badge:null },
-  { name:"Belgian Waffles",       emoji:"🧇", desc:"Crispy waffles with strawberries & whipped cream.",              price:"$13", cat:"sweet",    badge:"fav" },
-  { name:"French Toast",          emoji:"🍞", desc:"Brioche dipped in vanilla custard, dusted with cinnamon sugar.", price:"$12", cat:"sweet",    badge:null },
-  { name:"Nutella Crepes",        emoji:"🫔", desc:"Thin crepes filled with Nutella, banana & honey.",               price:"$11", cat:"sweet",    badge:"new" },
-  { name:"Cinnamon Roll",         emoji:"🌀", desc:"House-baked jumbo roll with cream cheese frosting. Still warm.", price:"$6",  cat:"sweet",    badge:"fav" },
-  { name:"Drip Coffee",           emoji:"☕", desc:"Single-origin house blend. Unlimited refills.",                  price:"$4",  cat:"drinks",   badge:null },
-  { name:"Matcha Latte",          emoji:"🍵", desc:"Ceremonial matcha with oat milk, lightly sweetened.",            price:"$6",  cat:"drinks",   badge:"new" },
-  { name:"Fresh OJ",              emoji:"🍊", desc:"Freshly squeezed Valencia oranges every morning.",              price:"$5",  cat:"drinks",   badge:null },
-  { name:"Sunrise Smoothie",      emoji:"🥤", desc:"Mango, pineapple, banana & passion fruit.",                     price:"$7",  cat:"drinks",   badge:"fav" },
+  {
+    name:"Classic Eggs Benedict",emoji:"🍳",cat:"classics",badge:"fav",
+    desc:"Poached eggs, Canadian bacon & hollandaise on English muffin.",
+    ingredients:[
+      {qty:"4",unit:"",item:"large eggs"},
+      {qty:"2",unit:"slices",item:"Canadian bacon"},
+      {qty:"2",unit:"",item:"English muffins, split & toasted"},
+      {qty:"3",unit:"",item:"egg yolks (for hollandaise)"},
+      {qty:"1",unit:"tbsp",item:"lemon juice"},
+      {qty:"½",unit:"cup",item:"unsalted butter, melted"},
+      {qty:"1",unit:"pinch",item:"cayenne pepper"},
+      {qty:"1",unit:"tbsp",item:"white vinegar (for poaching)"},
+    ],
+    steps:[
+      "Bring a pot of water to a gentle simmer. Add vinegar. Crack eggs into small cups and slide gently into the water. Poach 3–4 minutes until whites are set but yolks still runny. Remove with a slotted spoon.",
+      "Whisk egg yolks and lemon juice in a heatproof bowl over simmering water. Slowly drizzle in melted butter while whisking until thick and glossy. Season with cayenne, salt & pepper.",
+      "Layer toasted English muffins with Canadian bacon, then the poached egg. Spoon hollandaise generously over the top.",
+      "Serve immediately with a sprinkle of paprika or fresh chives."
+    ]
+  },
+  {
+    name:"Buttermilk Pancakes",emoji:"🥞",cat:"classics",badge:null,
+    desc:"Fluffy stack of three with maple syrup & powdered sugar.",
+    ingredients:[
+      {qty:"1½",unit:"cups",item:"all-purpose flour"},
+      {qty:"3½",unit:"tsp",item:"baking powder"},
+      {qty:"1",unit:"tsp",item:"salt"},
+      {qty:"1",unit:"tbsp",item:"granulated sugar"},
+      {qty:"1¼",unit:"cups",item:"buttermilk"},
+      {qty:"1",unit:"",item:"egg"},
+      {qty:"3",unit:"tbsp",item:"melted butter"},
+      {qty:"1",unit:"tsp",item:"vanilla extract"},
+    ],
+    steps:[
+      "Whisk flour, baking powder, salt, and sugar together in a bowl.",
+      "In another bowl, mix buttermilk, egg, melted butter, and vanilla. Pour wet into dry — stir until just combined. Lumps are OK, don't overmix!",
+      "Heat a greased griddle or skillet over medium heat. Pour ¼ cup batter per pancake. Cook until bubbles form and edges look set (~2–3 min). Flip and cook 1–2 more minutes.",
+      "Stack high and serve with maple syrup and a dusting of powdered sugar. 🍁"
+    ]
+  },
+  {
+    name:"The Big Breakfast",emoji:"🍽",cat:"classics",badge:"fav",
+    desc:"Two eggs any style, bacon, sausage, hash browns & toast.",
+    ingredients:[
+      {qty:"2",unit:"",item:"large eggs"},
+      {qty:"3",unit:"strips",item:"bacon"},
+      {qty:"2",unit:"",item:"breakfast sausage links"},
+      {qty:"1",unit:"cup",item:"shredded potato (for hash browns)"},
+      {qty:"2",unit:"slices",item:"bread of your choice"},
+      {qty:"1",unit:"tbsp",item:"butter"},
+      {qty:"1",unit:"pinch",item:"salt & pepper"},
+    ],
+    steps:[
+      "Fry bacon until crispy. Set aside. Cook sausage in the same pan until browned all over.",
+      "Squeeze moisture from shredded potato, season with salt & pepper. Cook in butter over medium-high, pressing flat, until golden — about 4 minutes per side.",
+      "Cook eggs your preferred way (fried, scrambled, or over-easy) in a lightly buttered pan.",
+      "Toast bread to golden. Plate everything together and serve hot!"
+    ]
+  },
+  {
+    name:"Denver Omelette",emoji:"🫕",cat:"classics",badge:null,
+    desc:"Bell peppers, ham, onions & melted cheddar.",
+    ingredients:[
+      {qty:"3",unit:"",item:"large eggs"},
+      {qty:"¼",unit:"cup",item:"diced green bell pepper"},
+      {qty:"¼",unit:"cup",item:"diced ham"},
+      {qty:"2",unit:"tbsp",item:"diced onion"},
+      {qty:"¼",unit:"cup",item:"shredded cheddar cheese"},
+      {qty:"1",unit:"tbsp",item:"butter"},
+      {qty:"1",unit:"pinch",item:"salt & black pepper"},
+    ],
+    steps:[
+      "Beat eggs with a pinch of salt and pepper until fluffy.",
+      "Sauté bell pepper, onion, and ham in butter over medium heat for 3 minutes until softened.",
+      "Pour eggs over the vegetables. Cook without stirring until edges begin to set. Gently lift edges and tilt pan so uncooked egg flows underneath.",
+      "Sprinkle cheese on one half. Fold and slide onto a plate. Serve immediately!"
+    ]
+  },
+  {
+    name:"Avocado Toast",emoji:"🥑",cat:"healthy",badge:"new",
+    desc:"Smashed avo on sourdough with cherry tomatoes & chili flakes.",
+    ingredients:[
+      {qty:"1",unit:"",item:"ripe avocado"},
+      {qty:"2",unit:"slices",item:"sourdough bread"},
+      {qty:"6",unit:"",item:"cherry tomatoes, halved"},
+      {qty:"1",unit:"tsp",item:"lemon juice"},
+      {qty:"¼",unit:"tsp",item:"chili flakes"},
+      {qty:"1",unit:"pinch",item:"flaky sea salt & black pepper"},
+      {qty:"1",unit:"tbsp",item:"crumbled feta (optional)"},
+    ],
+    steps:[
+      "Toast sourdough slices until golden and crispy.",
+      "Scoop avocado into a bowl. Add lemon juice, salt & pepper. Mash to your preferred texture — chunky or smooth.",
+      "Spread avo generously on toast. Top with cherry tomatoes and chili flakes.",
+      "Finish with feta and a drizzle of olive oil. Serve immediately!"
+    ]
+  },
+  {
+    name:"Acai Smoothie Bowl",emoji:"🫐",cat:"healthy",badge:"healthy",
+    desc:"Thick acai blend with granola, banana & fresh berries.",
+    ingredients:[
+      {qty:"2",unit:"packs",item:"frozen acai (100g each)"},
+      {qty:"1",unit:"",item:"frozen banana"},
+      {qty:"½",unit:"cup",item:"mixed frozen berries"},
+      {qty:"¼",unit:"cup",item:"almond milk (just enough to blend)"},
+      {qty:"¼",unit:"cup",item:"granola"},
+      {qty:"1",unit:"tbsp",item:"honey"},
+      {qty:"½",unit:"",item:"fresh banana, sliced (topping)"},
+      {qty:"¼",unit:"cup",item:"fresh blueberries & strawberries"},
+    ],
+    steps:[
+      "Break frozen acai packs into a blender. Add frozen banana, berries, and just enough almond milk to blend. Keep it THICK.",
+      "Blend until smooth and creamy — much thicker than a regular smoothie.",
+      "Pour into a bowl. Top with granola, fresh banana slices, and berries.",
+      "Drizzle with honey and serve right away! 🫐"
+    ]
+  },
+  {
+    name:"Egg White Veggie Wrap",emoji:"🌯",cat:"healthy",badge:"healthy",
+    desc:"Egg whites, spinach, roasted peppers & hummus in a wheat wrap.",
+    ingredients:[
+      {qty:"4",unit:"",item:"egg whites"},
+      {qty:"1",unit:"large",item:"whole wheat tortilla"},
+      {qty:"1",unit:"cup",item:"baby spinach"},
+      {qty:"¼",unit:"cup",item:"roasted red peppers, sliced"},
+      {qty:"2",unit:"tbsp",item:"hummus"},
+      {qty:"1",unit:"tsp",item:"olive oil"},
+      {qty:"1",unit:"pinch",item:"garlic powder, salt & pepper"},
+    ],
+    steps:[
+      "Whisk egg whites with garlic powder, salt, and pepper.",
+      "Heat olive oil in a pan. Add spinach and peppers, sauté 1 minute. Add egg whites and scramble gently until just set.",
+      "Warm the tortilla in a dry pan or microwave for 20 seconds.",
+      "Spread hummus on tortilla, add the egg mixture, roll tightly and serve!"
+    ]
+  },
+  {
+    name:"Overnight Oats",emoji:"🌾",cat:"healthy",badge:null,
+    desc:"Chia oats with almond milk, topped with fruit & nuts.",
+    ingredients:[
+      {qty:"½",unit:"cup",item:"rolled oats"},
+      {qty:"1",unit:"tbsp",item:"chia seeds"},
+      {qty:"¾",unit:"cup",item:"almond milk"},
+      {qty:"1",unit:"tbsp",item:"maple syrup or honey"},
+      {qty:"¼",unit:"tsp",item:"vanilla extract"},
+      {qty:"¼",unit:"cup",item:"fresh fruit (berries, banana, mango)"},
+      {qty:"2",unit:"tbsp",item:"mixed nuts or granola (topping)"},
+    ],
+    steps:[
+      "Combine oats, chia seeds, almond milk, maple syrup, and vanilla in a jar. Stir well.",
+      "Cover and refrigerate overnight (or at least 4 hours) until thick and creamy.",
+      "In the morning, stir. Add a splash of milk if too thick.",
+      "Top with fresh fruit and nuts. Eat cold, or warm briefly in the microwave!"
+    ]
+  },
+  {
+    name:"Belgian Waffles",emoji:"🧇",cat:"sweet",badge:"fav",
+    desc:"Crispy waffles with strawberries & whipped cream.",
+    ingredients:[
+      {qty:"2",unit:"cups",item:"all-purpose flour"},
+      {qty:"2",unit:"tsp",item:"baking powder"},
+      {qty:"½",unit:"tsp",item:"salt"},
+      {qty:"2",unit:"tbsp",item:"granulated sugar"},
+      {qty:"2",unit:"",item:"eggs, separated"},
+      {qty:"1¾",unit:"cups",item:"whole milk"},
+      {qty:"½",unit:"cup",item:"melted butter"},
+      {qty:"1",unit:"tsp",item:"vanilla extract"},
+    ],
+    steps:[
+      "Preheat your waffle iron and grease lightly.",
+      "Whisk flour, baking powder, salt, and sugar. In another bowl, mix egg yolks, milk, butter, and vanilla. Combine wet and dry ingredients.",
+      "Beat egg whites to stiff peaks in a clean bowl — then gently fold into batter. This is the secret to light, crispy waffles!",
+      "Pour batter onto the hot iron and cook until golden and crispy. Top with strawberries and whipped cream! 🍓"
+    ]
+  },
+  {
+    name:"French Toast",emoji:"🍞",cat:"sweet",badge:null,
+    desc:"Brioche dipped in vanilla custard, dusted with cinnamon sugar.",
+    ingredients:[
+      {qty:"4",unit:"",item:"large eggs"},
+      {qty:"⅔",unit:"cup",item:"milk (160 ml)"},
+      {qty:"¼",unit:"cup",item:"all-purpose flour (30 grams)"},
+      {qty:"¼",unit:"cup",item:"granulated sugar (50 grams)"},
+      {qty:"¼",unit:"tsp",item:"salt"},
+      {qty:"1",unit:"tsp",item:"ground cinnamon"},
+      {qty:"1",unit:"tsp",item:"vanilla extract (5 ml)"},
+      {qty:"8",unit:"thick slices",item:"brioche or white bread"},
+    ],
+    steps:[
+      "Preheat griddle to 350°F (175°C) or heat a skillet over medium heat.",
+      "In a blender, add eggs, milk, flour, sugar, salt, cinnamon, and vanilla. Blend until smooth. (Or whisk by hand: mix flour and eggs first, then whisk in the rest.)",
+      "Dip bread slices into the batter, dredging well on both sides. Place on a hot greased griddle or skillet.",
+      "Cook a few minutes until the bottom turns golden. Flip and cook the other side the same.",
+      "Remove to a plate. Serve warm with syrup and a sprinkle of powdered sugar. 🍁"
+    ]
+  },
+  {
+    name:"Nutella Crepes",emoji:"🫔",cat:"sweet",badge:"new",
+    desc:"Thin crepes filled with Nutella, banana & honey.",
+    ingredients:[
+      {qty:"1",unit:"cup",item:"all-purpose flour"},
+      {qty:"2",unit:"",item:"eggs"},
+      {qty:"1½",unit:"cups",item:"milk"},
+      {qty:"2",unit:"tbsp",item:"melted butter"},
+      {qty:"1",unit:"tbsp",item:"sugar"},
+      {qty:"¼",unit:"tsp",item:"salt"},
+      {qty:"4",unit:"tbsp",item:"Nutella"},
+      {qty:"1",unit:"",item:"banana, sliced"},
+      {qty:"1",unit:"tbsp",item:"honey"},
+    ],
+    steps:[
+      "Blend flour, eggs, milk, butter, sugar, and salt until smooth. Let batter rest 20 minutes.",
+      "Heat a non-stick pan over medium heat and lightly butter it. Pour ¼ cup batter, swirl immediately to coat. Cook 1–2 min until edges lift. Flip, cook 30 sec more.",
+      "Spread Nutella on each crepe, add banana slices.",
+      "Fold into quarters or roll up. Drizzle with honey and serve warm! 🍌"
+    ]
+  },
+  {
+    name:"Cinnamon Roll",emoji:"🌀",cat:"sweet",badge:"fav",
+    desc:"House-baked jumbo roll with cream cheese frosting. Still warm.",
+    ingredients:[
+      {qty:"3",unit:"cups",item:"all-purpose flour"},
+      {qty:"1",unit:"packet",item:"instant yeast (2¼ tsp)"},
+      {qty:"¼",unit:"cup",item:"granulated sugar"},
+      {qty:"¾",unit:"cup",item:"warm milk"},
+      {qty:"¼",unit:"cup",item:"melted butter"},
+      {qty:"1",unit:"",item:"egg"},
+      {qty:"⅓",unit:"cup",item:"brown sugar (filling)"},
+      {qty:"1½",unit:"tbsp",item:"ground cinnamon (filling)"},
+      {qty:"4",unit:"oz",item:"cream cheese, softened (frosting)"},
+      {qty:"1",unit:"cup",item:"powdered sugar (frosting)"},
+    ],
+    steps:[
+      "Mix flour, yeast, and sugar. Add warm milk, butter, and egg. Knead until smooth (~8 min). Let rise 1 hour until doubled.",
+      "Roll dough into a rectangle. Spread softened butter, then sprinkle brown sugar and cinnamon evenly.",
+      "Roll up tightly from the long side. Slice into 8–10 rolls. Place in a greased pan. Let rise 30 more minutes.",
+      "Bake at 375°F (190°C) for 20–25 minutes until golden. Beat cream cheese with powdered sugar for frosting.",
+      "Frost while still warm and eat immediately! 🌀"
+    ]
+  },
+  {
+    name:"Drip Coffee",emoji:"☕",cat:"drinks",badge:null,
+    desc:"Single-origin house blend. Smooth & bright. Unlimited refills.",
+    ingredients:[
+      {qty:"2",unit:"tbsp",item:"freshly ground coffee (medium grind)"},
+      {qty:"6",unit:"oz",item:"filtered water"},
+      {qty:"1",unit:"optional",item:"splash of milk or cream"},
+      {qty:"1",unit:"optional",item:"sugar or sweetener to taste"},
+    ],
+    steps:[
+      "Fill your coffee maker with fresh filtered water. Use 2 tablespoons of coffee per 6 oz water.",
+      "Place a fresh filter in the basket and add ground coffee.",
+      "Brew and enjoy. Add milk, cream, or sugar as you like.",
+      "Refills are on us — just ask! ☕"
+    ]
+  },
+  {
+    name:"Matcha Latte",emoji:"🍵",cat:"drinks",badge:"new",
+    desc:"Ceremonial matcha with oat milk, lightly sweetened.",
+    ingredients:[
+      {qty:"1",unit:"tsp",item:"ceremonial grade matcha powder"},
+      {qty:"2",unit:"oz",item:"hot water (175°F, not boiling)"},
+      {qty:"8",unit:"oz",item:"oat milk"},
+      {qty:"1",unit:"tsp",item:"honey or maple syrup"},
+    ],
+    steps:[
+      "Sift matcha powder into a mug. Add hot water (175°F — not boiling, it makes matcha bitter).",
+      "Whisk vigorously in a W-motion until frothy and smooth.",
+      "Heat oat milk and froth using a frother or by shaking in a jar.",
+      "Pour frothed milk over matcha. Stir in honey. Serve hot or over ice! 🍵"
+    ]
+  },
+  {
+    name:"Fresh OJ",emoji:"🍊",cat:"drinks",badge:null,
+    desc:"Freshly squeezed Valencia oranges every morning.",
+    ingredients:[
+      {qty:"4–5",unit:"large",item:"Valencia oranges"},
+      {qty:"1",unit:"optional",item:"pinch of salt (enhances flavor)"},
+      {qty:"1",unit:"optional",item:"sprig of mint (garnish)"},
+    ],
+    steps:[
+      "Roll oranges on the counter before cutting — this loosens the juice inside.",
+      "Cut in half and squeeze using a citrus juicer or press.",
+      "Strain through a fine mesh sieve if you prefer pulp-free.",
+      "Pour over ice, garnish with mint, and drink immediately while fresh! 🍊"
+    ]
+  },
+  {
+    name:"Sunrise Smoothie",emoji:"🥤",cat:"drinks",badge:"fav",
+    desc:"Mango, pineapple, banana & passion fruit.",
+    ingredients:[
+      {qty:"1",unit:"cup",item:"frozen mango chunks"},
+      {qty:"½",unit:"cup",item:"frozen pineapple"},
+      {qty:"1",unit:"",item:"ripe banana"},
+      {qty:"¼",unit:"cup",item:"passion fruit pulp"},
+      {qty:"½",unit:"cup",item:"orange juice"},
+      {qty:"¼",unit:"cup",item:"coconut water"},
+    ],
+    steps:[
+      "Add all ingredients to a blender.",
+      "Blend on high until completely smooth. Add more OJ or coconut water if too thick.",
+      "Taste and adjust — more mango for sweetness, more passion fruit for tang.",
+      "Pour into a chilled glass and serve immediately! 🌅"
+    ]
+  },
 ];
 
-const STORAGE_KEY_USER    = 'ssu_user';
-const STORAGE_KEY_ORDERS  = 'ssu_orders';
-const STORAGE_KEY_NAMES   = 'ssu_names';
-const STORAGE_KEY_MYCOUNTS = 'ssu_mycounts';
+/* ════ STORAGE ════ */
+async function sGet(k,s=true){try{const r=await window.storage.get(k,s);return r?JSON.parse(r.value):null;}catch{return null;}}
+async function sSet(k,v,s=true){try{await window.storage.set(k,JSON.stringify(v),s);return true;}catch{return false;}}
 
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-let currentUser = null;   // { name, id }
-let currentCat  = 'all';
+/* ════ STATE ════ */
+let currentUser=null, currentCat='all', cartCount=0;
+const MAX=5, SK_U='ssu_user2',SK_O='ssu_orders2',SK_N='ssu_names2',SK_C='ssu_counts2';
 
-/* ══════════════════════════════════════════
-   STORAGE HELPERS
-══════════════════════════════════════════ */
-async function storageGet(key, shared=true) {
-  try {
-    const r = await window.storage.get(key, shared);
-    return r ? JSON.parse(r.value) : null;
-  } catch { return null; }
-}
-
-async function storageSet(key, val, shared=true) {
-  try {
-    await window.storage.set(key, JSON.stringify(val), shared);
-    return true;
-  } catch { return false; }
-}
-
-/* ══════════════════════════════════════════
-   NAME REGISTRY  (shared — all users see it)
-══════════════════════════════════════════ */
-async function getNames() {
-  return (await storageGet(STORAGE_KEY_NAMES)) || {};
-}
-
-// Returns null if ok, or a suggested alternative if taken
-async function claimName(displayName, userId) {
-  const names = await getNames();
-  const norm   = displayName.trim().toLowerCase();
-
-  // Check if this userId already owns a name — remove old entry
-  for (const [n, uid] of Object.entries(names)) {
-    if (uid === userId) { delete names[n]; break; }
+/* ════ NAMES ════ */
+async function getNames(){return(await sGet(SK_N))||{};}
+async function claimName(name,uid){
+  const names=await getNames(),norm=name.trim().toLowerCase();
+  for(const[n,id]of Object.entries(names)){if(id===uid){delete names[n];break;}}
+  if(names[norm]&&names[norm]!==uid){
+    let v=null;
+    for(let i=2;i<100;i++){const t=`${name}${i}`.toLowerCase();if(!names[t]){v=`${name}${i}`;break;}}
+    return v||`${name}_${Date.now()}`;
   }
-
-  if (names[norm] && names[norm] !== userId) {
-    // Name taken → suggest variant
-    return suggestVariant(displayName, names);
-  }
-
-  names[norm] = userId;
-  await storageSet(STORAGE_KEY_NAMES, names);
-  return null; // success
+  names[norm]=uid;await sSet(SK_N,names);return null;
 }
+function getUID(){let id=localStorage.getItem('ssu_uid3');if(!id){id='u_'+Math.random().toString(36).slice(2,10);localStorage.setItem('ssu_uid3',id);}return id;}
+function saveUser(n,id){localStorage.setItem(SK_U,JSON.stringify({name:n,id}));}
+function loadUser(){try{const d=localStorage.getItem(SK_U);return d?JSON.parse(d):null;}catch{return null;}}
 
-function suggestVariant(name, names) {
-  for (let i = 2; i <= 99; i++) {
-    const v = `${name}${i}`.toLowerCase();
-    if (!names[v]) return `${name}${i}`;
-  }
-  return `${name}_${Date.now()}`;
+/* ════ JOIN ════ */
+async function joinAs(){
+  const inp=document.getElementById('name-input'),err=document.getElementById('name-error'),name=inp.value.trim();
+  if(!name||name.length<2){err.textContent='⚠️ At least 2 characters.';return;}
+  err.textContent='⏳ Checking…';
+  const uid=getUID(),conflict=await claimName(name,uid);
+  if(conflict){err.textContent=`😬 "${name}" is taken! Try "${conflict}"?`;inp.value=conflict;return;}
+  currentUser={name,id:uid};saveUser(name,uid);err.textContent='';showApp();
 }
+document.getElementById('name-input').addEventListener('keydown',e=>{if(e.key==='Enter')joinAs();});
 
-/* ══════════════════════════════════════════
-   USER PROFILE
-══════════════════════════════════════════ */
-function getUserId() {
-  let id = localStorage.getItem('ssu_userid');
-  if (!id) {
-    id = 'u_' + Math.random().toString(36).slice(2,10);
-    localStorage.setItem('ssu_userid', id);
-  }
-  return id;
-}
-
-function saveUserLocal(name, id) {
-  localStorage.setItem(STORAGE_KEY_USER, JSON.stringify({ name, id }));
-}
-
-function loadUserLocal() {
-  try {
-    const d = localStorage.getItem(STORAGE_KEY_USER);
-    return d ? JSON.parse(d) : null;
-  } catch { return null; }
-}
-
-/* ══════════════════════════════════════════
-   JOIN / WELCOME
-══════════════════════════════════════════ */
-async function joinAs() {
-  const input = document.getElementById('name-input');
-  const errEl = document.getElementById('name-error');
-  const name  = input.value.trim();
-
-  if (!name || name.length < 2) {
-    errEl.textContent = '⚠️ Please enter at least 2 characters.';
-    return;
-  }
-
-  errEl.textContent = '⏳ Checking availability…';
-
-  const userId   = getUserId();
-  const conflict = await claimName(name, userId);
-
-  if (conflict) {
-    errEl.textContent = `😬 "${name}" is taken! How about "${conflict}"?`;
-    input.value = conflict;
-    return;
-  }
-
-  currentUser = { name, id: userId };
-  saveUserLocal(name, userId);
-  errEl.textContent = '';
-  showApp();
-}
-
-document.getElementById('name-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') joinAs();
-});
-
-/* ══════════════════════════════════════════
-   SHOW APP
-══════════════════════════════════════════ */
-function showApp() {
+/* ════ SHOW APP ════ */
+function showApp(){
   document.getElementById('welcome-screen').classList.add('hide');
-  document.getElementById('main-header').style.display  = 'flex';
-  document.getElementById('tabs-bar').style.display     = 'flex';
-  document.getElementById('menu').style.display         = 'grid';
-  document.getElementById('main-footer').style.display  = 'block';
-
-  document.getElementById('hdr-name').textContent   = currentUser.name;
-  document.getElementById('hdr-avatar').textContent = currentUser.name[0].toUpperCase();
-
-  render(currentCat);
-  startPollingOrders();
+  document.getElementById('main-header').style.display='flex';
+  document.getElementById('tabs-bar').style.display='flex';
+  document.getElementById('menu').style.display='grid';
+  document.getElementById('main-footer').style.display='block';
+  document.getElementById('cart-bar-wrap').style.display='block';
+  document.getElementById('hdr-name').textContent=currentUser.name;
+  document.getElementById('hdr-avatar').textContent=currentUser.name[0].toUpperCase();
+  cartCount=getCartTotal();updateCartUI();render(currentCat);startPolling();
 }
 
-/* ══════════════════════════════════════════
-   RENDER MENU
-══════════════════════════════════════════ */
-function badgeHTML(badge) {
-  if (!badge) return '';
-  const map = { fav:'⭐ Fan Fave', new:'✨ New', healthy:'🌿 Healthy' };
-  return `<span class="badge badge-${badge}">${map[badge]}</span>`;
+/* ════ CART ════ */
+function getCounts(){try{return JSON.parse(localStorage.getItem(SK_C)||'{}');}catch{return{};}}
+function saveCounts(c){localStorage.setItem(SK_C,JSON.stringify(c));}
+function getCartTotal(){return Object.values(getCounts()).reduce((a,v)=>a+v,0);}
+function updateCartUI(){
+  document.getElementById('hdr-cart').textContent=cartCount;
+  const fill=document.getElementById('cart-bar-fill'),text=document.getElementById('cart-bar-text'),em=document.getElementById('cart-bar-emoji');
+  fill.style.width=(cartCount/MAX*100)+'%';
+  fill.className='cart-bar-fill'+(cartCount>=MAX?' full':'');
+  text.textContent=cartCount>=MAX?'🚫 Max 5 items reached!':cartCount+' / '+MAX+' items selected';
+  em.textContent=cartCount>=MAX?'🔥':cartCount>0?'🛒':'🛒';
 }
 
-function render(cat) {
-  const menu = document.getElementById('menu');
-  const list = cat === 'all' ? ITEMS : ITEMS.filter(i => i.cat === cat);
-  const myCounts = getMyCounts();
+/* ════ RENDER ════ */
+function iKey(item){return item.name.replace(/\s+/g,'_').toLowerCase();}
+function badgeHTML(b){if(!b)return'';const m={fav:'⭐ Fan Fave',new:'✨ New',healthy:'🌿 Healthy'};return`<span class="badge badge-${b}">${m[b]}</span>`;}
 
-  menu.innerHTML = list.map((item, idx) => {
-    const key = itemKey(item);
-    const cnt = myCounts[key] || 0;
-    const x3  = cnt >= 3 ? `<span class="x3-badge">${cnt}x 🔥</span>` : '';
-    return `
-    <div class="card cat-${item.cat}" style="animation-delay:${idx*0.04}s">
-      <div class="card-stripe"></div>
+function render(cat){
+  const menu=document.getElementById('menu'),list=cat==='all'?ITEMS:ITEMS.filter(i=>i.cat===cat),counts=getCounts(),full=cartCount>=MAX;
+  menu.innerHTML=list.map((item,idx)=>{
+    const key=iKey(item),cnt=counts[key]||0,x3=cnt>=3?`<span class="x3-badge">${cnt}x 🔥</span>`:'',dis=(full&&cnt===0)?'disabled':'';
+    return`<div class="card cat-${item.cat}" style="animation-delay:${idx*0.04}s">
       <span class="card-emoji">${item.emoji}</span>
       <div class="card-name">${item.name}</div>
       <div class="card-desc">${item.desc}</div>
-      <div class="card-footer">
-        <span class="card-price">${item.price}</span>
-        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
-          ${badgeHTML(item.badge)}
-          <button class="order-btn" onclick="placeOrder('${key}')">
-            ORDER 🛎
-            ${x3}
-          </button>
+      <div class="card-actions">
+        ${badgeHTML(item.badge)}
+        <div class="btn-row">
+          <button class="recipe-btn" onclick="openRecipe('${key}')">📖 Recipe</button>
+          <button class="order-btn" onclick="placeOrder('${key}')" ${dis}>ORDER 🛎${x3}</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-/* ══════════════════════════════════════════
-   ORDER SYSTEM
-══════════════════════════════════════════ */
-function itemKey(item) {
-  return item.name.replace(/\s+/g,'_').toLowerCase();
+/* ════ ORDER ════ */
+async function placeOrder(key){
+  if(!currentUser)return;
+  if(cartCount>=MAX){showToast({sys:true,emoji:'🚫',item:'Cart full! Max 5 items.'});return;}
+  const item=ITEMS.find(i=>iKey(i)===key);if(!item)return;
+  const counts=getCounts();counts[key]=(counts[key]||0)+1;saveCounts(counts);
+  cartCount++;updateCartUI();
+  const count=counts[key],orders=(await sGet(SK_O))||[];
+  orders.unshift({id:Date.now(),who:currentUser.name,emoji:item.emoji,item:item.name,count,ts:Date.now()});
+  if(orders.length>80)orders.length=80;
+  await sSet(SK_O,orders);
+  showToast({who:currentUser.name,emoji:item.emoji,item:item.name,count});
+  updatePanel(orders);showNotifDot();render(currentCat);
 }
 
-function getMyCounts() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY_MYCOUNTS) || '{}');
-  } catch { return {}; }
+/* ════ POLLING ════ */
+let lastSeen=0;
+async function startPolling(){
+  const orders=(await sGet(SK_O))||[];
+  if(orders.length)lastSeen=orders[0].id;
+  updatePanel(orders);
+  setInterval(async()=>{
+    const orders=(await sGet(SK_O))||[];if(!orders.length)return;
+    const newOnes=orders.filter(o=>o.id>lastSeen&&o.who!==currentUser?.name);
+    newOnes.reverse().forEach(o=>showToast(o));
+    if(newOnes.length)showNotifDot();
+    if(orders[0].id>lastSeen)lastSeen=orders[0].id;
+    updatePanel(orders);
+  },3000);
 }
 
-function saveMyCounts(c) {
-  localStorage.setItem(STORAGE_KEY_MYCOUNTS, JSON.stringify(c));
-}
-
-async function placeOrder(key) {
-  if (!currentUser) return;
-
-  const item = ITEMS.find(i => itemKey(i) === key);
-  if (!item) return;
-
-  // Update personal count
-  const myCounts = getMyCounts();
-  myCounts[key] = (myCounts[key] || 0) + 1;
-  saveMyCounts(myCounts);
-
-  const count = myCounts[key];
-
-  // Push to shared order log
-  const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
-  orders.unshift({
-    id:    Date.now(),
-    who:   currentUser.name,
-    emoji: item.emoji,
-    item:  item.name,
-    count,
-    ts:    Date.now(),
-  });
-  if (orders.length > 50) orders.length = 50;
-  await storageSet(STORAGE_KEY_ORDERS, orders);
-
-  // Immediately show toast for this user
-  showToast({ who: currentUser.name, emoji: item.emoji, item: item.name, count, id: Date.now() });
-  updateOrderLog(orders);
-  render(currentCat);
-}
-
-/* ══════════════════════════════════════════
-   POLLING — live order feed
-══════════════════════════════════════════ */
-let lastSeenOrderId = 0;
-
-async function startPollingOrders() {
-  // Load initial
-  const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
-  if (orders.length) lastSeenOrderId = orders[0].id;
-  updateOrderLog(orders);
-
-  setInterval(async () => {
-    const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
-    if (!orders.length) return;
-
-    // Show toasts for new orders from OTHER users
-    const newOnes = orders.filter(o => o.id > lastSeenOrderId && o.who !== currentUser?.name);
-    newOnes.reverse().forEach(o => showToast(o));
-    if (orders[0].id > lastSeenOrderId) lastSeenOrderId = orders[0].id;
-
-    updateOrderLog(orders);
-  }, 3000);
-}
-
-/* ══════════════════════════════════════════
-   TOASTS
-══════════════════════════════════════════ */
-function showToast({ who, emoji, item, count, id }) {
-  const feed = document.getElementById('notif-feed');
-  const x3txt = count >= 3 ? ` <span class="notif-x3">${count}x 🔥</span>` : '';
-  const el = document.createElement('div');
-  el.className = 'notif-toast';
-  el.innerHTML = `${emoji} <span class="notif-name">${who}</span> wants ${item}!${x3txt}`;
+/* ════ TOASTS ════ */
+function showToast({who,emoji,item,count,sys}){
+  const feed=document.getElementById('notif-feed'),x3=(!sys&&count>=3)?` <span class="notif-x3">${count}x 🔥</span>`:'',el=document.createElement('div');
+  el.className='notif-toast';
+  el.innerHTML=sys?`${emoji} ${item}`:`${emoji} <span class="notif-name">${who}</span> wants ${item}!${x3}`;
   feed.appendChild(el);
-
-  setTimeout(() => {
-    el.classList.add('fade-out');
-    setTimeout(() => el.remove(), 400);
-  }, 4000);
+  setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),400);},4500);
 }
 
-/* ══════════════════════════════════════════
-   ORDER LOG (sidebar)
-══════════════════════════════════════════ */
-function timeAgo(ts) {
-  const s = Math.floor((Date.now() - ts) / 1000);
-  if (s < 60)  return 'just now';
-  if (s < 3600) return Math.floor(s/60) + 'm ago';
-  return Math.floor(s/3600) + 'h ago';
-}
+/* ════ NOTIF PANEL ════ */
+function showNotifDot(){document.getElementById('notif-dot').classList.add('show');}
+function openNotifPanel(){document.getElementById('notif-panel').classList.add('open');document.getElementById('panel-overlay').classList.add('open');document.getElementById('notif-dot').classList.remove('show');}
+function closeNotifPanel(){document.getElementById('notif-panel').classList.remove('open');document.getElementById('panel-overlay').classList.remove('open');}
 
-function updateOrderLog(orders) {
-  const log = document.getElementById('order-log');
-  log.innerHTML = orders.slice(0, 12).map(o => {
-    const x3 = o.count >= 3 ? ` <span class="log-x3">${o.count}x 🔥</span>` : '';
-    return `
-      <div class="log-entry">
-        ${o.emoji} <span class="log-who">${o.who}</span>
-        <span class="log-item"> wants ${o.item}</span>${x3}
-        <div class="log-time">${timeAgo(o.ts)}</div>
-      </div>`;
+function timeAgo(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';return Math.floor(s/3600)+'h ago';}
+
+function updatePanel(orders){
+  const el=document.getElementById('panel-orders');
+  if(!orders.length){el.innerHTML='<div class="panel-empty">No orders yet — be the first! 🍳</div>';return;}
+  el.innerHTML=orders.map(o=>{
+    const x3=o.count>=3?` <span class="pe-x3">${o.count}x 🔥</span>`:'';
+    return`<div class="panel-entry"><div class="pe-top">${o.emoji} <span class="pe-who">${o.who}</span> <span class="pe-item">wants ${o.item}${x3}</span></div><div class="pe-time">${timeAgo(o.ts)}</div></div>`;
   }).join('');
 }
 
-/* ══════════════════════════════════════════
-   CHANGE NAME MODAL
-══════════════════════════════════════════ */
-function openModal() {
-  const modal = document.getElementById('name-modal');
-  document.getElementById('modal-name-input').value = currentUser?.name || '';
-  document.getElementById('modal-error').textContent = '';
-  modal.classList.add('open');
+/* ════ RECIPE MODAL ════ */
+function openRecipe(key){
+  const item=ITEMS.find(i=>iKey(i)===key);if(!item)return;
+  const box=document.getElementById('recipe-box-inner');
+  const ings=item.ingredients.map((ing,i)=>`<li><div class="ing-checkbox" id="ic-${key}-${i}" onclick="this.classList.toggle('checked')"></div><span><span class="ing-key">${ing.qty} ${ing.unit}</span> ${ing.item}</span></li>`).join('');
+  const steps=item.steps.map((s,i)=>`<li><div class="step-num">${i+1}</div><span>${s}</span></li>`).join('');
+  box.innerHTML=`<div class="recipe-box-header"><div><div class="recipe-emoji-big">${item.emoji}</div></div><div style="flex:1;margin-left:1rem"><h2>${item.name}</h2><div class="recipe-sub">Full Recipe · Make it yourself! 👨‍🍳</div></div><button class="modal-close-btn" onclick="closeRecipe()">✕</button></div><div class="recipe-section-title">🛒 Ingredients</div><ul class="recipe-ingredient-list">${ings}</ul><div class="recipe-section-title">👨‍🍳 Instructions</div><ol class="recipe-step-list">${steps}</ol>`;
+  document.getElementById('recipe-modal').classList.add('open');
+}
+function closeRecipe(){document.getElementById('recipe-modal').classList.remove('open');}
+document.getElementById('recipe-modal').addEventListener('click',e=>{if(e.target===document.getElementById('recipe-modal'))closeRecipe();});
+
+/* ════ NAME MODAL ════ */
+function openNameModal(){
+  document.getElementById('modal-name-input').value=currentUser?.name||'';
+  document.getElementById('modal-error').textContent='';
+  document.getElementById('name-modal').classList.add('open');
   document.getElementById('modal-name-input').focus();
 }
-
-function closeModal() {
-  document.getElementById('name-modal').classList.remove('open');
+function closeNameModal(){document.getElementById('name-modal').classList.remove('open');}
+async function confirmNameChange(){
+  const inp=document.getElementById('modal-name-input'),err=document.getElementById('modal-error'),name=inp.value.trim();
+  if(!name||name.length<2){err.textContent='⚠️ At least 2 characters.';return;}
+  if(name===currentUser.name){closeNameModal();return;}
+  err.textContent='⏳ Checking…';
+  const conflict=await claimName(name,currentUser.id);
+  if(conflict){err.textContent=`😬 "${name}" is taken! Try "${conflict}".`;inp.value=conflict;return;}
+  currentUser.name=name;saveUser(name,currentUser.id);
+  document.getElementById('hdr-name').textContent=name;
+  document.getElementById('hdr-avatar').textContent=name[0].toUpperCase();
+  closeNameModal();
 }
+document.getElementById('modal-name-input').addEventListener('keydown',e=>{if(e.key==='Enter')confirmNameChange();if(e.key==='Escape')closeNameModal();});
+document.getElementById('name-modal').addEventListener('click',e=>{if(e.target===document.getElementById('name-modal'))closeNameModal();});
 
-async function confirmNameChange() {
-  const input = document.getElementById('modal-name-input');
-  const errEl = document.getElementById('modal-error');
-  const name  = input.value.trim();
-
-  if (!name || name.length < 2) {
-    errEl.textContent = '⚠️ At least 2 characters please.';
-    return;
-  }
-
-  if (name === currentUser.name) { closeModal(); return; }
-
-  errEl.textContent = '⏳ Checking…';
-
-  const conflict = await claimName(name, currentUser.id);
-  if (conflict) {
-    errEl.textContent = `😬 "${name}" is taken! Try "${conflict}".`;
-    input.value = conflict;
-    return;
-  }
-
-  currentUser.name = name;
-  saveUserLocal(name, currentUser.id);
-  document.getElementById('hdr-name').textContent   = name;
-  document.getElementById('hdr-avatar').textContent = name[0].toUpperCase();
-  closeModal();
-}
-
-document.getElementById('modal-name-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') confirmNameChange();
-  if (e.key === 'Escape') closeModal();
-});
-
-document.getElementById('name-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('name-modal')) closeModal();
-});
-
-/* ══════════════════════════════════════════
-   TABS
-══════════════════════════════════════════ */
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentCat = btn.dataset.cat;
-    render(currentCat);
+/* ════ TABS ════ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');currentCat=btn.dataset.cat;render(currentCat);
   });
 });
 
-/* ══════════════════════════════════════════
-   AUTO-LOGIN ON RETURN
-══════════════════════════════════════════ */
-(async () => {
-  const saved = loadUserLocal();
-  if (saved) {
-    // Re-claim name silently (in case registry was reset)
-    await claimName(saved.name, saved.id);
-    currentUser = saved;
-    showApp();
-  }
+/* ════ AUTO-LOGIN ════ */
+(async()=>{
+  const saved=loadUser();
+  if(saved){await claimName(saved.name,saved.id);currentUser=saved;showApp();}
 })();
 </script>
 </body>
