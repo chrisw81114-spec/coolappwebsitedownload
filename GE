@@ -1,1 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GE Breakfast Menu 🍳</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --sun: #FFD93D;
+      --orange: #FF6B35;
+      --pink: #FF9EBC;
+      --green: #6BCB77;
+      --blue: #4D96FF;
+      --red: #FF4757;
+      --cream: #FFF8EC;
+      --dark: #1E1E2E;
+      --card-bg: #FFFFFF;
+    }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── WELCOME SCREEN ── */
+    #welcome-screen {
+      position: fixed; inset: 0;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 2rem;
+      transition: opacity 0.5s, transform 0.5s;
+    }
+
+    #welcome-screen.hide {
+      opacity: 0;
+      transform: scale(1.05);
+      pointer-events: none;
+    }
+
+    .welcome-egg {
+      font-size: 6rem;
+      animation: wobble 2s infinite;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes wobble {
+      0%,100% { transform: rotate(-5deg) scale(1); }
+      50%      { transform: rotate(5deg) scale(1.08); }
+    }
+
+    .welcome-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: var(--sun);
+      text-align: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .welcome-sub {
+      color: #aaa;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .welcome-box {
+      background: #2a2a3e;
+      border: 3px solid #3a3a55;
+      border-radius: 24px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .welcome-box label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--sun);
+      margin-bottom: 0.75rem;
+    }
+
+    .name-input-wrap {
+      position: relative;
+    }
+
+    .name-input-wrap input {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+      border: 3px solid #3a3a55;
+      background: #1a1a2e;
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .name-input-wrap input:focus {
+      border-color: var(--sun);
+    }
+
+    .name-input-wrap input::placeholder { color: #555; }
+
+    #name-error {
+      color: var(--pink);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+
+    .join-btn {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 1rem;
+      border-radius: 14px;
+      border: none;
+      background: var(--sun);
+      color: var(--dark);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 0 #c9a800;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #c9a800;
+    }
+
+    .join-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #c9a800;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--dark);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .header-logo {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.6rem;
+      color: var(--sun);
+    }
+
+    .header-logo span { color: white; font-size: 1.1rem; }
+
+    .user-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #2a2a3e;
+      border: 2px solid #3a3a55;
+      border-radius: 50px;
+      padding: 0.4rem 1rem 0.4rem 0.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .user-pill:hover { border-color: var(--sun); }
+
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--sun);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      color: var(--dark);
+    }
+
+    .user-name-display {
+      color: white;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .change-name-hint {
+      color: #666;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* ── NOTIFICATION FEED ── */
+    #notif-feed {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+      align-items: center;
+      pointer-events: none;
+      width: min(500px, 90vw);
+    }
+
+    .notif-toast {
+      background: var(--dark);
+      border: 2.5px solid var(--sun);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      animation: toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .notif-toast.fade-out {
+      animation: toastOut 0.4s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(-10px) scale(0.95); }
+    }
+
+    .notif-toast .notif-name { color: var(--sun); }
+    .notif-toast .notif-x3 {
+      color: var(--pink);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      padding: 2rem 1rem 1rem;
+    }
+
+    .tab-btn {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      padding: 0.55rem 1.35rem;
+      border-radius: 50px;
+      border: 2.5px solid var(--dark);
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 3px 3px 0 var(--dark);
+    }
+
+    .tab-btn:hover, .tab-btn.active {
+      transform: translate(-2px,-2px);
+      box-shadow: 5px 5px 0 var(--dark);
+    }
+
+    .tab-btn[data-cat="all"].active     { background: var(--sun); }
+    .tab-btn[data-cat="classics"].active { background: var(--orange); color: white; }
+    .tab-btn[data-cat="healthy"].active  { background: var(--green); }
+    .tab-btn[data-cat="sweet"].active    { background: var(--pink); }
+    .tab-btn[data-cat="drinks"].active   { background: var(--blue); color: white; }
+
+    /* ── MENU GRID ── */
+    .menu {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 8rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 3px solid var(--dark);
+      border-radius: 22px;
+      padding: 1.5rem;
+      box-shadow: 5px 5px 0 var(--dark);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: popIn 0.4s ease both;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.88) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .card:hover {
+      transform: translate(-3px,-3px);
+      box-shadow: 8px 8px 0 var(--dark);
+    }
+
+    .card-stripe {
+      position: absolute;
+      top: 0; right: 0;
+      width: 8px; height: 100%;
+      border-radius: 0 19px 19px 0;
+    }
+
+    .cat-classics .card-stripe { background: var(--orange); }
+    .cat-healthy  .card-stripe { background: var(--green); }
+    .cat-sweet    .card-stripe { background: var(--pink); }
+    .cat-drinks   .card-stripe { background: var(--blue); }
+
+    .card-emoji { font-size: 2.75rem; margin-bottom: 0.6rem; display: block; }
+
+    .card-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.25rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: #777;
+      font-weight: 600;
+      line-height: 1.5;
+      flex-grow: 1;
+      margin-bottom: 1rem;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .card-price {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.4rem;
+      color: var(--orange);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0.25rem 0.65rem;
+      border-radius: 50px;
+      border: 2px solid var(--dark);
+    }
+
+    .badge-fav     { background: var(--pink); }
+    .badge-new     { background: var(--sun); }
+    .badge-healthy { background: var(--green); }
+
+    .order-btn {
+      padding: 0.6rem 1.25rem;
+      border-radius: 50px;
+      border: 2.5px solid var(--dark);
+      background: var(--sun);
+      color: var(--dark);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 3px 3px 0 var(--dark);
+      position: relative;
+    }
+
+    .order-btn:hover {
+      transform: translate(-2px,-2px);
+      box-shadow: 5px 5px 0 var(--dark);
+    }
+
+    .order-btn:active {
+      transform: translate(1px,1px);
+      box-shadow: 2px 2px 0 var(--dark);
+    }
+
+    .order-btn .x3-badge {
+      position: absolute;
+      top: -10px; right: -10px;
+      background: var(--red);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 50px;
+      border: 2px solid white;
+      white-space: nowrap;
+      animation: popIn 0.3s ease;
+    }
+
+    /* ── ORDER LOG ── */
+    #order-log {
+      position: fixed;
+      top: 70px; right: 1rem;
+      width: 280px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      scrollbar-width: none;
+    }
+
+    #order-log::-webkit-scrollbar { display: none; }
+
+    .log-entry {
+      background: var(--dark);
+      color: white;
+      border-radius: 14px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-left: 4px solid var(--sun);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .log-entry .log-who { color: var(--sun); }
+    .log-entry .log-item { color: #ddd; }
+    .log-entry .log-time { color: #666; font-size: 0.72rem; font-weight: 600; }
+    .log-entry .log-x3   { color: var(--pink); font-family: 'Fredoka One', cursive; }
+
+    @media (max-width: 768px) {
+      #order-log { display: none; }
+    }
+
+    /* ── CHANGE NAME MODAL ── */
+    #name-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    #name-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-box {
+      background: var(--dark);
+      border: 3px solid var(--sun);
+      border-radius: 24px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .modal-box h2 {
+      font-family: 'Fredoka One', cursive;
+      color: var(--sun);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 2.5px solid #3a3a55;
+      background: #1a1a2e;
+      color: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      outline: none;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-box input:focus { border-color: var(--sun); }
+
+    #modal-error {
+      color: var(--pink);
+      font-size: 0.82rem;
+      font-weight: 700;
+      min-height: 1.2em;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .modal-actions button:hover { transform: scale(1.03); }
+
+    .btn-confirm { background: var(--sun); color: var(--dark); }
+    .btn-cancel  { background: #2a2a3e; color: white; border: 2px solid #3a3a55 !important; }
+
+    footer {
+      text-align: center;
+      background: var(--dark);
+      color: #555;
+      padding: 1.25rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    footer span { color: var(--sun); }
+  </style>
+</head>
+<body>
+
+<!-- WELCOME SCREEN -->
+<div id="welcome-screen">
+  <span class="welcome-egg">🍳</span>
+  <h1 class="welcome-title">GE Breakfast Menu</h1>
+  <p class="welcome-sub">The breakfast spot for everyone</p>
+  <div class="welcome-box">
+    <label for="name-input">What's your name?</label>
+    <div class="name-input-wrap">
+      <input id="name-input" type="text" maxlength="24" placeholder="e.g. Tim, Sarah, Chef Bob…" autocomplete="off"/>
+    </div>
+    <div id="name-error"></div>
+    <button class="join-btn" onclick="joinAs()">Let's Eat! 🍽</button>
+  </div>
+</div>
+
+<!-- CHANGE NAME MODAL -->
+<div id="name-modal">
+  <div class="modal-box">
+    <h2>✏️ Change Your Name</h2>
+    <input id="modal-name-input" type="text" maxlength="24" placeholder="New name…" autocomplete="off"/>
+    <div id="modal-error"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmNameChange()">Save ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="main-header" style="display:none">
+  <div class="header-logo">🍳 GE Breakfast Menu</div>
+  <div class="user-pill" onclick="openModal()" title="Click to change name">
+    <div class="user-avatar" id="hdr-avatar">?</div>
+    <div>
+      <div class="user-name-display" id="hdr-name">—</div>
+      <div class="change-name-hint">tap to change name</div>
+    </div>
+  </div>
+</header>
+
+<!-- NOTIFICATION TOASTS -->
+<div id="notif-feed"></div>
+
+<!-- ORDER LOG (desktop sidebar) -->
+<div id="order-log"></div>
+
+<!-- TABS -->
+<div class="tabs" id="tabs-bar" style="display:none">
+  <button class="tab-btn active" data-cat="all">🍽 All</button>
+  <button class="tab-btn" data-cat="classics">🥞 Classics</button>
+  <button class="tab-btn" data-cat="healthy">🥗 Healthy</button>
+  <button class="tab-btn" data-cat="sweet">🧇 Sweet</button>
+  <button class="tab-btn" data-cat="drinks">☕ Drinks</button>
+</div>
+
+<!-- MENU -->
+<div class="menu" id="menu" style="display:none"></div>
+
+<footer id="main-footer" style="display:none">
+  Open 7am – 3pm Daily · GE Breakfast Menu · Made with <span>☀️</span> & butter
+</footer>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const ITEMS = [
+  { name:"Classic Eggs Benedict", emoji:"🍳", desc:"Poached eggs, Canadian bacon, hollandaise on English muffin.", price:"$14", cat:"classics", badge:"fav" },
+  { name:"Buttermilk Pancakes",   emoji:"🥞", desc:"Fluffy stack of three with maple syrup & powdered sugar.",        price:"$11", cat:"classics", badge:null },
+  { name:"The Big Breakfast",     emoji:"🍽", desc:"Two eggs any style, bacon, sausage, hash browns & toast.",        price:"$16", cat:"classics", badge:"fav" },
+  { name:"Denver Omelette",       emoji:"🫕", desc:"Bell peppers, ham, onions & melted cheddar.",                     price:"$13", cat:"classics", badge:null },
+  { name:"Avocado Toast",         emoji:"🥑", desc:"Smashed avo on sourdough with cherry tomatoes & chili flakes.",  price:"$12", cat:"healthy",  badge:"new" },
+  { name:"Acai Smoothie Bowl",    emoji:"🫐", desc:"Thick acai blend with granola, banana & fresh berries.",         price:"$13", cat:"healthy",  badge:"healthy" },
+  { name:"Egg White Veggie Wrap", emoji:"🌯", desc:"Egg whites, spinach, roasted peppers & hummus in a wheat wrap.", price:"$11", cat:"healthy",  badge:"healthy" },
+  { name:"Overnight Oats",        emoji:"🌾", desc:"Chia oats with almond milk, topped with fruit & nuts.",          price:"$9",  cat:"healthy",  badge:null },
+  { name:"Belgian Waffles",       emoji:"🧇", desc:"Crispy waffles with strawberries & whipped cream.",              price:"$13", cat:"sweet",    badge:"fav" },
+  { name:"French Toast",          emoji:"🍞", desc:"Brioche dipped in vanilla custard, dusted with cinnamon sugar.", price:"$12", cat:"sweet",    badge:null },
+  { name:"Nutella Crepes",        emoji:"🫔", desc:"Thin crepes filled with Nutella, banana & honey.",               price:"$11", cat:"sweet",    badge:"new" },
+  { name:"Cinnamon Roll",         emoji:"🌀", desc:"House-baked jumbo roll with cream cheese frosting. Still warm.", price:"$6",  cat:"sweet",    badge:"fav" },
+  { name:"Drip Coffee",           emoji:"☕", desc:"Single-origin house blend. Unlimited refills.",                  price:"$4",  cat:"drinks",   badge:null },
+  { name:"Matcha Latte",          emoji:"🍵", desc:"Ceremonial matcha with oat milk, lightly sweetened.",            price:"$6",  cat:"drinks",   badge:"new" },
+  { name:"Fresh OJ",              emoji:"🍊", desc:"Freshly squeezed Valencia oranges every morning.",              price:"$5",  cat:"drinks",   badge:null },
+  { name:"Sunrise Smoothie",      emoji:"🥤", desc:"Mango, pineapple, banana & passion fruit.",                     price:"$7",  cat:"drinks",   badge:"fav" },
+];
+
+const STORAGE_KEY_USER    = 'ssu_user';
+const STORAGE_KEY_ORDERS  = 'ssu_orders';
+const STORAGE_KEY_NAMES   = 'ssu_names';
+const STORAGE_KEY_MYCOUNTS = 'ssu_mycounts';
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let currentUser = null;   // { name, id }
+let currentCat  = 'all';
+
+/* ══════════════════════════════════════════
+   STORAGE HELPERS
+══════════════════════════════════════════ */
+async function storageGet(key, shared=true) {
+  try {
+    const r = await window.storage.get(key, shared);
+    return r ? JSON.parse(r.value) : null;
+  } catch { return null; }
+}
+
+async function storageSet(key, val, shared=true) {
+  try {
+    await window.storage.set(key, JSON.stringify(val), shared);
+    return true;
+  } catch { return false; }
+}
+
+/* ══════════════════════════════════════════
+   NAME REGISTRY  (shared — all users see it)
+══════════════════════════════════════════ */
+async function getNames() {
+  return (await storageGet(STORAGE_KEY_NAMES)) || {};
+}
+
+// Returns null if ok, or a suggested alternative if taken
+async function claimName(displayName, userId) {
+  const names = await getNames();
+  const norm   = displayName.trim().toLowerCase();
+
+  // Check if this userId already owns a name — remove old entry
+  for (const [n, uid] of Object.entries(names)) {
+    if (uid === userId) { delete names[n]; break; }
+  }
+
+  if (names[norm] && names[norm] !== userId) {
+    // Name taken → suggest variant
+    return suggestVariant(displayName, names);
+  }
+
+  names[norm] = userId;
+  await storageSet(STORAGE_KEY_NAMES, names);
+  return null; // success
+}
+
+function suggestVariant(name, names) {
+  for (let i = 2; i <= 99; i++) {
+    const v = `${name}${i}`.toLowerCase();
+    if (!names[v]) return `${name}${i}`;
+  }
+  return `${name}_${Date.now()}`;
+}
+
+/* ══════════════════════════════════════════
+   USER PROFILE
+══════════════════════════════════════════ */
+function getUserId() {
+  let id = localStorage.getItem('ssu_userid');
+  if (!id) {
+    id = 'u_' + Math.random().toString(36).slice(2,10);
+    localStorage.setItem('ssu_userid', id);
+  }
+  return id;
+}
+
+function saveUserLocal(name, id) {
+  localStorage.setItem(STORAGE_KEY_USER, JSON.stringify({ name, id }));
+}
+
+function loadUserLocal() {
+  try {
+    const d = localStorage.getItem(STORAGE_KEY_USER);
+    return d ? JSON.parse(d) : null;
+  } catch { return null; }
+}
+
+/* ══════════════════════════════════════════
+   JOIN / WELCOME
+══════════════════════════════════════════ */
+async function joinAs() {
+  const input = document.getElementById('name-input');
+  const errEl = document.getElementById('name-error');
+  const name  = input.value.trim();
+
+  if (!name || name.length < 2) {
+    errEl.textContent = '⚠️ Please enter at least 2 characters.';
+    return;
+  }
+
+  errEl.textContent = '⏳ Checking availability…';
+
+  const userId   = getUserId();
+  const conflict = await claimName(name, userId);
+
+  if (conflict) {
+    errEl.textContent = `😬 "${name}" is taken! How about "${conflict}"?`;
+    input.value = conflict;
+    return;
+  }
+
+  currentUser = { name, id: userId };
+  saveUserLocal(name, userId);
+  errEl.textContent = '';
+  showApp();
+}
+
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') joinAs();
+});
+
+/* ══════════════════════════════════════════
+   SHOW APP
+══════════════════════════════════════════ */
+function showApp() {
+  document.getElementById('welcome-screen').classList.add('hide');
+  document.getElementById('main-header').style.display  = 'flex';
+  document.getElementById('tabs-bar').style.display     = 'flex';
+  document.getElementById('menu').style.display         = 'grid';
+  document.getElementById('main-footer').style.display  = 'block';
+
+  document.getElementById('hdr-name').textContent   = currentUser.name;
+  document.getElementById('hdr-avatar').textContent = currentUser.name[0].toUpperCase();
+
+  render(currentCat);
+  startPollingOrders();
+}
+
+/* ══════════════════════════════════════════
+   RENDER MENU
+══════════════════════════════════════════ */
+function badgeHTML(badge) {
+  if (!badge) return '';
+  const map = { fav:'⭐ Fan Fave', new:'✨ New', healthy:'🌿 Healthy' };
+  return `<span class="badge badge-${badge}">${map[badge]}</span>`;
+}
+
+function render(cat) {
+  const menu = document.getElementById('menu');
+  const list = cat === 'all' ? ITEMS : ITEMS.filter(i => i.cat === cat);
+  const myCounts = getMyCounts();
+
+  menu.innerHTML = list.map((item, idx) => {
+    const key = itemKey(item);
+    const cnt = myCounts[key] || 0;
+    const x3  = cnt >= 3 ? `<span class="x3-badge">${cnt}x 🔥</span>` : '';
+    return `
+    <div class="card cat-${item.cat}" style="animation-delay:${idx*0.04}s">
+      <div class="card-stripe"></div>
+      <span class="card-emoji">${item.emoji}</span>
+      <div class="card-name">${item.name}</div>
+      <div class="card-desc">${item.desc}</div>
+      <div class="card-footer">
+        <span class="card-price">${item.price}</span>
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+          ${badgeHTML(item.badge)}
+          <button class="order-btn" onclick="placeOrder('${key}')">
+            ORDER 🛎
+            ${x3}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   ORDER SYSTEM
+══════════════════════════════════════════ */
+function itemKey(item) {
+  return item.name.replace(/\s+/g,'_').toLowerCase();
+}
+
+function getMyCounts() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY_MYCOUNTS) || '{}');
+  } catch { return {}; }
+}
+
+function saveMyCounts(c) {
+  localStorage.setItem(STORAGE_KEY_MYCOUNTS, JSON.stringify(c));
+}
+
+async function placeOrder(key) {
+  if (!currentUser) return;
+
+  const item = ITEMS.find(i => itemKey(i) === key);
+  if (!item) return;
+
+  // Update personal count
+  const myCounts = getMyCounts();
+  myCounts[key] = (myCounts[key] || 0) + 1;
+  saveMyCounts(myCounts);
+
+  const count = myCounts[key];
+
+  // Push to shared order log
+  const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
+  orders.unshift({
+    id:    Date.now(),
+    who:   currentUser.name,
+    emoji: item.emoji,
+    item:  item.name,
+    count,
+    ts:    Date.now(),
+  });
+  if (orders.length > 50) orders.length = 50;
+  await storageSet(STORAGE_KEY_ORDERS, orders);
+
+  // Immediately show toast for this user
+  showToast({ who: currentUser.name, emoji: item.emoji, item: item.name, count, id: Date.now() });
+  updateOrderLog(orders);
+  render(currentCat);
+}
+
+/* ══════════════════════════════════════════
+   POLLING — live order feed
+══════════════════════════════════════════ */
+let lastSeenOrderId = 0;
+
+async function startPollingOrders() {
+  // Load initial
+  const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
+  if (orders.length) lastSeenOrderId = orders[0].id;
+  updateOrderLog(orders);
+
+  setInterval(async () => {
+    const orders = (await storageGet(STORAGE_KEY_ORDERS)) || [];
+    if (!orders.length) return;
+
+    // Show toasts for new orders from OTHER users
+    const newOnes = orders.filter(o => o.id > lastSeenOrderId && o.who !== currentUser?.name);
+    newOnes.reverse().forEach(o => showToast(o));
+    if (orders[0].id > lastSeenOrderId) lastSeenOrderId = orders[0].id;
+
+    updateOrderLog(orders);
+  }, 3000);
+}
+
+/* ══════════════════════════════════════════
+   TOASTS
+══════════════════════════════════════════ */
+function showToast({ who, emoji, item, count, id }) {
+  const feed = document.getElementById('notif-feed');
+  const x3txt = count >= 3 ? ` <span class="notif-x3">${count}x 🔥</span>` : '';
+  const el = document.createElement('div');
+  el.className = 'notif-toast';
+  el.innerHTML = `${emoji} <span class="notif-name">${who}</span> wants ${item}!${x3txt}`;
+  feed.appendChild(el);
+
+  setTimeout(() => {
+    el.classList.add('fade-out');
+    setTimeout(() => el.remove(), 400);
+  }, 4000);
+}
+
+/* ══════════════════════════════════════════
+   ORDER LOG (sidebar)
+══════════════════════════════════════════ */
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60)  return 'just now';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  return Math.floor(s/3600) + 'h ago';
+}
+
+function updateOrderLog(orders) {
+  const log = document.getElementById('order-log');
+  log.innerHTML = orders.slice(0, 12).map(o => {
+    const x3 = o.count >= 3 ? ` <span class="log-x3">${o.count}x 🔥</span>` : '';
+    return `
+      <div class="log-entry">
+        ${o.emoji} <span class="log-who">${o.who}</span>
+        <span class="log-item"> wants ${o.item}</span>${x3}
+        <div class="log-time">${timeAgo(o.ts)}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   CHANGE NAME MODAL
+══════════════════════════════════════════ */
+function openModal() {
+  const modal = document.getElementById('name-modal');
+  document.getElementById('modal-name-input').value = currentUser?.name || '';
+  document.getElementById('modal-error').textContent = '';
+  modal.classList.add('open');
+  document.getElementById('modal-name-input').focus();
+}
+
+function closeModal() {
+  document.getElementById('name-modal').classList.remove('open');
+}
+
+async function confirmNameChange() {
+  const input = document.getElementById('modal-name-input');
+  const errEl = document.getElementById('modal-error');
+  const name  = input.value.trim();
+
+  if (!name || name.length < 2) {
+    errEl.textContent = '⚠️ At least 2 characters please.';
+    return;
+  }
+
+  if (name === currentUser.name) { closeModal(); return; }
+
+  errEl.textContent = '⏳ Checking…';
+
+  const conflict = await claimName(name, currentUser.id);
+  if (conflict) {
+    errEl.textContent = `😬 "${name}" is taken! Try "${conflict}".`;
+    input.value = conflict;
+    return;
+  }
+
+  currentUser.name = name;
+  saveUserLocal(name, currentUser.id);
+  document.getElementById('hdr-name').textContent   = name;
+  document.getElementById('hdr-avatar').textContent = name[0].toUpperCase();
+  closeModal();
+}
+
+document.getElementById('modal-name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmNameChange();
+  if (e.key === 'Escape') closeModal();
+});
+
+document.getElementById('name-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('name-modal')) closeModal();
+});
+
+/* ══════════════════════════════════════════
+   TABS
+══════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCat = btn.dataset.cat;
+    render(currentCat);
+  });
+});
+
+/* ══════════════════════════════════════════
+   AUTO-LOGIN ON RETURN
+══════════════════════════════════════════ */
+(async () => {
+  const saved = loadUserLocal();
+  if (saved) {
+    // Re-claim name silently (in case registry was reset)
+    await claimName(saved.name, saved.id);
+    currentUser = saved;
+    showApp();
+  }
+})();
+</script>
+</body>
+</html>
