@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enter Key</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050810;
+      --panel: #0b1120;
+      --border: #1a2a4a;
+      --accent: #00d4ff;
+      --accent2: #0066ff;
+      --danger: #ff3a3a;
+      --success: #00ff88;
+      --text: #c8dff5;
+      --dim: #4a6080;
+      --glow: 0 0 20px rgba(0, 212, 255, 0.4);
+      --glow-strong: 0 0 40px rgba(0, 212, 255, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,100,200,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,100,200,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridScroll 20s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes gridScroll {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(40px, 40px); }
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .corner-deco {
+      position: fixed;
+      width: 120px;
+      height: 120px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .corner-deco::before, .corner-deco::after {
+      content: '';
+      position: absolute;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+    .corner-deco.tl { top: 20px; left: 20px; }
+    .corner-deco.tr { top: 20px; right: 20px; transform: scaleX(-1); }
+    .corner-deco.bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+    .corner-deco.br { bottom: 20px; right: 20px; transform: scale(-1); }
+    .corner-deco::before { top: 0; left: 0; width: 100%; height: 2px; }
+    .corner-deco::after  { top: 0; left: 0; width: 2px; height: 100%; }
+
+    .panel {
+      position: relative;
+      z-index: 10;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 48px 44px;
+      width: min(460px, 92vw);
+      box-shadow:
+        0 0 0 1px rgba(0,100,200,0.1),
+        0 0 60px rgba(0,30,80,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      animation: panelIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .panel-top-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+      animation: barPulse 3s ease-in-out infinite;
+    }
+    @keyframes barPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      border: 2px solid var(--accent);
+      box-shadow: var(--glow), inset 0 0 20px rgba(0,212,255,0.1);
+      margin-bottom: 16px;
+      position: relative;
+      animation: iconSpin 8s linear infinite;
+    }
+    @keyframes iconSpin {
+      0%, 100% { border-color: var(--accent); box-shadow: var(--glow); }
+      50% { border-color: var(--accent2); box-shadow: 0 0 20px rgba(0,100,255,0.5); }
+    }
+
+    .logo-icon svg {
+      width: 32px; height: 32px;
+      fill: var(--accent);
+      filter: drop-shadow(0 0 8px var(--accent));
+    }
+
+    .logo h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: var(--accent);
+      text-transform: uppercase;
+      text-shadow: var(--glow);
+    }
+
+    .label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--dim);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: var(--accent);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 18px;
+      letter-spacing: 0.15em;
+      padding: 14px 48px 14px 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 20px rgba(0,212,255,0.2);
+    }
+
+    .input-wrap input::placeholder { color: var(--dim); opacity: 0.5; }
+
+    .toggle-vis {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--dim);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .toggle-vis:hover { color: var(--accent); }
+
+    .btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 15px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s, box-shadow 0.3s, background 0.3s;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 0;
+    }
+
+    .btn:hover::before { transform: scaleX(1); }
+    .btn:hover { color: #000; box-shadow: var(--glow-strong); }
+    .btn span { position: relative; z-index: 1; }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: var(--dim);
+      color: var(--dim);
+    }
+    .btn:disabled::before { display: none; }
+
+    /* Status messages */
+    .msg {
+      margin-top: 20px;
+      padding: 14px 16px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+      display: none;
+      border-left: 3px solid;
+    }
+    .msg.error  { border-color: var(--danger); color: var(--danger); background: rgba(255,58,58,0.07); }
+    .msg.success { border-color: var(--success); color: var(--success); background: rgba(0,255,136,0.07); }
+    .msg.warn   { border-color: #ffaa00; color: #ffaa00; background: rgba(255,170,0,0.07); }
+    .msg.show   { display: block; animation: msgIn 0.3s ease both; }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Countdown */
+    #countdown-display {
+      text-align: center;
+      margin-top: 16px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      color: var(--danger);
+      text-shadow: 0 0 20px rgba(255,58,58,0.6);
+      display: none;
+      letter-spacing: 0.1em;
+    }
+
+    /* Attempt counter */
+    .attempts-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .attempt-dot {
+      flex: 1; height: 4px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .attempt-dot.used { background: var(--danger); }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 24px 0;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      text-align: center;
+      opacity: 0.6;
+    }
+
+    /* Success overlay */
+    #success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      animation: overlayIn 0.5s ease both;
+    }
+    #success-overlay.show { display: flex; }
+
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .success-ring {
+      width: 100px; height: 100px;
+      border: 3px solid var(--success);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+      box-shadow: 0 0 40px rgba(0,255,136,0.5), inset 0 0 20px rgba(0,255,136,0.1);
+      animation: ringPulse 2s ease-in-out infinite;
+    }
+    @keyframes ringPulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(0,255,136,0.5); }
+      50%       { box-shadow: 0 0 70px rgba(0,255,136,0.8); }
+    }
+    .success-ring svg { width: 48px; height: 48px; fill: var(--success); filter: drop-shadow(0 0 12px var(--success)); }
+
+    .success-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.3em;
+      color: var(--success);
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(0,255,136,0.5);
+    }
+
+    .success-sub {
+      font-size: 13px;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      margin-bottom: 28px;
+    }
+
+    .redirect-btn {
+      background: var(--success);
+      color: #000;
+      border: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      padding: 14px 32px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 0 30px rgba(0,255,136,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .redirect-btn:hover { transform: scale(1.04); box-shadow: 0 0 50px rgba(0,255,136,0.7); }
+
+    .copy-note {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--dim);
+      letter-spacing: 0.08em;
+    }
+    .copy-note span { color: var(--success); }
+  </style>
+</head>
+<body>
+
+  <!-- Corner decorations -->
+  <div class="corner-deco tl"></div>
+  <div class="corner-deco tr"></div>
+  <div class="corner-deco bl"></div>
+  <div class="corner-deco br"></div>
+
+  <!-- Main panel -->
+  <div class="panel" id="main-panel">
+    <div class="panel-top-bar"></div>
+
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93C9.33 17.79 7 14.5 7 11V7.18L12 5z"/></svg>
+      </div>
+      <h1>Secure Access</h1>
+    </div>
+
+    <!-- Attempt dots (3 attempts shown) -->
+    <div class="attempts-bar" id="attempt-dots">
+      <div class="attempt-dot" id="dot-0"></div>
+      <div class="attempt-dot" id="dot-1"></div>
+      <div class="attempt-dot" id="dot-2"></div>
+    </div>
+
+    <span class="label">// Authorization Key</span>
+    <div class="input-wrap">
+      <input type="password" id="key-input" placeholder="ENTER KEY . . ." autocomplete="off" spellcheck="false"/>
+      <button class="toggle-vis" id="toggle-btn" title="Toggle visibility">👁</button>
+    </div>
+
+    <button class="btn" id="submit-btn" onclick="checkKey()">
+      <span>Authenticate</span>
+    </button>
+
+    <div class="msg error" id="msg-wrong">
+      ✖ &nbsp;INVALID KEY — ACCESS DENIED<br>
+      <small>Attempt recorded. <span id="attempts-left"></span> attempt(s) remaining.</small>
+    </div>
+
+    <div class="msg warn" id="msg-locked">
+      ⚠ &nbsp;LOCKOUT ACTIVE<br>
+      Too many failed attempts. Wait for the timer.
+    </div>
+
+    <div id="countdown-display" id="timer-text">00:00</div>
+
+    <div class="divider"></div>
+    <p class="hint">// Authorized personnel only</p>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="success-overlay">
+    <div class="success-ring">
+      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </div>
+    <div class="success-title">ACCESS GRANTED</div>
+    <div class="success-sub">Link copied to clipboard · Redirecting now…</div>
+    <button class="redirect-btn" onclick="goToSite()">OPEN LINK →</button>
+    <p class="copy-note">Link also saved to clipboard: <span>https://mail.google.com/</span></p>
+  </div>
+
+  <script>
+    // ─── CONFIG ────────────────────────────────────────────────────────────────
+    const CORRECT_KEY   = "SECRET123";       // 🔑 Change this to your real key
+    const TARGET_URL    = "https://mail.google.com/";
+    const MAX_ATTEMPTS  = 3;
+    const LOCKOUT_MS    = 5 * 60 * 1000;    // 5 minutes
+    // ────────────────────────────────────────────────────────────────────────────
+
+    const STORAGE_FAILS = "kg_fails";
+    const STORAGE_LOCK  = "kg_lockuntil";
+
+    let countdownInterval = null;
+
+    // ── Toggle password visibility ──
+    document.getElementById('toggle-btn').addEventListener('click', () => {
+      const inp = document.getElementById('key-input');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    // ── Allow Enter key ──
+    document.getElementById('key-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkKey();
+    });
+
+    // ── On load: check lockout state ──
+    window.addEventListener('load', () => {
+      checkLockState();
+    });
+
+    function checkLockState() {
+      const lockUntil = parseInt(localStorage.getItem(STORAGE_LOCK) || "0");
+      const fails     = parseInt(localStorage.getItem(STORAGE_FAILS) || "0");
+
+      updateDots(fails);
+
+      if (Date.now() < lockUntil) {
+        activateLockUI(lockUntil);
+      }
+    }
+
+    function checkKey() {
+      const lockUntil = parseInt(localStorage.getItem(STORAGE_LOCK) || "0");
+      if (Date.now() < lockUntil) {
+        activateLockUI(lockUntil);
+        return;
+      }
+
+      const val = document.getElementById('key-input').value.trim();
+      if (!val) return;
+
+      if (val === CORRECT_KEY) {
+        handleSuccess();
+      } else {
+        handleFail();
+      }
+    }
+
+    function handleSuccess() {
+      // Clear lockout state on success
+      localStorage.removeItem(STORAGE_FAILS);
+      localStorage.removeItem(STORAGE_LOCK);
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(TARGET_URL).catch(() => {});
+
+      // Show success overlay then auto-redirect
+      document.getElementById('success-overlay').classList.add('show');
+      setTimeout(() => goToSite(), 3000);
+    }
+
+    function goToSite() {
+      window.location.href = TARGET_URL;
+    }
+
+    function handleFail() {
+      let fails = parseInt(localStorage.getItem(STORAGE_FAILS) || "0") + 1;
+      localStorage.setItem(STORAGE_FAILS, fails);
+      updateDots(fails);
+
+      const remaining = MAX_ATTEMPTS - fails;
+
+      if (fails >= MAX_ATTEMPTS) {
+        const lockUntil = Date.now() + LOCKOUT_MS;
+        localStorage.setItem(STORAGE_LOCK, lockUntil);
+        localStorage.setItem(STORAGE_FAILS, "0");
+        activateLockUI(lockUntil);
+      } else {
+        showMsg('msg-wrong');
+        document.getElementById('attempts-left').textContent = remaining;
+        document.getElementById('key-input').value = '';
+        document.getElementById('key-input').focus();
+        // shake animation
+        const inp = document.getElementById('key-input');
+        inp.style.animation = 'none';
+        requestAnimationFrame(() => {
+          inp.style.animation = 'shake 0.4s ease';
+        });
+      }
+    }
+
+    function activateLockUI(lockUntil) {
+      hideAll();
+      showMsg('msg-locked');
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('key-input').disabled  = true;
+      document.getElementById('countdown-display').style.display = 'block';
+
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        const remaining = lockUntil - Date.now();
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById('countdown-display').style.display = 'none';
+          document.getElementById('submit-btn').disabled = false;
+          document.getElementById('key-input').disabled  = false;
+          hideAll();
+          localStorage.removeItem(STORAGE_FAILS);
+        } else {
+          const m = Math.floor(remaining / 60000);
+          const s = Math.floor((remaining % 60000) / 1000);
+          document.getElementById('countdown-display').textContent =
+            String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+        }
+      }, 500);
+    }
+
+    function updateDots(fails) {
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById('dot-' + i);
+        if (dot) dot.classList.toggle('used', i < Math.min(fails, 3));
+      }
+    }
+
+    function showMsg(id) {
+      hideAll();
+      document.getElementById(id).classList.add('show');
+    }
+
+    function hideAll() {
+      document.querySelectorAll('.msg').forEach(m => m.classList.remove('show'));
+    }
+
+    // Shake animation inline
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%,100%{transform:translateX(0)}
+        20%{transform:translateX(-8px)}
+        40%{transform:translateX(8px)}
+        60%{transform:translateX(-5px)}
+        80%{transform:translateX(5px)}
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
