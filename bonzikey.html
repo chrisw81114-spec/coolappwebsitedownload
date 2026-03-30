@@ -17,6 +17,9 @@
       --glass-bg:       rgba(168,85,247,0.08);
       --glass-border:   rgba(168,85,247,0.25);
       --text-dim:       rgba(255,255,255,0.45);
+      --green:          #86efac;
+      --gold:           #fbbf24;
+      --blue:           #60a5fa;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,10 +31,10 @@
       align-items: center;
       justify-content: center;
       background: var(--purple-deep);
-      overflow: hidden;
+      overflow-x: hidden;
+      padding: 2rem 0;
     }
 
-    /* Ambient background */
     body::before, body::after {
       content: '';
       position: fixed;
@@ -51,16 +54,10 @@
       bottom: -80px; right: -80px;
     }
 
-    /* Floating particles */
-    .particles {
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    }
+    .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
     .particle {
-      position: absolute;
-      width: 2px; height: 2px;
-      border-radius: 50%;
-      background: var(--purple-light);
-      opacity: 0;
+      position: absolute; width: 2px; height: 2px; border-radius: 50%;
+      background: var(--purple-light); opacity: 0;
       animation: float-up linear infinite;
     }
     @keyframes float-up {
@@ -71,33 +68,17 @@
     }
 
     #app {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 480px;
-      max-width: 95vw;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      width: 480px; max-width: 95vw;
     }
 
-    .brand {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .brand-name {
-      font-size: 32px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
+    .brand { text-align: center; margin-bottom: 1.5rem; }
+    .brand-name { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
     .brand-name span { color: var(--purple-light); }
     .brand-tag {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      margin-top: 4px;
+      font-family: 'Space Mono', monospace; font-size: 10px;
+      color: var(--text-dim); letter-spacing: 4px; text-transform: uppercase; margin-top: 4px;
     }
 
     .card {
@@ -108,455 +89,651 @@
       padding: 2.5rem 2rem;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow:
-        0 25px 60px rgba(0,0,0,0.5),
-        inset 0 1px 0 rgba(255,255,255,0.08);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
     }
     .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
       width: 60%; height: 1px;
       background: linear-gradient(90deg, transparent, var(--purple-light), transparent);
     }
 
-    /* Step headings */
-    .step-icon {
-      font-size: 36px;
-      margin-bottom: 0.75rem;
-      display: block;
-      text-align: center;
-    }
-    .step-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .step-sub {
-      font-size: 13px;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
+    .step-icon { font-size: 36px; margin-bottom: 0.75rem; display: block; text-align: center; }
+    .step-title { font-size: 20px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 6px; }
+    .step-sub { font-size: 13px; color: var(--text-dim); text-align: center; margin-bottom: 2rem; line-height: 1.6; }
 
-    /* Timer ring */
-    .timer-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 1.75rem;
-    }
+    /* Timer */
+    .timer-wrap { display: flex; justify-content: center; margin-bottom: 1.75rem; }
     .timer-circle {
-      width: 130px; height: 130px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+      width: 130px; height: 130px; position: relative;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
     }
-    svg.ring {
-      position: absolute; top: 0; left: 0;
-      transform: rotate(-90deg);
-    }
+    svg.ring { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
     .timer-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--purple-light);
-      line-height: 1;
-      position: relative;
-      z-index: 1;
+      font-family: 'Space Mono', monospace; font-size: 26px; font-weight: 700;
+      color: var(--purple-light); line-height: 1; position: relative; z-index: 1;
     }
-    .timer-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-top: 4px;
-      position: relative;
-      z-index: 1;
-    }
+    .timer-label { font-size: 9px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; position: relative; z-index: 1; }
 
-    /* Progress bar */
-    .progress-wrap {
-      margin-bottom: 0.4rem;
-    }
-    .progress-bar {
-      width: 100%; height: 5px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 99px;
-      overflow: hidden;
-    }
+    .progress-wrap { margin-bottom: 0.4rem; }
+    .progress-bar { width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden; }
     .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #7c3aed, var(--purple-light));
-      width: 0%;
-      border-radius: 99px;
-      transition: width 0.8s ease;
+      height: 100%; background: linear-gradient(90deg, #7c3aed, var(--purple-light));
+      width: 0%; border-radius: 99px; transition: width 0.8s ease;
       box-shadow: 0 0 8px var(--purple-accent);
     }
-    .progress-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      text-align: right;
-      margin-top: 6px;
-    }
+    .progress-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); text-align: right; margin-top: 6px; }
 
-    /* Status line */
     .status-line {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 1.5rem;
-      padding: 10px 14px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; gap: 8px; margin-top: 1.5rem;
+      padding: 10px 14px; background: rgba(0,0,0,0.2);
+      border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);
     }
     .status-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--purple-light);
-      animation: pulse-dot 1.5s ease-in-out infinite;
-      flex-shrink: 0;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light);
+      animation: pulse-dot 1.5s ease-in-out infinite; flex-shrink: 0;
     }
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50%       { opacity: 0.4; transform: scale(0.7); }
     }
-    .status-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-    }
+    .status-text { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-dim); }
 
-    /* Admin step */
-    .input-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-dim);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: block;
-    }
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1px solid var(--glass-border);
-      background: rgba(0,0,0,0.3);
-      color: #fff;
-      font-family: 'Space Mono', monospace;
-      font-size: 20px;
-      text-align: center;
-      letter-spacing: 6px;
-      margin-bottom: 1rem;
-      outline: none;
+    /* Admin / Input */
+    .input-label { font-size: 11px; font-weight: 600; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+    input[type="password"], input[type="text"], input[type="number"] {
+      width: 100%; padding: 14px 16px; border-radius: 10px;
+      border: 1px solid var(--glass-border); background: rgba(0,0,0,0.3);
+      color: #fff; font-family: 'Space Mono', monospace; font-size: 18px;
+      text-align: center; letter-spacing: 6px; margin-bottom: 1rem; outline: none;
       transition: border-color 0.2s;
     }
-    input[type="password"]:focus {
-      border-color: var(--purple-accent);
-      box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
-    }
+    input[type="number"] { letter-spacing: 2px; font-size: 16px; }
+    input:focus { border-color: var(--purple-accent); box-shadow: 0 0 0 3px rgba(168,85,247,0.15); }
     .error-msg {
-      display: none;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: #fca5a5;
-      margin-bottom: 1rem;
-      text-align: center;
+      display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #fca5a5;
+      margin-bottom: 1rem; text-align: center;
     }
-    .attempts-left {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 1rem;
-      font-family: 'Space Mono', monospace;
-    }
+    .attempts-left { font-size: 10px; color: var(--text-dim); text-align: center; margin-bottom: 1rem; font-family: 'Space Mono', monospace; }
 
     .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
+      width: 100%; padding: 14px; border-radius: 10px; border: none;
       background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      letter-spacing: 0.5px;
+      color: #fff; font-family: 'Outfit', sans-serif; font-size: 15px;
+      font-weight: 700; cursor: pointer; transition: all 0.2s; letter-spacing: 0.5px;
       box-shadow: 0 4px 20px rgba(124,58,237,0.4);
     }
     .btn:hover  { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(168,85,247,0.5); }
     .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-    /* Key step */
+    /* Key box */
     .key-box {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--purple-accent);
-      border-radius: 12px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
-      position: relative;
-      overflow: hidden;
+      background: rgba(0,0,0,0.3); border: 1px solid var(--purple-accent);
+      border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem;
+      position: relative; overflow: hidden;
     }
-    .key-box::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(168,85,247,0.05), transparent);
+    .key-box::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(168,85,247,0.05), transparent); }
+    .key-label { font-size: 9px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+    .key-value { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--purple-light); word-break: break-all; line-height: 1.6; }
+
+    /* Key type badge */
+    .key-type-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 10px; border-radius: 99px; font-size: 10px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      font-family: 'Space Mono', monospace; margin-bottom: 10px;
     }
-    .key-label {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      font-family: 'Space Mono', monospace;
-    }
-    .key-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--purple-light);
-      word-break: break-all;
-      line-height: 1.6;
-    }
+    .badge-2day { background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.4); color: var(--blue); }
+    .badge-perm { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.4); color: var(--gold); }
+    .badge-custom { background: rgba(134,239,172,0.15); border: 1px solid rgba(134,239,172,0.4); color: var(--green); }
+
     .copy-btn {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass-bg);
-      color: var(--purple-pale);
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 0.75rem;
+      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border);
+      background: var(--glass-bg); color: var(--purple-pale); font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-bottom: 0.75rem;
     }
     .copy-btn:hover { background: rgba(168,85,247,0.15); border-color: var(--purple-accent); }
-    .copy-btn.copied { color: #86efac; border-color: rgba(134,239,172,0.4); }
+    .copy-btn.copied { color: var(--green); border-color: rgba(134,239,172,0.4); }
 
-    /* Display states */
+    /* Extra buttons row */
+    .extra-btns {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem;
+    }
+    .extra-btn {
+      padding: 11px 8px; border-radius: 10px; border: 1px solid var(--glass-border);
+      background: var(--glass-bg); color: #fff; font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+      text-align: center; line-height: 1.4;
+    }
+    .extra-btn:hover { transform: translateY(-1px); }
+    .extra-btn.perm-btn { border-color: rgba(251,191,36,0.4); color: var(--gold); background: rgba(251,191,36,0.07); }
+    .extra-btn.perm-btn:hover { background: rgba(251,191,36,0.15); box-shadow: 0 4px 20px rgba(251,191,36,0.2); }
+    .extra-btn.custom-btn { border-color: rgba(134,239,172,0.4); color: var(--green); background: rgba(134,239,172,0.07); }
+    .extra-btn.custom-btn:hover { background: rgba(134,239,172,0.15); box-shadow: 0 4px 20px rgba(134,239,172,0.2); }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: 420px; max-width: 92vw;
+      background: #150730; border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 2rem;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 16px; background: none; border: none;
+      color: var(--text-dim); font-size: 20px; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { color: #fff; }
+    .modal-title { font-size: 18px; font-weight: 700; color: #fff; text-align: center; margin-bottom: 6px; }
+    .modal-sub { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 1.5rem; }
+
+    /* Custom duration inputs */
+    .duration-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+    .duration-col label { font-size: 10px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; display: block; margin-bottom: 6px; font-family: 'Space Mono', monospace; }
+    .duration-col input { margin-bottom: 0; font-size: 20px; }
+
+    /* Step visibility */
     #step1, #step2, #step3 { display: none; }
     #step1 { display: block; }
   </style>
 </head>
 <body>
 
-  <!-- Particles -->
-  <div class="particles" id="particles"></div>
+<div class="particles" id="particles"></div>
 
-  <div id="app">
-    <div class="brand">
-      <div class="brand-name">Bonzi<span>.Site</span></div>
-      <div class="brand-tag">Key Generator</div>
-    </div>
-
-    <div class="card">
-
-      <!-- STEP 1: Timer -->
-      <div id="step1">
-        <span class="step-icon">🔐</span>
-        <div class="step-title">Generating Your Key</div>
-        <div class="step-sub">Please wait while your access key is being prepared. Do not close this window.</div>
-
-        <div class="timer-wrap">
-          <div class="timer-circle">
-            <svg class="ring" width="130" height="130">
-              <circle cx="65" cy="65" r="60" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5"/>
-              <circle id="ring-fill" cx="65" cy="65" r="60" fill="none" stroke="url(#ringGrad)" stroke-width="5"
-                stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round"/>
-              <defs>
-                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#7c3aed"/>
-                  <stop offset="100%" stop-color="#c084fc"/>
-                </linearGradient>
-              </defs>
-            </svg>
-            <div class="timer-num" id="timer-display">03:00</div>
-            <div class="timer-label">remaining</div>
-          </div>
-        </div>
-
-        <div class="progress-wrap">
-          <div class="progress-bar">
-            <div class="progress-fill" id="prog"></div>
-          </div>
-          <div class="progress-text" id="prog-text">0% complete</div>
-        </div>
-
-        <div class="status-line">
-          <div class="status-dot"></div>
-          <div class="status-text" id="status-msg">Initializing key generation...</div>
-        </div>
-      </div>
-
-      <!-- STEP 2: Admin verify -->
-      <div id="step2">
-        <span class="step-icon">🛡️</span>
-        <div class="step-title">Admin Verification</div>
-        <div class="step-sub">Enter the admin passcode to unlock your key.</div>
-
-        <label class="input-label">Admin Passcode</label>
-        <input type="password" id="admin-input" placeholder="••••••" maxlength="20" autocomplete="off">
-        <div class="error-msg" id="err-msg">⚠ Access Denied. Incorrect passcode.</div>
-        <div class="attempts-left" id="attempts-text">3 attempts remaining</div>
-        <button class="btn" onclick="verifyKey()">Verify & Unlock</button>
-      </div>
-
-      <!-- STEP 3: Key display -->
-      <div id="step3">
-        <span class="step-icon">✅</span>
-        <div class="step-title">Key Generated</div>
-        <div class="step-sub">Your license key is ready. Copy and store it securely.</div>
-
-        <div class="key-box">
-          <div class="key-label">Your License Key</div>
-          <div class="key-value" id="key-display"></div>
-        </div>
-
-        <button class="copy-btn" id="copy-btn" onclick="copyKey()">📋 Copy Key</button>
-        <button class="btn" onclick="location.reload()">Generate Another</button>
-      </div>
-
-    </div>
+<div id="app">
+  <div class="brand">
+    <div class="brand-name">Bonzi<span>.Site</span></div>
+    <div class="brand-tag">Key Generator</div>
   </div>
 
-  <script>
-    // ─── Config ────────────────────────────────────────────────────────────────
-    const DURATION   = 180; // 3 minutes in seconds
-    const ADMIN_CODE = '003679';
-    const KEYS = [
-      'xI8YPOWhgSfc6RkFRFpoSw==BONZI',
-      'AcVDQ4s7k5HF7NYhDWFD0g==BONZI',
-      '1EPCda1HiUbeq/5rDDp7zw==BONZI'
-    ];
-    const STATUS_MSGS = [
-      'Initializing key generation...',
-      'Connecting to license server...',
-      'Validating credentials...',
-      'Allocating key slot...',
-      'Encrypting key data...',
-      'Finalizing license...',
-      'Almost ready...'
-    ];
+  <div class="card">
 
-    // ─── Particles ─────────────────────────────────────────────────────────────
-    (function spawnParticles() {
-      const container = document.getElementById('particles');
-      for (let i = 0; i < 25; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.bottom = '-10px';
-        p.style.animationDuration = (8 + Math.random() * 12) + 's';
-        p.style.animationDelay    = (Math.random() * 10) + 's';
-        p.style.width  = (Math.random() > 0.7 ? 3 : 2) + 'px';
-        p.style.height = p.style.width;
-        container.appendChild(p);
-      }
-    })();
+    <!-- STEP 1: Timer -->
+    <div id="step1">
+      <span class="step-icon">🔐</span>
+      <div class="step-title">Generating Your Key</div>
+      <div class="step-sub">Please wait while your access key is being prepared. Do not close this window.</div>
+      <div class="timer-wrap">
+        <div class="timer-circle">
+          <svg class="ring" width="130" height="130">
+            <circle cx="65" cy="65" r="60" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5"/>
+            <circle id="ring-fill" cx="65" cy="65" r="60" fill="none" stroke="url(#ringGrad)" stroke-width="5"
+              stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#c084fc"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="timer-num" id="timer-display">03:00</div>
+          <div class="timer-label">remaining</div>
+        </div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+        <div class="progress-text" id="prog-text">0% complete</div>
+      </div>
+      <div class="status-line">
+        <div class="status-dot"></div>
+        <div class="status-text" id="status-msg">Initializing key generation...</div>
+      </div>
+    </div>
 
-    // ─── Timer ─────────────────────────────────────────────────────────────────
-    let timeLeft  = DURATION;
-    let maxOffset = 377; // 2πr for r=60
-    let attempts  = 3;
+    <!-- STEP 2: Admin verify (standard key) -->
+    <div id="step2">
+      <span class="step-icon">🛡️</span>
+      <div class="step-title">Admin Verification</div>
+      <div class="step-sub">Enter the admin passcode to unlock your key.</div>
+      <label class="input-label">Admin Passcode</label>
+      <input type="password" id="admin-input" placeholder="••••••" maxlength="20" autocomplete="off">
+      <div class="error-msg" id="err-msg">⚠ Access Denied. Incorrect passcode.</div>
+      <div class="attempts-left" id="attempts-text">3 attempts remaining</div>
+      <button class="btn" onclick="verifyKey()">Verify & Unlock</button>
+      <div class="extra-btns">
+        <button class="extra-btn perm-btn" onclick="openModal('perm')">⭐ Perm Key Generator</button>
+        <button class="extra-btn custom-btn" onclick="openModal('custom')">⏱ Custom Time Key</button>
+      </div>
+    </div>
 
-    function updateUI() {
-      const minutes  = Math.floor(timeLeft / 60);
-      const seconds  = timeLeft % 60;
-      const display  = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-      const progress = (DURATION - timeLeft) / DURATION;
-      const offset   = maxOffset - (maxOffset * progress);
-      const msgIdx   = Math.floor(progress * (STATUS_MSGS.length - 1));
+    <!-- STEP 3: Key display -->
+    <div id="step3">
+      <span class="step-icon">✅</span>
+      <div class="step-title">Key Generated</div>
+      <div class="step-sub">Your license key is ready. Copy and store it securely.</div>
+      <div class="key-box">
+        <div id="key-type-badge"></div>
+        <div class="key-label">Your License Key</div>
+        <div class="key-value" id="key-display"></div>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyKey()">📋 Copy Key</button>
+      <button class="btn" onclick="location.reload()">Generate Another</button>
+      <div class="extra-btns">
+        <button class="extra-btn perm-btn" onclick="openModal('perm')">⭐ Perm Key Generator</button>
+        <button class="extra-btn custom-btn" onclick="openModal('custom')">⏱ Custom Time Key</button>
+      </div>
+    </div>
 
-      document.getElementById('timer-display').textContent = display;
-      document.getElementById('prog').style.width          = (progress * 100) + '%';
-      document.getElementById('prog-text').textContent     = Math.round(progress * 100) + '% complete';
-      document.getElementById('ring-fill').style.strokeDashoffset = offset;
-      document.getElementById('status-msg').textContent    = STATUS_MSGS[msgIdx];
+  </div>
+</div>
+
+<!-- PERM KEY MODAL -->
+<div class="modal-overlay" id="perm-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('perm')">✕</button>
+    <span class="step-icon">⭐</span>
+    <div class="modal-title">Permanent Key Generator</div>
+    <div class="modal-sub">Admin verification required to generate a permanent key.</div>
+    <label class="input-label">Admin Passcode</label>
+    <input type="password" id="perm-admin-input" placeholder="••••••" maxlength="20" autocomplete="off">
+    <div class="error-msg" id="perm-err-msg">⚠ Access Denied. Incorrect passcode.</div>
+    <div class="attempts-left" id="perm-attempts-text">3 attempts remaining</div>
+    <button class="btn" onclick="verifyModal('perm')">Verify & Generate</button>
+    <div id="perm-result" style="display:none; margin-top:1rem;">
+      <div class="key-box" style="border-color: var(--gold);">
+        <div><span class="key-type-badge badge-perm">⭐ Permanent</span></div>
+        <div class="key-label">Permanent License Key</div>
+        <div class="key-value" id="perm-key-display" style="color: var(--gold);"></div>
+      </div>
+      <button class="copy-btn" id="perm-copy-btn" onclick="copyModalKey('perm')">📋 Copy Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM KEY MODAL -->
+<div class="modal-overlay" id="custom-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('custom')">✕</button>
+    <span class="step-icon">⏱</span>
+    <div class="modal-title">Custom Time Key Generator</div>
+    <div class="modal-sub">Set a custom duration and verify with admin passcode.</div>
+    <div class="duration-row">
+      <div class="duration-col">
+        <label>Days</label>
+        <input type="number" id="custom-days" min="0" max="365" value="7" placeholder="0">
+      </div>
+      <div class="duration-col">
+        <label>Hours</label>
+        <input type="number" id="custom-hours" min="0" max="23" value="0" placeholder="0">
+      </div>
+    </div>
+    <label class="input-label">Admin Passcode</label>
+    <input type="password" id="custom-admin-input" placeholder="••••••" maxlength="20" autocomplete="off">
+    <div class="error-msg" id="custom-err-msg">⚠ Access Denied. Incorrect passcode.</div>
+    <div class="attempts-left" id="custom-attempts-text">3 attempts remaining</div>
+    <button class="btn" onclick="verifyModal('custom')">Verify & Generate</button>
+    <div id="custom-result" style="display:none; margin-top:1rem;">
+      <div class="key-box" style="border-color: var(--green);">
+        <div><span class="key-type-badge badge-custom" id="custom-badge-label">⏱ Custom</span></div>
+        <div class="key-label">Custom License Key</div>
+        <div class="key-value" id="custom-key-display" style="color: var(--green);"></div>
+      </div>
+      <button class="copy-btn" id="custom-copy-btn" onclick="copyModalKey('custom')">📋 Copy Key</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── Key pools ───────────────────────────────────────────────────────────────
+  // 60% = 90 keys → 2-day keys
+  const KEYS_2DAY = [
+    'eW8eOXcMzkTmAe4bCU9u-oQ29LyiLWvqx_QkIcZ7wgc-2D',
+    '9UMfIOkqQBHI7OrV23o5BF5IQBH3DAhLXkhQMy70gjs-2D',
+    'Fl5b5ZB-df5gXrhFlqgUepEAHuaI9GGARXir1NAmhos-2D',
+    'wTvvo4QVyj1xljmJkL7zc6gErFTy4ZcCPu6527O5krY-2D',
+    'l0gFiiiOAz5_Bm-02vRugJG4zrt3Yy_Vu2AEY_lA7bk-2D',
+    '9xnRgsEHXdji4jJ8rwCHxr5UYxR1qTsAq9lEyJ0EsYk-2D',
+    'ibg-Qy_L7aayR309dgRqQyA3gIcDxgTuWqIcpMkEqWo-2D',
+    'Y3C_oGCEYkuVNMb6fQPQvnqLTpttzwej_Ugg7OZ4eHY-2D',
+    'Q7qQOSLBR-i1GUc35CQTGWK8fME1nUw9tu3B6ieUNi4-2D',
+    'HNDjqnyeoIkny7273fA9PVlbumZVc1llgxN31j4UXxE-2D',
+    'DcMZQYft0g7ADjHtIYWVaDAYx3lKf8cv9YcqLWM1REw-2D',
+    'yW6cw45Oj8FcejXnMufjuJynYxil8jDQKa4AwJszC2I-2D',
+    '7A1-F0EwCCWIynurx5QhsiANQgbyulI3Ub7-9Q3hIhI-2D',
+    'NgGmu9O6F6Zz_PSC6OqKyDzHHAKNTB7F5MI3BInolrA-2D',
+    '3EfRYxWxQb0THy98dJqoj8G6_bUDZ1NzUwonM0c4Oxc-2D',
+    'fpDIs5lC7cojsw4sHwNhsD5HxTV-cYJBgTpk__-j2Dc-2D',
+    'Cjc5UsoUQgUHyS_I9lhgJ3twbGoTMUiFbldr-h6RH3M-2D',
+    'yRQHqRjI2p3bdS5vZqVQflMq22qzCT33_2Mya89OrfQ-2D',
+    'wwYqJL0OmTFgn_W0t-So70Md6oYMoUnaNhAzJ6C2Ug0-2D',
+    'GBRuL7PbV2bQoKWr9iuoDFaCzspLlFHqZ9NRObOIY2g-2D',
+    '-eLHiGuUZmFWBFv-OkPqX1N2N_6uzqwKEyvnLitFDjM-2D',
+    'EQ9ru83r863K2DEvCvkz4SnYe3BBy6ecMTwGneBzK_c-2D',
+    '94dikvDU-3XFWXGtM3J6uGWRzRiQ7tSUYylk8Rm5L4k-2D',
+    'V9JWhaetUmswkS72yc8QwspBEfhnwBlz2HO3ahWgaFM-2D',
+    '7p1nsRy_46A1Z7_lJ4EfO1BmtoEDw-HLjfzT2NEAXck-2D',
+    'B_amdcpQXbn3toXNBdaiO-EeAH3Y2wHwSuymhOUMhG0-2D',
+    'sIKyRjiD-fybLIBVjYiXHtB5aL4wcBoTsO8yEMFvD_4-2D',
+    '-VePDc5pP7MQaZMAtPGqpYnVw-vtnQFsMfoSD3DVaH8-2D',
+    'uzb2SW-qec0EIWYlYL8p4rmNniyH8uVDba7tK9m8eZs-2D',
+    '0nyrCAHo4Q6C8JYG6XEf1oo0GIhVpLBbW2SNtCJ8GyA-2D',
+    'Jk5k70lfH7Hd54p7DZlfnF-djZt3SK2uPzV7290q2-A-2D',
+    '2RXG8-tRbUrRDIj_PT4lpZHtBRpWZkrnTuEWM0W4DfE-2D',
+    'EJEtlgdTPcttcvo87CdSun1nJlsEZdIAw7AeAFlb0uc-2D',
+    'XyiKU0Q1SDioz-IiN6D4b1uQdZ_B-Gwg-vBt-cAVCBc-2D',
+    'wsFVvTnVN_oyNbqjxH4veI63rRBWqdKTl0FnGF_n8Lk-2D',
+    'SqgcDd7bHwxeSYKmdFMnYj2yz-YE9yw0ABaZ8Z5k2Gk-2D',
+    'YISjJtHni2IyGwp6A-6ZjbxU_eGWCYedKt4D98nXOVg-2D',
+    'jgOCEVjHIebzLG640We6Oyf13qCiXGG9ncRce9e3jZA-2D',
+    'x79v37DUQj772Zb3dy6TJMY0LGcLx7T1VvohqVHiRFg-2D',
+    'QxOYZLbzDn-IrjE1SnlWINTX1PojgHjK49ZAtRWB_GQ-2D',
+    'sKzqHUKwVlOHvU4UM6Vih3SbGsiOmC9mjNqMt0x9CP4-2D',
+    '32pLN3GwCIuQ84IgBmtVb23xD6BajCUNSiLY2mRht3c-2D',
+    'uXWpRNpY2Wp6Cvobn81VuylPhtU_jAP9a9-c5H3tzc8-2D',
+    'tLwAtKMk1v_KxuS9jUZWJXDnl6De007JqHpcLJsZ6Wk-2D',
+    'pyBs4EcXvoxGOLCQJhuk1YSNiuHHq63ku6Wq8iwNoNo-2D',
+    'CEaaTyLbEXyKvrSitfVVfBBwO0F20S94ltctInMYTeI-2D',
+    'ai_EXZANRZQ_RudEKhH6fESlUEG95LfIxlD1_jx3wp4-2D',
+    '1Oo3UUz8qH74jOYKnJtRtC16ParOe16SafcXE35_uZM-2D',
+    'vTy54wMsQartUTeKAe0emROEMsuVh_sFHmS4F00Wqzs-2D',
+    'WpEuGiiA0L-myU0L6YYKjo5FU1f-lbQ0s8mriWLc1rQ-2D',
+    'HhsxhhjnYRnL2LDlvxxwQASjwsrrodlM-iwjOHa-oFc-2D',
+    'EG-i0si4Do_W_Zrq8Q0R8sdYC6uPDuIRmoHmKWotNHk-2D',
+    '-7lEMqr1yTHPB2fdikZQLm5R3Rh-UrzNjleZ9T9JEvI-2D',
+    'knmqv1V5SsGKIJ_ynbOIKeOL1Gdloh8RsGh_XXBsdzw-2D',
+    'j5Ny9OlSw5D3vvcObp5Vs1AUQ60cOEI75tsG-D3b8PE-2D',
+    'KIiXIT3bxkRWQWxgD9qU8PCnhORSCRRy8OeWaLWr0QU-2D',
+    'o2Ty2BvIy2sf4TSBhvXtSxEnohpyLY1AxIdJ78URhT4-2D',
+    'BCY0GHI-fyae3wSf_kS_SlmVx-7NTfLbvNe9xA6QMcs-2D',
+    'RW99XKJWS9VKg_UBWxMyOsV9mIjzZTHVMG0gHndjspY-2D',
+    'UYn5bbe9ltS2EgXpbfQWFw2is2WYOEXwvXlbkH6Xp-M-2D',
+    '6UDh3V3gh3vJ_aWiiVHiHegtjIQf7jZvWWwYFZY7CSQ-2D',
+    'oi4AGJhA2sLpehNH8Gi3g7SaZ2NpA0gJT0khnMcMrvo-2D',
+    'XxpfOveX7B7x1pizJwPS8sbBAyinkaW047AIFQQhVC8-2D',
+    'kV1VFjLuZct84ysT-Ol8rsNnaGUvJDzNI9FbbLjt4eE-2D',
+    'v79fIhJbsJBOOGOY1WSdAF3Qu6TQWPIcdmjj0LDd8hA-2D',
+    'xowwGXUEJbY7XRE3FnJBAECJ-aVCwHFsO_Bk2rjnIF8-2D',
+    'hZ4tCTRyX0Xvx99WcpfLOVlI3pr-BvZd8kl9KEhsDsA-2D',
+    '55YSPeFt-kNawVMk_Y0GFanbB4pktyqIcYlo94jahLQ-2D',
+    'Y4tjYA1jkADGRuVzzw63sT7kjcCfm2j_U_jb9-7PV_U-2D',
+    'wuLuWfqiALpQ314c7trobUpXM-sXRGthN3sro9WlYLk-2D',
+    'xyn1eMZJ_2lrlnZiob2l5fYwdtm8frtxaWfjIfLPtt0-2D',
+    'MrH3CF0rtwyj6S924ZYGUh_LG7bIkVvXJVu2mOmZeWA-2D',
+    'DPH19kKD99pdcB7yLgl8OkmOP9qGcLcuj0wy8TU6r8Q-2D',
+    'oVBnLTLC-zFyD8zW7rTevwLqajV_2Ta7e4kRu9ab2G0-2D',
+    'JkgGiYNKfafuZ8HNC31NPHe_9bV4H-yHmObmzQwmbBg-2D',
+    'K83-TSePy28egM4ahpQ0TK6WsLg0VtXQn-jAsN4TQfM-2D',
+    'Ply699xGp4NQLTEPTpLukhqt8uVxzeE3pSeZpDb7lxw-2D',
+    'uxS-W44FXs7j7b5Bhtbfa6TGyairB7yE0pB3Ed7K_LI-2D',
+    'nwsZbhustZokrOM089sYIrocwptouLHTCGKU7OxbDww-2D',
+    'GDkBddHLbvQoBj93WXe2C3JbZcFp6sM_fFwZ6KfHvRg-2D',
+    'vOl2weNYIH34VNRpbO6T1qBUb59auk_pKhg3wUuF1WY-2D',
+    'MndAlozQFSl1-epWYusilo4t0V6XV3IY8QZqtE52ymg-2D',
+    '07Tcpv6SygdgpNP3Banus98QeTpOvRv-jpp1nDVLS7E-2D',
+    'd3Ityzlpw9Bey_s6ecxuh1HdYQVJkA1eGlXbzXkThp8-2D',
+    'SaidPUt1nnfUndmubZI40IhWU42IpzELcW3QUhexxb4-2D',
+    'Jy7bBK2YwY_FXSoWZP9XRHc0qeidQ5gM6MWx2cqGT_U-2D',
+    'aEVm_o9AZ3F_GoFv8UpIapflXLnl6iAZkEalKQXN7QA-2D',
+    'VFn3ttLyLbwLPBlKQx8KTe3pdkb21hrUSu45FOZUa2w-2D',
+    '5c8B8ocvyftVdQWGGzu1fs_6fvFmz5mo20XVhGcQXpk-2D',
+    'D02DRkXug4e03i2IW_sZBLb0FX2fTngehUjIH_FYfYs-2D',
+  ];
+
+  // 15% = 23 keys → permanent
+  const KEYS_PERM = [
+    'uwvH1yUxBK-SPosnpMvBwzyA9RXIzUlAnrTQ6xwIqZw-PERM',
+    'VBYHt0dng14vyB43fDV0QiF8re2D_OeocZ-7_CwjARM-PERM',
+    'tcKkjZ07f9IuSf9TFZyfgKXk7Gpg-4BTFteSJ4lkOhg-PERM',
+    '8tkG6Vlvq_rVgEx1OXSjM3mgzo5qoTjrdAqLfuGxfb0-PERM',
+    'CE31zxRabETPYHLpQSpT8ZWPCb7pTLKp0-84X3h128c-PERM',
+    'uLYxOxdtk31YFRNViNWzHQlWyo6ho3n9g6X76blY2E4-PERM',
+    'a_IefM8A-7Yb_jN-QP1WpIXfsIT-0g0w37DvVi63fO0-PERM',
+    'LrUIBYMlA2Yfb087VwvrvOq5LwGvPlLTLzFabqq6Y3U-PERM',
+    'rja8O9WbQcBH6Sp7P951kt6EyqvsEXeNTJyTqQgMZYk-PERM',
+    'tkYIhO6jyXzTOHF6-DN5x0JNv1852-GElX38m-Al_rs-PERM',
+    'iGhnt_cQLP4ZaSoChFtWYnZ4bzDruLDW5uNfIEPJAjg-PERM',
+    'PD2M9cOLVt-ykSb4qFe21RsQx5EzcrhpvrtF-XmnRf0-PERM',
+    'kYbjziN3uMgjPYH_-C0OcEuQvaUtJSCNB5jezb5GQ1k-PERM',
+    'LpdPKCIDmC4CImDyECtpRxT6qgGkwjXN5u6Chmh5wYU-PERM',
+    'xGHxjtIt8AAkL5Lvz7TlhRQkAXU69RwrTNDrRXc4Bag-PERM',
+    '2SPjUnVNoeDxdB7M3bkHC1sSJU8ZaxgNixDUpeSkxx8-PERM',
+    'PfdHJfWVFO0cnhOV4znoAIgg4t8IZAZdvzD5_t2dRdw-PERM',
+    'xyK8yvUy1xsW8D1PKUvjbmhfbSJWiVts7mE6lBXsJiA-PERM',
+    'ELiabp6CspbEXmb7U4zMLQAXKUxoxEQerGBO0RQJJHk-PERM',
+    'idfeqeVus8PE7NJ1mWoXTR2OrFy-6k8GAGwvCT46T6w-PERM',
+    '-11Mb7qmv3HWCv4wHAlQKOLCKzpxCxueNOQhJXJGRXE-PERM',
+    'm5gyNH13wz-DA2eKka0bYIVlkEY3jkakkeNgO2mpqyE-PERM',
+    'LSF5amOIUIaDh0Rf9b9j7BHBddF7gEQMI4QcXhuehTg-PERM',
+  ];
+
+  // 25% = 37 keys → custom
+  const KEYS_CUSTOM = [
+    'pvZUhLbDA-D7TofuVC0N9kGjeJQNRxAvOxchGJwSs0U-CSTM',
+    'q_JIKrTMcNoIPz37s721wGeowcXfZKyzAvMfXDGEp_c-CSTM',
+    'rhL_pxDeOr-PGNAhlA-OxO1TqbhsBn249JVIbzjmWpU-CSTM',
+    'w-FpsaG2Yz9rINHm_j67Ck4xfx2VyErFiBx9lujCgLE-CSTM',
+    '223kO3cn3nRVHIZm94IuTYevhQfPntU868k-h1kTKFk-CSTM',
+    '4LQATpOdsK8462WIhoKN22nwtR8NJ8nLZgQa_nSkmy8-CSTM',
+    'ZFUnCVthN5peaZiGhPGlQ0qKHDEev8Q2Rg3AhQ3Nn-Q-CSTM',
+    'ObFP6kiQPw5K-AHnGpcyZdKDQow5OvE9JKLMhkS3AiI-CSTM',
+    'raBcDhO_Q8URUPeoFa1t60SztvnWNV1-qretgDBwXg8-CSTM',
+    'PJ-EH3swKXigvlS_amUy3nKh2nXPGnrA6nMuasoenHc-CSTM',
+    'lKjk7s67nfZCjV1rBCBej87noDKen2UBK-dS2RpmpkI-CSTM',
+    '0M_IQ25yMCJO6s-UOTSgAV2EPbV3pelqFxi6HTV4uNg-CSTM',
+    'izNXcrL5e5nBgWcYtLfh0kvNvIXGzyBuxszGepZSMys-CSTM',
+    'RvU9rm11eCO1SdsPNZH4BGyLaqkrHvQUNwPVCkjT7-c-CSTM',
+    '9SW4bDfuf_vf9HIUJzVaSRynpsZtOAlFwooum4lHYoM-CSTM',
+    'qn6vY_qWQ3rS_TeJtfX74Oxd7YqJ-a3lEoB5kps3XCU-CSTM',
+    'oINv0nWLUwdfnN_EWrlP7wYFGWjzresP8bPDTNqIIx0-CSTM',
+    'C-jwEk8x8D4hhats9YQGa2Y5Pbcg93Wl4ym1Rzrb8tE-CSTM',
+    'grxTDW12mmOZt-HE8nznN7pfv2UGhxEq9uLJaizyh0Y-CSTM',
+    'b3rizY7Q5olBpH2k8-wtUvkwLtVUWASt-syd1_p9VGY-CSTM',
+    'mCWZBUV-A2281ej8N1oocDa_UrIoYWos2c19a4ppcug-CSTM',
+    'qB_buhWICXr1zE0apKCtCFJoUNAuaDsj3DHBGkAfOyE-CSTM',
+    'zXPVxnXjJ7mCb-xXzgZk1gCQfJkehtBeYDTq1qHUV5Y-CSTM',
+    'CCRdYQZrQogY1ejIBhVvMT0rDRcY2Y8BXwZ2C8xGHe8-CSTM',
+    '6DJI2EMubGJ9X-05ON7slrhZWHaMS8fJN9mjVsl0kLU-CSTM',
+    'vqUBJWZ1LX16X-_LTbXbpfzCIGvltAWrKFo1K3YCTfY-CSTM',
+    'okLWXFcmWuqdqY0PlK4kI6upk6zOXXrd-LLtcyh3zN0-CSTM',
+    'RXrKxYZ7B1wKppbVqpEpb74WUs2vkf2mHyYqh1i1Iew-CSTM',
+    'QxYgrrlpRND-qpCaFa4OI4zM97SWOWz14RqvBvKjFRE-CSTM',
+    'VzuC7rsxBNgVzX2R1Lynlwnetw9mBAVfl7z90SOB6Bs-CSTM',
+    'SChIqKu_ZhaVD7AuIrHXhG-6bx1VbC_43qyCHIVvTtU-CSTM',
+    'SaV7V3yE5PuxyvjzxTCGAUPsev6G25TEOqnS9ube_0w-CSTM',
+    'wjlG_JXZ2Mu9HlivzytWwpBGSmx5LRUDHxh4uTz9QMc-CSTM',
+    'FIquU54zRCyWDs9rXKaYC9BQTz1C_-ys-iDy_0wFewY-CSTM',
+    'RUSRWi_y6qaDD5UIfMQRNfrsI2i00yHuD3GrDLhFjC8-CSTM',
+    'z3Alv6Bcits9afABTA89nIuIFORdBT-jJJZSpMr_N-Q-CSTM',
+    'Y_h_zK7QLKohNR_bXKJ1f1uk4c275VE7KzYw_4Eh-CM-CSTM',
+  ];
+
+  const ADMIN_CODE = '003679';
+  const DURATION   = 180;
+
+  const STATUS_MSGS = [
+    'Initializing key generation...',
+    'Connecting to license server...',
+    'Validating credentials...',
+    'Allocating key slot...',
+    'Encrypting key data...',
+    'Finalizing license...',
+    'Almost ready...'
+  ];
+
+  // Modal attempt trackers
+  const modalAttempts = { perm: 3, custom: 3 };
+
+  // ─── Particles ──────────────────────────────────────────────────────────────
+  (function() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.bottom = '-10px';
+      p.style.animationDuration = (8 + Math.random() * 12) + 's';
+      p.style.animationDelay    = (Math.random() * 10) + 's';
+      p.style.width  = (Math.random() > 0.7 ? 3 : 2) + 'px';
+      p.style.height = p.style.width;
+      container.appendChild(p);
     }
+  })();
 
-    const timer = setInterval(() => {
-      timeLeft--;
-      updateUI();
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        document.getElementById('step1').style.display = 'none';
-        document.getElementById('step2').style.display = 'block';
-        document.getElementById('admin-input').focus();
-      }
-    }, 1000);
+  // ─── Timer ──────────────────────────────────────────────────────────────────
+  let timeLeft = DURATION;
+  let attempts = 3;
 
-    // ─── Verification ──────────────────────────────────────────────────────────
-    function verifyKey() {
-      if (attempts <= 0) return;
+  function updateUI() {
+    const minutes  = Math.floor(timeLeft / 60);
+    const seconds  = timeLeft % 60;
+    const display  = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    const progress = (DURATION - timeLeft) / DURATION;
+    const offset   = 377 - (377 * progress);
+    const msgIdx   = Math.floor(progress * (STATUS_MSGS.length - 1));
+    document.getElementById('timer-display').textContent = display;
+    document.getElementById('prog').style.width          = (progress * 100) + '%';
+    document.getElementById('prog-text').textContent     = Math.round(progress * 100) + '% complete';
+    document.getElementById('ring-fill').style.strokeDashoffset = offset;
+    document.getElementById('status-msg').textContent    = STATUS_MSGS[msgIdx];
+  }
 
-      const val = document.getElementById('admin-input').value.trim();
-      const err = document.getElementById('err-msg');
-      const attText = document.getElementById('attempts-text');
+  const timer = setInterval(() => {
+    timeLeft--;
+    updateUI();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
+      document.getElementById('admin-input').focus();
+    }
+  }, 1000);
 
-      if (val === ADMIN_CODE) {
-        const key = KEYS[Math.floor(Math.random() * KEYS.length)];
-        document.getElementById('key-display').textContent = key;
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'block';
+  // ─── Main key verification ───────────────────────────────────────────────────
+  function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function verifyKey() {
+    if (attempts <= 0) return;
+    const val     = document.getElementById('admin-input').value.trim();
+    const err     = document.getElementById('err-msg');
+    const attText = document.getElementById('attempts-text');
+
+    if (val === ADMIN_CODE) {
+      // Pick weighted random: 60% 2day, 15% perm, 25% custom
+      const roll = Math.random();
+      let key, badge;
+      if (roll < 0.60) {
+        key = getRandom(KEYS_2DAY);
+        badge = '<span class="key-type-badge badge-2day">📅 2-Day</span>';
+      } else if (roll < 0.75) {
+        key = getRandom(KEYS_PERM);
+        badge = '<span class="key-type-badge badge-perm">⭐ Permanent</span>';
       } else {
-        attempts--;
-        err.style.display = 'block';
-        attText.textContent = attempts > 0
-          ? `${attempts} attempt${attempts === 1 ? '' : 's'} remaining`
-          : 'No attempts remaining. Please refresh.';
-        document.getElementById('admin-input').value = '';
-        if (attempts <= 0) {
-          document.getElementById('admin-input').disabled = true;
-          document.querySelector('.btn').disabled = true;
-          document.querySelector('.btn').style.opacity = '0.4';
-        }
+        key = getRandom(KEYS_CUSTOM);
+        badge = '<span class="key-type-badge badge-custom">⏱ Custom</span>';
+      }
+      document.getElementById('key-type-badge').innerHTML = badge;
+      document.getElementById('key-display').textContent = key;
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step3').style.display = 'block';
+    } else {
+      attempts--;
+      err.style.display = 'block';
+      attText.textContent = attempts > 0
+        ? `${attempts} attempt${attempts === 1 ? '' : 's'} remaining`
+        : 'No attempts remaining. Please refresh.';
+      document.getElementById('admin-input').value = '';
+      if (attempts <= 0) {
+        document.getElementById('admin-input').disabled = true;
+        document.querySelector('#step2 .btn').disabled = true;
       }
     }
+  }
 
-    document.getElementById('admin-input').addEventListener('keypress', e => {
-      if (e.key === 'Enter') verifyKey();
+  document.getElementById('admin-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') verifyKey();
+  });
+
+  // ─── Copy ────────────────────────────────────────────────────────────────────
+  function copyKey() {
+    const key = document.getElementById('key-display').textContent;
+    doCopy(key, 'copy-btn');
+  }
+
+  function copyModalKey(type) {
+    const key = document.getElementById(type + '-key-display').textContent;
+    doCopy(key, type + '-copy-btn');
+  }
+
+  function doCopy(text, btnId) {
+    const btn = document.getElementById(btnId);
+    navigator.clipboard.writeText(text).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = text; document.body.appendChild(el); el.select();
+      document.execCommand('copy'); document.body.removeChild(el);
     });
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy Key'; btn.classList.remove('copied'); }, 2000);
+  }
 
-    // ─── Copy key ──────────────────────────────────────────────────────────────
-    function copyKey() {
-      const key = document.getElementById('key-display').textContent;
-      const btn = document.getElementById('copy-btn');
-      navigator.clipboard.writeText(key).then(() => {
-        btn.textContent = '✅ Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = '📋 Copy Key';
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(() => {
-        // Fallback for older browsers
-        const el = document.createElement('textarea');
-        el.value = key; document.body.appendChild(el);
-        el.select(); document.execCommand('copy');
-        document.body.removeChild(el);
-        btn.textContent = '✅ Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = '📋 Copy Key'; btn.classList.remove('copied'); }, 2000);
-      });
+  // ─── Modals ──────────────────────────────────────────────────────────────────
+  function openModal(type) {
+    document.getElementById(type + '-modal').classList.add('open');
+    setTimeout(() => document.getElementById(type + '-admin-input').focus(), 100);
+  }
+  function closeModal(type) {
+    document.getElementById(type + '-modal').classList.remove('open');
+  }
+
+  // Close on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) overlay.classList.remove('open');
+    });
+  });
+
+  function verifyModal(type) {
+    if (modalAttempts[type] <= 0) return;
+
+    const input    = document.getElementById(type + '-admin-input');
+    const err      = document.getElementById(type + '-err-msg');
+    const attText  = document.getElementById(type + '-attempts-text');
+    const val      = input.value.trim();
+
+    if (val === ADMIN_CODE) {
+      err.style.display = 'none';
+      if (type === 'perm') {
+        const key = getRandom(KEYS_PERM);
+        document.getElementById('perm-key-display').textContent = key;
+        document.getElementById('perm-result').style.display = 'block';
+      } else {
+        const days  = parseInt(document.getElementById('custom-days').value)  || 0;
+        const hours = parseInt(document.getElementById('custom-hours').value) || 0;
+        const key   = getRandom(KEYS_CUSTOM);
+        const label = (days > 0 ? days + 'd ' : '') + (hours > 0 ? hours + 'h' : '');
+        document.getElementById('custom-badge-label').textContent = '⏱ ' + (label || 'Custom');
+        document.getElementById('custom-key-display').textContent = key;
+        document.getElementById('custom-result').style.display = 'block';
+      }
+      input.disabled = true;
+    } else {
+      modalAttempts[type]--;
+      err.style.display = 'block';
+      input.value = '';
+      attText.textContent = modalAttempts[type] > 0
+        ? `${modalAttempts[type]} attempt${modalAttempts[type] === 1 ? '' : 's'} remaining`
+        : 'No attempts remaining.';
+      if (modalAttempts[type] <= 0) {
+        input.disabled = true;
+      }
     }
-  </script>
+  }
+
+  // Enter key support for modals
+  ['perm', 'custom'].forEach(type => {
+    document.getElementById(type + '-admin-input').addEventListener('keypress', e => {
+      if (e.key === 'Enter') verifyModal(type);
+    });
+  });
+</script>
 </body>
 </html>
