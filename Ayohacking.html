@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AyoHacking</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--p:#7c3aed;--b:#2563eb;--a:#a855f7;--dark:#09091a;--d2:#0d0d24;--text:#e2e8f0;--muted:#94a3b8;--glow:rgba(124,58,237,0.45);--input-bg:rgba(255,255,255,0.06);--input-border:rgba(124,58,237,0.35);}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 15% 20%,rgba(124,58,237,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 55% at 85% 75%,rgba(37,99,235,.15) 0%,transparent 60%),radial-gradient(ellipse 45% 35% at 55% 5%,rgba(168,85,247,.1) 0%,transparent 50%);}
+  .page{display:none;position:relative;z-index:1;min-height:calc(100vh - 64px);}
+  .page.active{display:block;}
+  nav{position:sticky;top:0;z-index:200;height:64px;background:rgba(9,9,26,.9);backdrop-filter:blur(18px);border-bottom:1px solid rgba(124,58,237,.3);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;}
+  .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;}
+  .gif-logo{width:42px;height:42px;border-radius:50%;border:2px solid #7c3aed;box-shadow:0 0 12px rgba(124,58,237,.6);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;}
+  .gif-logo .tenor-gif-embed{width:42px!important;height:42px!important;margin:0!important;padding:0!important;}
+  .gif-logo iframe{width:42px!important;height:42px!important;border:none!important;border-radius:50%!important;display:block!important;}
+  .brand{font-size:1.3rem;font-weight:700;background:linear-gradient(90deg,#c084fc,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .nav-links{display:flex;gap:.4rem;list-style:none;flex-wrap:wrap;}
+  .nav-links button{background:transparent;cursor:pointer;color:var(--muted);padding:6px 13px;border-radius:6px;border:1px solid rgba(124,58,237,.25);font-size:.84rem;font-weight:500;transition:all .2s;font-family:inherit;}
+  .nav-links button:hover,.nav-links button.active{color:#fff;background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(37,99,235,.35));border-color:rgba(168,85,247,.6);box-shadow:0 0 14px var(--glow);}
+  .nav-right{display:flex;align-items:center;gap:.6rem;margin-left:auto;}
+  .nav-user-btn{background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(37,99,235,.3));border:1px solid rgba(168,85,247,.5);color:#c084fc;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:.84rem;font-weight:500;font-family:inherit;transition:all .2s;}
+  .nav-user-btn:hover{background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(37,99,235,.5));}
+  .nav-username{font-size:.84rem;color:#a78bfa;font-weight:500;white-space:nowrap;}
+  .grad{background:linear-gradient(135deg,#c084fc 0%,#818cf8 50%,#38bdf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero{padding:4rem 2rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2rem;}
+  .hero-title{font-size:clamp(2.4rem,7vw,5rem);font-weight:800;line-height:1.1;}
+  .hero-sub{font-size:clamp(.95rem,2.5vw,1.2rem);color:var(--muted);max-width:580px;line-height:1.8;}
+  .video-wrapper{width:100%;max-width:860px;border-radius:16px;overflow:hidden;border:1px solid rgba(124,58,237,.55);box-shadow:0 0 0 1px rgba(168,85,247,.2),0 0 50px rgba(124,58,237,.35);background:#000;aspect-ratio:16/9;}
+  .video-wrapper iframe{width:100%;height:100%;border:none;display:block;}
+  .hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+  .btn-primary{padding:12px 30px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;box-shadow:0 0 22px var(--glow);transition:all .2s;font-family:inherit;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 35px var(--glow);}
+  .btn-outline{padding:12px 30px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;background:transparent;color:#a78bfa;border:1px solid rgba(124,58,237,.5);transition:all .2s;font-family:inherit;}
+  .btn-outline:hover{background:rgba(124,58,237,.15);}
+  .what-section{width:100%;max-width:1100px;padding:3rem 0 1rem;}
+  .section-label{font-size:.78rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#a855f7;margin-bottom:.6rem;text-align:center;}
+  .section-title{font-size:clamp(1.7rem,4vw,2.7rem);font-weight:700;text-align:center;margin-bottom:.8rem;}
+  .section-desc{text-align:center;color:var(--muted);max-width:580px;margin:0 auto 2.5rem;line-height:1.8;font-size:.97rem;}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;}
+  .card{background:linear-gradient(135deg,rgba(124,58,237,.09),rgba(37,99,235,.09));border:1px solid rgba(124,58,237,.25);border-radius:16px;padding:1.75rem;transition:all .3s;position:relative;overflow:hidden;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7c3aed,#2563eb,#a855f7);}
+  .card:hover{border-color:rgba(124,58,237,.55);transform:translateY(-4px);box-shadow:0 8px 30px rgba(124,58,237,.2);}
+  .card-icon{font-size:1.8rem;margin-bottom:.9rem;}
+  .card h3{font-size:1.05rem;font-weight:600;color:#e0d7ff;margin-bottom:.65rem;}
+  .card p{font-size:.9rem;color:var(--muted);line-height:1.75;}
+  .about-wrap{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;padding:5rem 2rem;}
+  .about-text h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:1.2rem;}
+  .about-text p{color:var(--muted);line-height:1.85;font-size:.96rem;margin-bottom:1rem;}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .stat-box{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:1.25rem;text-align:center;}
+  .stat-box .num{font-size:2rem;font-weight:700;}
+  .stat-box .lbl{font-size:.8rem;color:var(--muted);margin-top:4px;}
+  .auth-page{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:3rem 1rem;}
+  .auth-box{width:100%;max-width:420px;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.08));border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:2.5rem;position:relative;}
+  .auth-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#7c3aed,#2563eb,#a855f7);}
+  .auth-title{font-size:1.7rem;font-weight:700;margin-bottom:.4rem;text-align:center;}
+  .auth-sub{color:var(--muted);font-size:.9rem;text-align:center;margin-bottom:1.75rem;line-height:1.6;}
+  .auth-tabs{display:flex;gap:.5rem;margin-bottom:1.75rem;background:rgba(0,0,0,.25);border-radius:10px;padding:4px;}
+  .auth-tab{flex:1;padding:9px;border:none;border-radius:8px;font-size:.9rem;font-weight:500;cursor:pointer;font-family:inherit;background:transparent;color:var(--muted);transition:all .2s;}
+  .auth-tab.active{background:linear-gradient(135deg,rgba(124,58,237,.5),rgba(37,99,235,.5));color:#fff;box-shadow:0 0 12px var(--glow);}
+  .field{margin-bottom:1.1rem;}
+  .field label{display:block;font-size:.84rem;color:var(--muted);margin-bottom:.4rem;font-weight:500;}
+  .field input{width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--input-border);background:var(--input-bg);color:var(--text);font-size:.95rem;font-family:inherit;outline:none;transition:border-color .2s;}
+  .field input:focus{border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.15);}
+  .social-btns{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.25rem;}
+  .social-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;border-radius:9px;border:1px solid rgba(124,58,237,.3);background:rgba(255,255,255,.04);color:var(--text);font-size:.92rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;}
+  .social-btn:hover{background:rgba(255,255,255,.09);border-color:rgba(168,85,247,.5);}
+  .social-btn svg{width:18px;height:18px;flex-shrink:0;}
+  .divider{display:flex;align-items:center;gap:.75rem;margin:.9rem 0;color:var(--muted);font-size:.82rem;}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(124,58,237,.2);}
+  .submit-btn{width:100%;padding:12px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:.5rem;box-shadow:0 0 20px var(--glow);}
+  .submit-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px var(--glow);}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .owner-section{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid rgba(124,58,237,.2);}
+  .owner-check-row{display:flex;align-items:center;gap:.6rem;cursor:pointer;}
+  .owner-check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#7c3aed;}
+  .owner-check-row span{font-size:.88rem;color:var(--muted);}
+  .admin-code-field{margin-top:1rem;display:none;}
+  .amsg{padding:10px 14px;border-radius:8px;font-size:.88rem;margin-top:1rem;display:none;}
+  .amsg.success{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;}
+  .amsg.error{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+  .payment-page{padding:3rem 2rem;display:flex;flex-direction:column;align-items:center;gap:2rem;}
+  .payment-hero{text-align:center;max-width:560px;}
+  .payment-hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:800;margin-bottom:.7rem;}
+  .perm-badge{display:inline-flex;align-items:center;gap:.5rem;padding:6px 18px;border-radius:999px;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(37,99,235,.2));border:1px solid rgba(168,85,247,.4);font-size:.82rem;color:#a855f7;font-weight:500;margin-bottom:1rem;}
+  .payment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;width:100%;max-width:900px;}
+  .pay-card{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.08));border:1px solid rgba(124,58,237,.25);border-radius:16px;padding:1.75rem;text-align:center;transition:all .3s;position:relative;overflow:hidden;}
+  .pay-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7c3aed,#2563eb,#a855f7);}
+  .pay-card:hover{border-color:rgba(124,58,237,.6);transform:translateY(-3px);box-shadow:0 8px 30px rgba(124,58,237,.2);}
+  .pay-icon{font-size:2.2rem;margin-bottom:.75rem;}
+  .pay-card h3{font-size:1rem;font-weight:600;color:#e0d7ff;margin-bottom:.5rem;}
+  .pay-card p{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6;}
+  .pay-btn{display:inline-block;padding:9px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+  .pay-btn.paypal{background:#ffc439;color:#003087;}
+  .pay-btn.gpay{background:#fff;color:#3c4043;}
+  .pay-btn.apple{background:#111;color:#fff;}
+  .pay-btn.robux{background:linear-gradient(135deg,#00b2ff,#0058e6);color:#fff;}
+  .codes-list{width:100%;max-width:900px;}
+  .codes-list h3{font-size:1rem;color:var(--muted);margin-bottom:.75rem;font-weight:500;}
+  .code-item{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;margin-bottom:.5rem;font-size:.9rem;}
+  .code-val{font-family:monospace;color:#c084fc;font-weight:600;letter-spacing:.1em;}
+  .code-meta{color:var(--muted);font-size:.8rem;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#0f0f2a;border:1px solid rgba(124,58,237,.5);border-radius:20px;padding:2.5rem;max-width:400px;width:90%;text-align:center;position:relative;}
+  .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#7c3aed,#2563eb,#a855f7);}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;}
+  .modal-icon{font-size:3rem;margin-bottom:1rem;}
+  .modal-title{font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
+  .modal-sub{color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;line-height:1.6;}
+  .perm-code-box{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.4);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.25rem;}
+  .perm-code-label{font-size:.75rem;color:var(--muted);margin-bottom:.3rem;letter-spacing:.08em;text-transform:uppercase;}
+  .perm-code-val{font-size:1.5rem;font-weight:700;letter-spacing:.18em;font-family:monospace;}
+  .spinner{display:inline-block;width:28px;height:28px;border:3px solid rgba(124,58,237,.3);border-top-color:#a855f7;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:1rem;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .chat-page{padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;}
+  .chat-layout{display:grid;grid-template-columns:250px 1fr;gap:1.25rem;width:100%;max-width:980px;}
+  .players-panel{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.25);border-radius:16px;padding:1.1rem;height:fit-content;min-height:300px;}
+  .players-panel h3{font-size:.82rem;font-weight:600;color:#c084fc;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.9rem;}
+  .player-item{display:flex;align-items:center;gap:.65rem;padding:9px 8px;border-radius:9px;cursor:pointer;transition:background .2s;border:1px solid transparent;margin-bottom:2px;}
+  .player-item:hover{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3);}
+  .player-item.selected{background:rgba(124,58,237,.18);border-color:rgba(168,85,247,.4);}
+  .p-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;}
+  .p-name{font-size:.86rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .p-status{font-size:.73rem;color:var(--muted);}
+  .unread-dot{width:7px;height:7px;border-radius:50%;background:#a855f7;margin-left:auto;flex-shrink:0;}
+  .chat-box{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.25);border-radius:16px;display:flex;flex-direction:column;height:520px;}
+  .chat-header{padding:.9rem 1.2rem;border-bottom:1px solid rgba(124,58,237,.2);display:flex;align-items:center;gap:.7rem;}
+  .ch-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0;}
+  .ch-name{font-size:.92rem;font-weight:600;}
+  .ch-status{font-size:.75rem;color:var(--muted);}
+  .chat-messages{flex:1;overflow-y:auto;padding:1.1rem;display:flex;flex-direction:column;gap:.65rem;}
+  .chat-messages::-webkit-scrollbar{width:3px;}
+  .chat-messages::-webkit-scrollbar-thumb{background:rgba(124,58,237,.4);border-radius:2px;}
+  .chat-msg{max-width:72%;padding:9px 13px;border-radius:12px;font-size:.88rem;line-height:1.55;}
+  .chat-msg.incoming{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25);border-bottom-left-radius:3px;align-self:flex-start;}
+  .chat-msg.outgoing{background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(37,99,235,.35));border-bottom-right-radius:3px;align-self:flex-end;}
+  .msg-who{font-size:.7rem;color:var(--muted);margin-bottom:3px;}
+  .chat-input-row{padding:.8rem 1.1rem;border-top:1px solid rgba(124,58,237,.2);display:flex;gap:.6rem;align-items:center;}
+  .chat-input-row input{flex:1;padding:9px 13px;border-radius:9px;border:1px solid var(--input-border);background:var(--input-bg);color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s;}
+  .chat-input-row input:focus{border-color:#a855f7;}
+  .send-btn{padding:9px 16px;border-radius:9px;border:none;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;font-weight:600;cursor:pointer;font-family:inherit;font-size:.85rem;transition:all .2s;}
+  .send-btn:hover{transform:translateY(-1px);box-shadow:0 0 16px var(--glow);}
+  .chat-placeholder{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem;color:var(--muted);font-size:.88rem;}
+  .owner-badge{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.35);font-size:.7rem;color:#fcd34d;font-weight:600;margin-left:.4rem;vertical-align:middle;}
+  .no-items{padding:1.5rem;text-align:center;color:var(--muted);font-size:.85rem;}
+  footer{background:var(--d2);border-top:1px solid rgba(124,58,237,.2);padding:3rem 2rem 2rem;position:relative;z-index:1;}
+  .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:start;}
+  .footer-logo{font-size:1.35rem;font-weight:700;margin-bottom:.5rem;}
+  .footer-desc{color:var(--muted);font-size:.9rem;line-height:1.75;max-width:400px;margin-bottom:1.25rem;}
+  .yt-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(220,38,38,.1));border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:.9rem;font-weight:500;text-decoration:none;transition:all .2s;}
+  .yt-btn:hover{background:linear-gradient(135deg,rgba(239,68,68,.25),rgba(220,38,38,.2));color:#fca5a5;border-color:rgba(239,68,68,.5);}
+  .footer-nav{display:flex;flex-direction:column;gap:.5rem;align-items:flex-end;}
+  .footer-nav button{background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;font-family:inherit;transition:color .2s;text-align:right;}
+  .footer-nav button:hover{color:#a855f7;}
+  .footer-bottom{max-width:1100px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(124,58,237,.12);display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--muted);flex-wrap:wrap;gap:.5rem;}
+  .footer-glow{background:linear-gradient(90deg,#a855f7,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:600;}
+  @media(max-width:700px){.about-wrap{grid-template-columns:1fr;}.footer-inner{grid-template-columns:1fr;}.footer-nav{align-items:flex-start;}.nav-links button{padding:5px 8px;font-size:.78rem;}.chat-layout{grid-template-columns:1fr;}.players-panel{max-height:180px;overflow-y:auto;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="gif-logo">
+      <div class="tenor-gif-embed" data-postid="18026651" data-share-method="host" data-aspect-ratio="1" data-width="42px"></div>
+    </div>
+    <span class="brand">AyoHacking</span>
+  </div>
+  <ul class="nav-links">
+    <li><button class="active" onclick="showPage('home')">Home</button></li>
+    <li><button onclick="showPage('about')">About</button></li>
+    <li><button onclick="showPage('payment')">Get Access</button></li>
+    <li><button onclick="showPage('chat')">Chat</button></li>
+  </ul>
+  <div class="nav-right" id="navRight">
+    <button class="nav-user-btn" onclick="showPage('auth')">Sign In</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <div class="hero">
+    <h1 class="hero-title grad">Welcome to<br>AyoHacking</h1>
+    <p class="hero-sub">Your gateway to Roblox, tech, and everything in between. We create content, tools, and experiences built for the community.</p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/zancRzZG8c4?si=p50t7gkmOWbAtYEm" title="AyoHacking Intro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="showPage('auth')">Join AyoHacking</button>
+      <button class="btn-outline" onclick="showPage('payment')">Get Access</button>
+    </div>
+    <div class="what-section">
+      <p class="section-label">Our Mission</p>
+      <h2 class="section-title grad">What We Do</h2>
+      <p class="section-desc">At AyoHacking, we combine creativity, technology, and passion to build something worth exploring.</p>
+      <div class="cards-grid">
+        <div class="card"><div class="card-icon">🎮</div><h3>Roblox Content and Tutorials</h3><p>We dive deep into the world of Roblox — guides, walkthroughs, and commentary to level up your experience.</p></div>
+        <div class="card"><div class="card-icon">🛠️</div><h3>Tech Hacks and Tools</h3><p>Clever shortcuts, software discoveries, and digital tools that make your workflow smoother and setup sharper.</p></div>
+        <div class="card"><div class="card-icon">📡</div><h3>Community and Live Content</h3><p>Live sessions, community challenges — every piece of content is shaped by the people watching.</p></div>
+        <div class="card"><div class="card-icon">🚀</div><h3>Original Projects</h3><p>Beyond content, original projects and experiments. If it is interesting and worth sharing — you will find it here first.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-inner"><div><div class="footer-logo grad">AyoHacking</div><p class="footer-desc">Built for Roblox players, hackers, and curious minds.</p><a href="https://www.youtube.com/@AyoHacking" target="_blank" class="yt-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>@AyoHacking on YouTube</a></div><nav class="footer-nav"><button onclick="showPage('home')">Home</button><button onclick="showPage('about')">About</button><button onclick="showPage('payment')">Get Access</button><button onclick="showPage('chat')">Chat</button></nav></div><div class="footer-bottom"><span>© 2026 AyoHacking. All rights reserved.</span><span class="footer-glow">Made with 🎮 by AyoHacking</span></div></footer>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="about">
+  <div class="about-wrap">
+    <div class="about-text">
+      <h2 class="grad">About AyoHacking</h2>
+      <p>AyoHacking started as a passion project and grew into a full creative hub. Rooted in a love for Roblox and technology, we set out to build a space where great content meets genuine community.</p>
+      <p>Behind every video, post, and project is a commitment to quality and authenticity. We do not follow trends blindly — we chase what is actually worth your time.</p>
+      <p>Whether you found us through YouTube, a search, or a friend's recommendation — welcome. You are in the right place, and there is a lot more coming.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="num grad">100+</div><div class="lbl">Videos Published</div></div>
+      <div class="stat-box"><div class="num grad">∞</div><div class="lbl">Ideas in Progress</div></div>
+      <div class="stat-box"><div class="num grad">1</div><div class="lbl">Focused Vision</div></div>
+      <div class="stat-box"><div class="num grad">24/7</div><div class="lbl">Content Mindset</div></div>
+    </div>
+  </div>
+  <footer><div class="footer-inner"><div><div class="footer-logo grad">AyoHacking</div><p class="footer-desc">Built for Roblox players, hackers, and curious minds.</p><a href="https://www.youtube.com/@AyoHacking" target="_blank" class="yt-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>@AyoHacking on YouTube</a></div><nav class="footer-nav"><button onclick="showPage('home')">Home</button><button onclick="showPage('about')">About</button><button onclick="showPage('payment')">Get Access</button><button onclick="showPage('chat')">Chat</button></nav></div><div class="footer-bottom"><span>© 2026 AyoHacking. All rights reserved.</span><span class="footer-glow">Made with 🎮 by AyoHacking</span></div></footer>
+</div>
+
+<!-- AUTH -->
+<div class="page" id="auth">
+  <div class="auth-page">
+    <div class="auth-box">
+      <h2 class="auth-title grad">AyoHacking</h2>
+      <p class="auth-sub" id="authSub">Sign in to access exclusive content and chat with the owner.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('in')">Sign In</button>
+        <button class="auth-tab" onclick="switchTab('up')">Sign Up</button>
+      </div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialLogin('Google')">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <button class="social-btn" onclick="socialLogin('Apple')">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Continue with Apple
+        </button>
+      </div>
+      <div class="divider">or</div>
+      <div id="inFields">
+        <div class="field"><label>Username</label><input type="text" id="siUser" placeholder="your username"/></div>
+        <div class="field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"/></div>
+        <button class="submit-btn" onclick="doSignIn()">Sign In</button>
+      </div>
+      <div id="upFields" style="display:none;">
+        <div class="field"><label>Username</label><input type="text" id="suUser" placeholder="choose a username"/></div>
+        <div class="field"><label>Email</label><input type="email" id="suEmail" placeholder="you@email.com"/></div>
+        <div class="field"><label>Password</label><input type="password" id="suPass" placeholder="••••••••"/></div>
+        <div class="owner-section">
+          <label class="owner-check-row">
+            <input type="checkbox" id="ownerCk" onchange="toggleAdmin()"/>
+            <span>Sign up as Owner</span>
+          </label>
+          <div class="admin-code-field" id="adminField">
+            <div class="field" style="margin-top:.75rem;margin-bottom:0;"><label>Admin Code</label><input type="password" id="adminInp" placeholder="Enter admin code"/></div>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="doSignUp()">Create Account</button>
+      </div>
+      <div class="amsg" id="amsg"></div>
+    </div>
+  </div>
+  <footer><div class="footer-inner"><div><div class="footer-logo grad">AyoHacking</div><p class="footer-desc">Built for Roblox players, hackers, and curious minds.</p></div><nav class="footer-nav"><button onclick="showPage('home')">Home</button><button onclick="showPage('about')">About</button><button onclick="showPage('payment')">Get Access</button><button onclick="showPage('chat')">Chat</button></nav></div><div class="footer-bottom"><span>© 2026 AyoHacking. All rights reserved.</span><span class="footer-glow">Made with 🎮 by AyoHacking</span></div></footer>
+</div>
+
+<!-- PAYMENT -->
+<div class="page" id="payment">
+  <div class="payment-page">
+    <div class="payment-hero">
+      <div class="perm-badge" id="permBadge" style="display:none;">🔑 <span id="permCount">0</span> permission code(s) earned</div>
+      <h1 class="grad">Get Access</h1>
+      <p style="color:var(--muted);line-height:1.8;margin-top:.5rem;">Each payment gives you a unique permission code. Pay as many times as you want — every payment gets you a new code!</p>
+    </div>
+    <div class="payment-grid">
+      <div class="pay-card"><div class="pay-icon">💳</div><h3>PayPal</h3><p>Pay securely with your PayPal account or any credit card. Fast and trusted worldwide.</p><button class="pay-btn paypal" onclick="openPay('PayPal','💳')">Pay with PayPal</button></div>
+      <div class="pay-card"><div class="pay-icon">📱</div><h3>Google Pay</h3><p>One-tap payment with Google Pay. Quick and seamless on any Android device.</p><button class="pay-btn gpay" onclick="openPay('Google Pay','📱')">G Pay</button></div>
+      <div class="pay-card"><div class="pay-icon">🍎</div><h3>Apple Pay</h3><p>Touch ID or Face ID via Apple Pay. The fastest way to pay on iPhone and Mac.</p><button class="pay-btn apple" onclick="openPay('Apple Pay','🍎')"> Pay</button></div>
+      <div class="pay-card"><div class="pay-icon">🟦</div><h3>Robux</h3><p>Support with Robux in-game. Exclusive to Roblox players in the official AyoHacking game.</p><button class="pay-btn robux" onclick="openPay('Robux','🟦')">Pay with Robux</button></div>
+    </div>
+    <div class="codes-list" id="codesList" style="display:none;">
+      <h3>Your permission codes</h3>
+      <div id="codesBox"></div>
+    </div>
+  </div>
+  <footer><div class="footer-inner"><div><div class="footer-logo grad">AyoHacking</div><p class="footer-desc">Built for Roblox players, hackers, and curious minds.</p></div><nav class="footer-nav"><button onclick="showPage('home')">Home</button><button onclick="showPage('about')">About</button><button onclick="showPage('payment')">Get Access</button><button onclick="showPage('chat')">Chat</button></nav></div><div class="footer-bottom"><span>© 2026 AyoHacking. All rights reserved.</span><span class="footer-glow">Made with 🎮 by AyoHacking</span></div></footer>
+</div>
+
+<!-- CHAT -->
+<div class="page" id="chat">
+  <div class="chat-page">
+    <div style="width:100%;max-width:980px;">
+      <h2 class="grad" style="font-size:1.55rem;font-weight:700;margin-bottom:.25rem;">Community Chat</h2>
+      <p style="color:var(--muted);font-size:.88rem;" id="chatDesc">Chat directly with the AyoHacking owner.</p>
+    </div>
+    <div id="chatNeedLogin" style="text-align:center;padding:4rem 2rem;width:100%;max-width:980px;display:none;">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+      <h3 style="font-size:1.25rem;font-weight:600;margin-bottom:.5rem;">Sign in to chat</h3>
+      <p style="color:var(--muted);margin-bottom:1.5rem;">You need an account to use the community chat.</p>
+      <button class="btn-primary" onclick="showPage('auth')">Sign In / Sign Up</button>
+    </div>
+    <div class="chat-layout" id="chatLayout" style="display:none;">
+      <div class="players-panel">
+        <h3 id="panelTitle">Players</h3>
+        <div id="panelList"></div>
+      </div>
+      <div class="chat-box">
+        <div class="chat-header">
+          <div class="ch-avatar" id="chAvatar">?</div>
+          <div><div class="ch-name" id="chName">Select a conversation</div><div class="ch-status" id="chStatus">Pick from the left</div></div>
+        </div>
+        <div class="chat-messages" id="msgArea">
+          <div class="chat-placeholder"><span style="font-size:1.8rem;">💬</span><span id="placeholderTxt">Select someone to start chatting</span></div>
+        </div>
+        <div class="chat-input-row" id="inputRow" style="display:none;">
+          <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+          <button class="send-btn" onclick="sendMsg()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-inner"><div><div class="footer-logo grad">AyoHacking</div><p class="footer-desc">Built for Roblox players, hackers, and curious minds.</p></div><nav class="footer-nav"><button onclick="showPage('home')">Home</button><button onclick="showPage('about')">About</button><button onclick="showPage('payment')">Get Access</button><button onclick="showPage('chat')">Chat</button></nav></div><div class="footer-bottom"><span>© 2026 AyoHacking. All rights reserved.</span><span class="footer-glow">Made with 🎮 by AyoHacking</span></div></footer>
+</div>
+
+<!-- PAY MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePay()">✕</button>
+    <div id="mIcon" class="modal-icon">💳</div>
+    <div id="mSpinner" class="spinner"></div>
+    <div class="modal-title" id="mTitle">Processing...</div>
+    <div class="modal-sub" id="mSub">Connecting to payment provider...</div>
+    <div id="mCodeSection" style="display:none;">
+      <div class="perm-code-box">
+        <div class="perm-code-label">Your Permission Code</div>
+        <div class="perm-code-val grad" id="mCode">—</div>
+      </div>
+    </div>
+    <button class="submit-btn" id="mBtn" onclick="closePay()" style="display:none;">Awesome, Done!</button>
+  </div>
+</div>
+
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<script>
+const ADMIN = '003679';
+let me = null, amOwner = false, selPlayer = null;
+let U = JSON.parse(localStorage.getItem('ayo_u')||'[]');
+let C = JSON.parse(localStorage.getItem('ayo_c')||'{}');
+let M = JSON.parse(localStorage.getItem('ayo_m')||'{}');
+
+function sv(){localStorage.setItem('ayo_u',JSON.stringify(U));localStorage.setItem('ayo_c',JSON.stringify(C));localStorage.setItem('ayo_m',JSON.stringify(M));}
+
+const navPages=['home','about','auth','payment','chat'];
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach((b,i)=>b.classList.toggle('active',navPages[i]===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='payment')renderPay();
+  if(id==='chat')renderChat();
+}
+
+function updateNav(){
+  const nr=document.getElementById('navRight');
+  nr.innerHTML=me?`<span class="nav-username">${amOwner?'👑 ':''}${me}</span><button class="nav-user-btn" onclick="signOut()">Sign Out</button>`:`<button class="nav-user-btn" onclick="showPage('auth')">Sign In</button>`;
+}
+
+function switchTab(t){
+  document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='in')||(i===1&&t==='up')));
+  document.getElementById('inFields').style.display=t==='in'?'block':'none';
+  document.getElementById('upFields').style.display=t==='up'?'block':'none';
+  document.getElementById('authSub').textContent=t==='in'?'Sign in to access exclusive content and chat with the owner.':'Create your free AyoHacking account.';
+  document.getElementById('amsg').style.display='none';
+}
+
+function toggleAdmin(){document.getElementById('adminField').style.display=document.getElementById('ownerCk').checked?'block':'none';}
+
+function showAmsg(txt,type){const el=document.getElementById('amsg');el.textContent=txt;el.className='amsg '+type;el.style.display='block';}
+
+function socialLogin(prov){
+  const n=prompt(`Enter a username to continue with ${prov}:`);
+  if(!n||!n.trim())return;
+  const u=n.trim();
+  if(!U.find(x=>x.n===u))U.push({n:u,owner:false});
+  sv();me=u;amOwner=U.find(x=>x.n===u)?.owner||false;
+  updateNav();showAmsg(`Signed in as ${u} via ${prov}!`,'success');
+  setTimeout(()=>showPage('home'),900);
+}
+
+function doSignIn(){
+  const u=document.getElementById('siUser').value.trim();
+  const p=document.getElementById('siPass').value;
+  if(!u||!p)return showAmsg('Please fill in all fields.','error');
+  const found=U.find(x=>x.n===u&&x.p===p);
+  if(!found)return showAmsg('Username or password incorrect.','error');
+  me=u;amOwner=found.owner||false;updateNav();
+  showAmsg(`Welcome back, ${u}${amOwner?' 👑':''}!`,'success');
+  setTimeout(()=>showPage('home'),900);
+}
+
+function doSignUp(){
+  const u=document.getElementById('suUser').value.trim();
+  const e=document.getElementById('suEmail').value.trim();
+  const p=document.getElementById('suPass').value;
+  const wo=document.getElementById('ownerCk').checked;
+  const ac=document.getElementById('adminInp').value;
+  if(!u||!e||!p)return showAmsg('Please fill in all fields.','error');
+  if(U.find(x=>x.n===u))return showAmsg('That username is already taken.','error');
+  if(wo&&ac!==ADMIN)return showAmsg('Incorrect admin code.','error');
+  U.push({n:u,e,p,owner:wo});sv();
+  me=u;amOwner=wo;updateNav();
+  showAmsg(`Account created! Welcome, ${u}${wo?' 👑 (Owner)':''}!`,'success');
+  setTimeout(()=>showPage('home'),1000);
+}
+
+function signOut(){me=null;amOwner=false;selPlayer=null;updateNav();showPage('home');}
+
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<12;i++){if(i>0&&i%4===0)s+='-';s+=c[Math.floor(Math.random()*c.length)];}return s;}
+
+function openPay(method,icon){
+  const mod=document.getElementById('payModal');
+  document.getElementById('mIcon').textContent=icon;
+  document.getElementById('mSpinner').style.display='block';
+  document.getElementById('mTitle').textContent=`Processing ${method}...`;
+  document.getElementById('mSub').textContent=`Connecting to ${method} — please wait...`;
+  document.getElementById('mCodeSection').style.display='none';
+  document.getElementById('mBtn').style.display='none';
+  mod.classList.add('open');
+  setTimeout(()=>{
+    const code=genCode();
+    const key=me||'guest';
+    if(!C[key])C[key]=[];
+    C[key].push({code,method,date:new Date().toLocaleDateString()});sv();
+    document.getElementById('mSpinner').style.display='none';
+    document.getElementById('mTitle').textContent='Payment Successful! 🎉';
+    document.getElementById('mSub').textContent=`Your ${method} payment went through. Here is your exclusive permission code:`;
+    document.getElementById('mCode').textContent=code;
+    document.getElementById('mCodeSection').style.display='block';
+    document.getElementById('mBtn').style.display='block';
+    renderPay();
+  },2200);
+}
+
+function closePay(){document.getElementById('payModal').classList.remove('open');}
+
+function renderPay(){
+  const key=me||'guest';
+  const codes=C[key]||[];
+  const badge=document.getElementById('permBadge');
+  document.getElementById('permCount').textContent=codes.length;
+  badge.style.display=codes.length>0?'inline-flex':'none';
+  const list=document.getElementById('codesList');
+  const box=document.getElementById('codesBox');
+  if(codes.length>0){
+    list.style.display='block';
+    box.innerHTML=codes.map(c=>`<div class="code-item"><span class="code-val">${c.code}</span><span class="code-meta">${c.method} &bull; ${c.date}</span></div>`).join('');
+  } else {list.style.display='none';}
+}
+
+function renderChat(){
+  const nl=document.getElementById('chatNeedLogin');
+  const cl=document.getElementById('chatLayout');
+  if(!me){nl.style.display='block';cl.style.display='none';return;}
+  nl.style.display='none';cl.style.display='grid';
+  const panelTitle=document.getElementById('panelTitle');
+  const panelList=document.getElementById('panelList');
+  const desc=document.getElementById('chatDesc');
+  if(amOwner){
+    panelTitle.textContent='Players';
+    desc.textContent='As owner, reply to any player. All accounts are listed below.';
+    const players=U.filter(u=>!u.owner);
+    if(players.length===0){panelList.innerHTML='<div class="no-items">No players have signed up yet.</div>';}
+    else{panelList.innerHTML=players.map(u=>{
+      const key=`__${u.n}`;
+      const msgs=M[key]||[];
+      const unread=msgs.some(m=>m.from===u.n&&!m.r);
+      const last=msgs.length>0?msgs[msgs.length-1].t.substring(0,20)+'…':'No messages yet';
+      return `<div class="player-item${selPlayer===u.n?' selected':''}" onclick="pickPlayer('${u.n}')">
+        <div class="p-avatar">${u.n.substring(0,2).toUpperCase()}</div>
+        <div style="overflow:hidden;flex:1;"><div class="p-name">${u.n}</div><div class="p-status">${last}</div></div>
+        ${unread?'<div class="unread-dot"></div>':''}
+      </div>`;
+    }).join('');}
+  } else {
+    panelTitle.textContent='Owner';
+    desc.textContent='Chat directly with the AyoHacking owner.';
+    const owners=U.filter(u=>u.owner);
+    if(owners.length===0){panelList.innerHTML='<div class="no-items">No owner account yet.</div>';}
+    else{panelList.innerHTML=owners.map(o=>`<div class="player-item${selPlayer===o.n?' selected':''}" onclick="pickPlayer('${o.n}')">
+      <div class="p-avatar">${o.n.substring(0,2).toUpperCase()}</div>
+      <div><div class="p-name">${o.n}<span class="owner-badge">Owner</span></div><div class="p-status">Tap to chat</div></div>
+    </div>`).join('');}
+  }
+  if(selPlayer)loadConv();
+}
+
+function pickPlayer(n){
+  selPlayer=n;
+  const key=`__${amOwner?n:me}`;
+  if(M[key])M[key].forEach(m=>{if(m.from===n)m.r=true;});sv();
+  renderChat();
+}
+
+function convKey(){return `__${amOwner?selPlayer:me}`;}
+
+function loadConv(){
+  const key=convKey();
+  const msgs=M[key]||[];
+  document.getElementById('chAvatar').textContent=selPlayer.substring(0,2).toUpperCase();
+  document.getElementById('chName').textContent=selPlayer+(U.find(u=>u.n===selPlayer)?.owner?' 👑':'');
+  document.getElementById('chStatus').textContent=amOwner?'Player':'Owner';
+  document.getElementById('inputRow').style.display='flex';
+  const area=document.getElementById('msgArea');
+  if(msgs.length===0){area.innerHTML='<div class="chat-placeholder"><span style="font-size:1.8rem;">👋</span><span>Start the conversation!</span></div>';}
+  else{area.innerHTML=msgs.map(m=>`<div class="chat-msg ${m.from===me?'outgoing':'incoming'}"><div class="msg-who">${m.from}</div>${m.t}</div>`).join('');area.scrollTop=area.scrollHeight;}
+}
+
+function sendMsg(){
+  if(!selPlayer)return;
+  const inp=document.getElementById('msgInput');
+  const txt=inp.value.trim();if(!txt)return;
+  const key=convKey();
+  if(!M[key])M[key]=[];
+  M[key].push({from:me,t:txt,r:false});sv();
+  inp.value='';loadConv();
+}
+
+updateNav();
+</script>
+</body>
+</html>
