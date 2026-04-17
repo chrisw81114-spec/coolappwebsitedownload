@@ -106,7 +106,16 @@
   .code-meta{color:var(--muted);font-size:.8rem;}
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:center;justify-content:center;}
   .modal-overlay.open{display:flex;}
- <iframe width="560" height="315" src="https://www.youtube.com/embed/-32L7zMR-O8?si=jmfG51oL3gl6-NHb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  .modal-box{background:#0f0f2e;border:1px solid rgba(124,58,237,.4);border-radius:20px;padding:2.5rem;max-width:400px;width:90%;text-align:center;position:relative;}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;}
+  .modal-icon{font-size:3rem;margin-bottom:1rem;}
+  .modal-title{font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
+  .modal-sub{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:1.25rem;}
+  .spinner{width:36px;height:36px;border:3px solid rgba(124,58,237,.3);border-top-color:#7c3aed;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .perm-code-box{background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;}
+  .perm-code-label{font-size:.78rem;color:var(--muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.1em;}
+  .perm-code-val{font-size:1.4rem;font-weight:700;letter-spacing:.15em;font-family:monospace;}
   .chat-page{padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1.5rem;}
   .chat-layout{display:grid;grid-template-columns:250px 1fr;gap:1.25rem;width:100%;max-width:980px;}
   .players-panel{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.25);border-radius:16px;padding:1.1rem;height:fit-content;min-height:300px;}
@@ -178,7 +187,7 @@
     <h1 class="hero-title grad">Welcome to<br>AyoHacking</h1>
     <p class="hero-sub">Your gateway to Roblox, tech, and everything in between. We create content, tools, and experiences built for the community.</p>
     <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/zancRzZG8c4?si=p50t7gkmOWbAtYEm" title="AyoHacking Intro" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/-32L7zMR-O8?si=jmfG51oL3gl6-NHb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
     <div class="hero-cta">
       <button class="btn-primary" onclick="showPage('auth')">Join AyoHacking</button>
@@ -343,189 +352,31 @@
 
 <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
 <script>
-const ADMIN = '003679';
-let me = null, amOwner = false, selPlayer = null;
-let U = JSON.parse(localStorage.getItem('ayo_u')||'[]');
-let C = JSON.parse(localStorage.getItem('ayo_c')||'{}');
-let M = JSON.parse(localStorage.getItem('ayo_m')||'{}');
-
+const ADMIN='003679';
+let me=null,amOwner=false,selPlayer=null;
+let U=JSON.parse(localStorage.getItem('ayo_u')||'[]');
+let C=JSON.parse(localStorage.getItem('ayo_c')||'{}');
+let M=JSON.parse(localStorage.getItem('ayo_m')||'{}');
 function sv(){localStorage.setItem('ayo_u',JSON.stringify(U));localStorage.setItem('ayo_c',JSON.stringify(C));localStorage.setItem('ayo_m',JSON.stringify(M));}
-
 const navPages=['home','about','auth','payment','chat'];
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-links button').forEach((b,i)=>b.classList.toggle('active',navPages[i]===id));
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='payment')renderPay();
-  if(id==='chat')renderChat();
-}
-
-function updateNav(){
-  const nr=document.getElementById('navRight');
-  nr.innerHTML=me?`<span class="nav-username">${amOwner?'👑 ':''}${me}</span><button class="nav-user-btn" onclick="signOut()">Sign Out</button>`:`<button class="nav-user-btn" onclick="showPage('auth')">Sign In</button>`;
-}
-
-function switchTab(t){
-  document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='in')||(i===1&&t==='up')));
-  document.getElementById('inFields').style.display=t==='in'?'block':'none';
-  document.getElementById('upFields').style.display=t==='up'?'block':'none';
-  document.getElementById('authSub').textContent=t==='in'?'Sign in to access exclusive content and chat with the owner.':'Create your free AyoHacking account.';
-  document.getElementById('amsg').style.display='none';
-}
-
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-links button').forEach((b,i)=>b.classList.toggle('active',navPages[i]===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='payment')renderPay();if(id==='chat')renderChat();}
+function updateNav(){const nr=document.getElementById('navRight');nr.innerHTML=me?`<span class="nav-username">${amOwner?'👑 ':''}${me}</span><button class="nav-user-btn" onclick="signOut()">Sign Out</button>`:`<button class="nav-user-btn" onclick="showPage('auth')">Sign In</button>`;}
+function switchTab(t){document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='in')||(i===1&&t==='up')));document.getElementById('inFields').style.display=t==='in'?'block':'none';document.getElementById('upFields').style.display=t==='up'?'block':'none';document.getElementById('authSub').textContent=t==='in'?'Sign in to access exclusive content and chat with the owner.':'Create your free AyoHacking account.';document.getElementById('amsg').style.display='none';}
 function toggleAdmin(){document.getElementById('adminField').style.display=document.getElementById('ownerCk').checked?'block':'none';}
-
 function showAmsg(txt,type){const el=document.getElementById('amsg');el.textContent=txt;el.className='amsg '+type;el.style.display='block';}
-
-function socialLogin(prov){
-  const n=prompt(`Enter a username to continue with ${prov}:`);
-  if(!n||!n.trim())return;
-  const u=n.trim();
-  if(!U.find(x=>x.n===u))U.push({n:u,owner:false});
-  sv();me=u;amOwner=U.find(x=>x.n===u)?.owner||false;
-  updateNav();showAmsg(`Signed in as ${u} via ${prov}!`,'success');
-  setTimeout(()=>showPage('home'),900);
-}
-
-function doSignIn(){
-  const u=document.getElementById('siUser').value.trim();
-  const p=document.getElementById('siPass').value;
-  if(!u||!p)return showAmsg('Please fill in all fields.','error');
-  const found=U.find(x=>x.n===u&&x.p===p);
-  if(!found)return showAmsg('Username or password incorrect.','error');
-  me=u;amOwner=found.owner||false;updateNav();
-  showAmsg(`Welcome back, ${u}${amOwner?' 👑':''}!`,'success');
-  setTimeout(()=>showPage('home'),900);
-}
-
-function doSignUp(){
-  const u=document.getElementById('suUser').value.trim();
-  const e=document.getElementById('suEmail').value.trim();
-  const p=document.getElementById('suPass').value;
-  const wo=document.getElementById('ownerCk').checked;
-  const ac=document.getElementById('adminInp').value;
-  if(!u||!e||!p)return showAmsg('Please fill in all fields.','error');
-  if(U.find(x=>x.n===u))return showAmsg('That username is already taken.','error');
-  if(wo&&ac!==ADMIN)return showAmsg('Incorrect admin code.','error');
-  U.push({n:u,e,p,owner:wo});sv();
-  me=u;amOwner=wo;updateNav();
-  showAmsg(`Account created! Welcome, ${u}${wo?' 👑 (Owner)':''}!`,'success');
-  setTimeout(()=>showPage('home'),1000);
-}
-
+function socialLogin(prov){const n=prompt(`Enter a username to continue with ${prov}:`);if(!n||!n.trim())return;const u=n.trim();if(!U.find(x=>x.n===u))U.push({n:u,owner:false});sv();me=u;amOwner=U.find(x=>x.n===u)?.owner||false;updateNav();showAmsg(`Signed in as ${u} via ${prov}!`,'success');setTimeout(()=>showPage('home'),900);}
+function doSignIn(){const u=document.getElementById('siUser').value.trim();const p=document.getElementById('siPass').value;if(!u||!p)return showAmsg('Please fill in all fields.','error');const found=U.find(x=>x.n===u&&x.p===p);if(!found)return showAmsg('Username or password incorrect.','error');me=u;amOwner=found.owner||false;updateNav();showAmsg(`Welcome back, ${u}${amOwner?' 👑':''}!`,'success');setTimeout(()=>showPage('home'),900);}
+function doSignUp(){const u=document.getElementById('suUser').value.trim();const e=document.getElementById('suEmail').value.trim();const p=document.getElementById('suPass').value;const wo=document.getElementById('ownerCk').checked;const ac=document.getElementById('adminInp').value;if(!u||!e||!p)return showAmsg('Please fill in all fields.','error');if(U.find(x=>x.n===u))return showAmsg('That username is already taken.','error');if(wo&&ac!==ADMIN)return showAmsg('Incorrect admin code.','error');U.push({n:u,e,p,owner:wo});sv();me=u;amOwner=wo;updateNav();showAmsg(`Account created! Welcome, ${u}${wo?' 👑 (Owner)':''}!`,'success');setTimeout(()=>showPage('home'),1000);}
 function signOut(){me=null;amOwner=false;selPlayer=null;updateNav();showPage('home');}
-
 function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<12;i++){if(i>0&&i%4===0)s+='-';s+=c[Math.floor(Math.random()*c.length)];}return s;}
-
-function openPay(method,icon){
-  const mod=document.getElementById('payModal');
-  document.getElementById('mIcon').textContent=icon;
-  document.getElementById('mSpinner').style.display='block';
-  document.getElementById('mTitle').textContent=`Processing ${method}...`;
-  document.getElementById('mSub').textContent=`Connecting to ${method} — please wait...`;
-  document.getElementById('mCodeSection').style.display='none';
-  document.getElementById('mBtn').style.display='none';
-  mod.classList.add('open');
-  setTimeout(()=>{
-    const code=genCode();
-    const key=me||'guest';
-    if(!C[key])C[key]=[];
-    C[key].push({code,method,date:new Date().toLocaleDateString()});sv();
-    document.getElementById('mSpinner').style.display='none';
-    document.getElementById('mTitle').textContent='Payment Successful! 🎉';
-    document.getElementById('mSub').textContent=`Your ${method} payment went through. Here is your exclusive permission code:`;
-    document.getElementById('mCode').textContent=code;
-    document.getElementById('mCodeSection').style.display='block';
-    document.getElementById('mBtn').style.display='block';
-    renderPay();
-  },2200);
-}
-
+function openPay(method,icon){const mod=document.getElementById('payModal');document.getElementById('mIcon').textContent=icon;document.getElementById('mSpinner').style.display='block';document.getElementById('mTitle').textContent=`Processing ${method}...`;document.getElementById('mSub').textContent=`Connecting to ${method} — please wait...`;document.getElementById('mCodeSection').style.display='none';document.getElementById('mBtn').style.display='none';mod.classList.add('open');setTimeout(()=>{const code=genCode();const key=me||'guest';if(!C[key])C[key]=[];C[key].push({code,method,date:new Date().toLocaleDateString()});sv();document.getElementById('mSpinner').style.display='none';document.getElementById('mTitle').textContent='Payment Successful! 🎉';document.getElementById('mSub').textContent=`Your ${method} payment went through. Here is your exclusive permission code:`;document.getElementById('mCode').textContent=code;document.getElementById('mCodeSection').style.display='block';document.getElementById('mBtn').style.display='block';renderPay();},2200);}
 function closePay(){document.getElementById('payModal').classList.remove('open');}
-
-function renderPay(){
-  const key=me||'guest';
-  const codes=C[key]||[];
-  const badge=document.getElementById('permBadge');
-  document.getElementById('permCount').textContent=codes.length;
-  badge.style.display=codes.length>0?'inline-flex':'none';
-  const list=document.getElementById('codesList');
-  const box=document.getElementById('codesBox');
-  if(codes.length>0){
-    list.style.display='block';
-    box.innerHTML=codes.map(c=>`<div class="code-item"><span class="code-val">${c.code}</span><span class="code-meta">${c.method} &bull; ${c.date}</span></div>`).join('');
-  } else {list.style.display='none';}
-}
-
-function renderChat(){
-  const nl=document.getElementById('chatNeedLogin');
-  const cl=document.getElementById('chatLayout');
-  if(!me){nl.style.display='block';cl.style.display='none';return;}
-  nl.style.display='none';cl.style.display='grid';
-  const panelTitle=document.getElementById('panelTitle');
-  const panelList=document.getElementById('panelList');
-  const desc=document.getElementById('chatDesc');
-  if(amOwner){
-    panelTitle.textContent='Players';
-    desc.textContent='As owner, reply to any player. All accounts are listed below.';
-    const players=U.filter(u=>!u.owner);
-    if(players.length===0){panelList.innerHTML='<div class="no-items">No players have signed up yet.</div>';}
-    else{panelList.innerHTML=players.map(u=>{
-      const key=`__${u.n}`;
-      const msgs=M[key]||[];
-      const unread=msgs.some(m=>m.from===u.n&&!m.r);
-      const last=msgs.length>0?msgs[msgs.length-1].t.substring(0,20)+'…':'No messages yet';
-      return `<div class="player-item${selPlayer===u.n?' selected':''}" onclick="pickPlayer('${u.n}')">
-        <div class="p-avatar">${u.n.substring(0,2).toUpperCase()}</div>
-        <div style="overflow:hidden;flex:1;"><div class="p-name">${u.n}</div><div class="p-status">${last}</div></div>
-        ${unread?'<div class="unread-dot"></div>':''}
-      </div>`;
-    }).join('');}
-  } else {
-    panelTitle.textContent='Owner';
-    desc.textContent='Chat directly with the AyoHacking owner.';
-    const owners=U.filter(u=>u.owner);
-    if(owners.length===0){panelList.innerHTML='<div class="no-items">No owner account yet.</div>';}
-    else{panelList.innerHTML=owners.map(o=>`<div class="player-item${selPlayer===o.n?' selected':''}" onclick="pickPlayer('${o.n}')">
-      <div class="p-avatar">${o.n.substring(0,2).toUpperCase()}</div>
-      <div><div class="p-name">${o.n}<span class="owner-badge">Owner</span></div><div class="p-status">Tap to chat</div></div>
-    </div>`).join('');}
-  }
-  if(selPlayer)loadConv();
-}
-
-function pickPlayer(n){
-  selPlayer=n;
-  const key=`__${amOwner?n:me}`;
-  if(M[key])M[key].forEach(m=>{if(m.from===n)m.r=true;});sv();
-  renderChat();
-}
-
+function renderPay(){const key=me||'guest';const codes=C[key]||[];const badge=document.getElementById('permBadge');document.getElementById('permCount').textContent=codes.length;badge.style.display=codes.length>0?'inline-flex':'none';const list=document.getElementById('codesList');const box=document.getElementById('codesBox');if(codes.length>0){list.style.display='block';box.innerHTML=codes.map(c=>`<div class="code-item"><span class="code-val">${c.code}</span><span class="code-meta">${c.method} &bull; ${c.date}</span></div>`).join('');}else{list.style.display='none';}}
+function renderChat(){const nl=document.getElementById('chatNeedLogin');const cl=document.getElementById('chatLayout');if(!me){nl.style.display='block';cl.style.display='none';return;}nl.style.display='none';cl.style.display='grid';const panelTitle=document.getElementById('panelTitle');const panelList=document.getElementById('panelList');const desc=document.getElementById('chatDesc');if(amOwner){panelTitle.textContent='Players';desc.textContent='As owner, reply to any player. All accounts are listed below.';const players=U.filter(u=>!u.owner);if(players.length===0){panelList.innerHTML='<div class="no-items">No players have signed up yet.</div>';}else{panelList.innerHTML=players.map(u=>{const key=`__${u.n}`;const msgs=M[key]||[];const unread=msgs.some(m=>m.from===u.n&&!m.r);const last=msgs.length>0?msgs[msgs.length-1].t.substring(0,20)+'…':'No messages yet';return `<div class="player-item${selPlayer===u.n?' selected':''}" onclick="pickPlayer('${u.n}')"><div class="p-avatar">${u.n.substring(0,2).toUpperCase()}</div><div style="overflow:hidden;flex:1;"><div class="p-name">${u.n}</div><div class="p-status">${last}</div></div>${unread?'<div class="unread-dot"></div>':''}</div>`;}).join('');}}else{panelTitle.textContent='Owner';desc.textContent='Chat directly with the AyoHacking owner.';const owners=U.filter(u=>u.owner);if(owners.length===0){panelList.innerHTML='<div class="no-items">No owner account yet.</div>';}else{panelList.innerHTML=owners.map(o=>`<div class="player-item${selPlayer===o.n?' selected':''}" onclick="pickPlayer('${o.n}')"><div class="p-avatar">${o.n.substring(0,2).toUpperCase()}</div><div><div class="p-name">${o.n}<span class="owner-badge">Owner</span></div><div class="p-status">Tap to chat</div></div></div>`).join('');}}if(selPlayer)loadConv();}
+function pickPlayer(n){selPlayer=n;const key=`__${amOwner?n:me}`;if(M[key])M[key].forEach(m=>{if(m.from===n)m.r=true;});sv();renderChat();}
 function convKey(){return `__${amOwner?selPlayer:me}`;}
-
-function loadConv(){
-  const key=convKey();
-  const msgs=M[key]||[];
-  document.getElementById('chAvatar').textContent=selPlayer.substring(0,2).toUpperCase();
-  document.getElementById('chName').textContent=selPlayer+(U.find(u=>u.n===selPlayer)?.owner?' 👑':'');
-  document.getElementById('chStatus').textContent=amOwner?'Player':'Owner';
-  document.getElementById('inputRow').style.display='flex';
-  const area=document.getElementById('msgArea');
-  if(msgs.length===0){area.innerHTML='<div class="chat-placeholder"><span style="font-size:1.8rem;">👋</span><span>Start the conversation!</span></div>';}
-  else{area.innerHTML=msgs.map(m=>`<div class="chat-msg ${m.from===me?'outgoing':'incoming'}"><div class="msg-who">${m.from}</div>${m.t}</div>`).join('');area.scrollTop=area.scrollHeight;}
-}
-
-function sendMsg(){
-  if(!selPlayer)return;
-  const inp=document.getElementById('msgInput');
-  const txt=inp.value.trim();if(!txt)return;
-  const key=convKey();
-  if(!M[key])M[key]=[];
-  M[key].push({from:me,t:txt,r:false});sv();
-  inp.value='';loadConv();
-}
-
+function loadConv(){const key=convKey();const msgs=M[key]||[];document.getElementById('chAvatar').textContent=selPlayer.substring(0,2).toUpperCase();document.getElementById('chName').textContent=selPlayer+(U.find(u=>u.n===selPlayer)?.owner?' 👑':'');document.getElementById('chStatus').textContent=amOwner?'Player':'Owner';document.getElementById('inputRow').style.display='flex';const area=document.getElementById('msgArea');if(msgs.length===0){area.innerHTML='<div class="chat-placeholder"><span style="font-size:1.8rem;">👋</span><span>Start the conversation!</span></div>';}else{area.innerHTML=msgs.map(m=>`<div class="chat-msg ${m.from===me?'outgoing':'incoming'}"><div class="msg-who">${m.from}</div>${m.t}</div>`).join('');area.scrollTop=area.scrollHeight;}}
+function sendMsg(){if(!selPlayer)return;const inp=document.getElementById('msgInput');const txt=inp.value.trim();if(!txt)return;const key=convKey();if(!M[key])M[key]=[];M[key].push({from:me,t:txt,r:false});sv();inp.value='';loadConv();}
 updateNav();
 </script>
 </body>
