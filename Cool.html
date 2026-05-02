@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MORNING FUEL — Kitchen Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF6B00;
+  --orange2: #FF9500;
+  --orange3: #FF4500;
+  --black: #000000;
+  --black2: #080808;
+  --black3: #111111;
+  --black4: #181818;
+  --black5: #222222;
+  --white: #F0EAD6;
+  --white2: rgba(240,234,214,0.55);
+  --white3: rgba(240,234,214,0.18);
+  --white4: rgba(240,234,214,0.07);
+  --glow: 0 0 20px rgba(255,107,0,0.5);
+  --glow2: 0 0 40px rgba(255,107,0,0.3);
+}
+
+- { margin:0; padding:0; box-sizing:border-box; background-color: transparent; }
+
+html, body {
+background: #000000 !important;
+background-color: #000000 !important;
+scroll-behavior: smooth;
+}
+
+body {
+background: #000000 !important;
+background-color: #000000 !important;
+color: var(–white);
+font-family: ‘Rajdhani’, sans-serif;
+min-height: 100vh;
+overflow-x: hidden;
+cursor: crosshair;
+}
+
+/* Kill any white that leaks through */
+div, section, article, aside, main, header, footer, nav, ul, li, table, thead, tbody, tr, td, th, input, textarea, button, select {
+background-color: transparent;
+}
+input, textarea { background-color: #222222 !important; }
+button { background-color: transparent; }
+
+/* ═══ CANVAS ═══ */
+#bgCanvas {
+position: fixed;
+inset: 0;
+z-index: 0;
+pointer-events: none;
+}
+
+/* ═══ CUSTOM CURSOR ═══ */
+#cursor {
+position: fixed;
+width: 10px; height: 10px;
+background: var(–orange);
+border-radius: 50%;
+pointer-events: none;
+z-index: 9999;
+transform: translate(-50%,-50%);
+transition: width 0.15s, height 0.15s, background 0.15s;
+box-shadow: 0 0 12px var(–orange), 0 0 24px rgba(255,107,0,0.4);
+mix-blend-mode: screen;
+}
+#cursorRing {
+position: fixed;
+width: 32px; height: 32px;
+border: 1px solid rgba(255,107,0,0.4);
+border-radius: 50%;
+pointer-events: none;
+z-index: 9998;
+transform: translate(-50%,-50%);
+transition: all 0.1s ease;
+}
+
+/* ═══ GRAIN ═══ */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.85’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.05’/%3E%3C/svg%3E”);
+opacity: 0.5;
+pointer-events: none;
+z-index: 1;
+}
+
+/* ═══ SCANLINES ═══ */
+body::after {
+content: ‘’;
+position: fixed;
+inset: 0;
+background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+pointer-events: none;
+z-index: 1;
+}
+
+/* ═══ LAYOUT ═══ */
+#app {
+position: relative;
+z-index: 2;
+display: grid;
+grid-template-rows: auto 1fr;
+min-height: 100vh;
+background: #000000 !important;
+}
+
+.view { background: #000000 !important; }
+.view.active { background: #000000 !important; }
+
+/* ═══ TOP NAV ═══ */
+nav {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 18px 32px;
+border-bottom: 1px solid rgba(255,107,0,0.2);
+background: #000000 !important;
+backdrop-filter: blur(10px);
+position: sticky;
+top: 0;
+z-index: 100;
+}
+
+.nav-brand {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+letter-spacing: 0.12em;
+background: linear-gradient(90deg, var(–orange3), var(–orange2));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+
+.nav-tabs {
+display: flex;
+gap: 4px;
+}
+
+.nav-tab {
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+font-size: 13px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 8px 20px;
+border-radius: 4px;
+border: 1px solid transparent;
+background: transparent;
+color: var(–white2);
+cursor: pointer;
+transition: all 0.2s;
+}
+.nav-tab:hover { color: var(–white); border-color: rgba(255,107,0,0.3); }
+.nav-tab.active {
+background: rgba(255,107,0,0.12);
+border-color: var(–orange);
+color: var(–orange);
+box-shadow: var(–glow);
+}
+
+.nav-right {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.order-badge {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 12px;
+background: var(–orange);
+color: #000;
+padding: 4px 12px;
+border-radius: 20px;
+font-weight: bold;
+letter-spacing: 0.05em;
+cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+box-shadow: var(–glow);
+}
+.order-badge:hover { transform: scale(1.05); box-shadow: var(–glow2); }
+
+.clock {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+color: var(–orange);
+letter-spacing: 0.1em;
+}
+
+/* ═══ MAIN CONTENT ═══ */
+.view { display: none; padding: 32px; animation: fadeIn 0.35s ease; }
+.view.active { display: block; }
+
+@keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slideIn { from { opacity:0; transform: translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.85} 92%{opacity:0.7} }
+
+/* ═══ PAGE TITLES ═══ */
+.page-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: clamp(42px, 8vw, 80px);
+letter-spacing: 0.05em;
+line-height: 0.9;
+margin-bottom: 8px;
+animation: flicker 8s infinite;
+}
+.page-title span { color: var(–orange); }
+.page-sub {
+font-size: 12px;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–white2);
+margin-bottom: 36px;
+font-weight: 300;
+}
+
+/* ═══ SECTION LABEL ═══ */
+.sec-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(–orange);
+margin-bottom: 14px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.sec-label::after { content:’’; flex:1; height:1px; background: linear-gradient(to right, rgba(255,107,0,0.4), transparent); }
+
+/* ═══════════════════════════════════
+VIEW 1 — MENU BUILDER
+═══════════════════════════════════ */
+#view-menu .layout {
+display: grid;
+grid-template-columns: 1fr 340px;
+gap: 24px;
+align-items: start;
+}
+
+/* Category tabs */
+.cat-tabs {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 22px;
+}
+.cat-tab {
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+font-size: 12px;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+padding: 7px 16px;
+border-radius: 4px;
+border: 1px solid var(–white3);
+background: transparent;
+color: var(–white2);
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.cat-tab:hover { border-color: var(–orange); color: var(–white); }
+.cat-tab.active { background: rgba(255,107,0,0.15); border-color: var(–orange); color: var(–orange); box-shadow: var(–glow); }
+
+/* Ingredient cards grid */
+.ingredients-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+gap: 10px;
+margin-bottom: 24px;
+min-height: 200px;
+}
+
+.ing-card {
+background: var(–black4);
+border: 1px solid var(–white3);
+border-radius: 8px;
+padding: 14px 12px;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+flex-direction: column;
+gap: 6px;
+position: relative;
+overflow: hidden;
+animation: fadeUp 0.25s ease both;
+}
+.ing-card::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, rgba(255,107,0,0.08), transparent);
+opacity: 0;
+transition: opacity 0.2s;
+}
+.ing-card:hover::before { opacity: 1; }
+.ing-card:hover { border-color: var(–orange); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(255,107,0,0.2); }
+.ing-card.selected {
+background: rgba(255,107,0,0.15);
+border-color: var(–orange);
+box-shadow: var(–glow);
+}
+.ing-card.selected .ing-check { opacity: 1; }
+
+.ing-emoji { font-size: 26px; line-height: 1; }
+.ing-name {
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 0.05em;
+color: var(–white);
+line-height: 1.3;
+}
+.ing-cal {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–orange);
+}
+.ing-check {
+position: absolute;
+top: 8px; right: 8px;
+width: 18px; height: 18px;
+background: var(–orange);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 10px;
+color: #000;
+opacity: 0;
+transition: opacity 0.2s;
+font-weight: bold;
+}
+
+/* Order panel */
+.order-panel {
+background: var(–black3);
+border: 1px solid rgba(255,107,0,0.25);
+border-radius: 12px;
+padding: 22px;
+position: sticky;
+top: 100px;
+box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.3);
+}
+
+.order-panel-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 22px;
+letter-spacing: 0.1em;
+color: var(–orange);
+margin-bottom: 4px;
+}
+.order-time {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–white2);
+margin-bottom: 18px;
+letter-spacing: 0.1em;
+}
+
+.order-items {
+min-height: 120px;
+margin-bottom: 18px;
+max-height: 320px;
+overflow-y: auto;
+}
+.order-items::-webkit-scrollbar { width: 3px; }
+.order-items::-webkit-scrollbar-track { background: transparent; }
+.order-items::-webkit-scrollbar-thumb { background: var(–orange); border-radius: 2px; }
+
+.order-empty {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+min-height: 120px;
+color: var(–white3);
+font-size: 13px;
+letter-spacing: 0.1em;
+text-align: center;
+}
+.order-empty-icon { font-size: 32px; margin-bottom: 8px; }
+
+.order-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 8px 0;
+border-bottom: 1px solid var(–white4);
+animation: slideIn 0.2s ease;
+}
+.order-item-emoji { font-size: 18px; }
+.order-item-name { flex: 1; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; }
+.order-item-qty {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.qty-btn {
+width: 22px; height: 22px;
+border-radius: 4px;
+border: 1px solid var(–white3);
+background: transparent;
+color: var(–white);
+cursor: pointer;
+font-size: 13px;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.15s;
+}
+.qty-btn:hover { border-color: var(–orange); color: var(–orange); background: rgba(255,107,0,0.1); }
+.qty-num {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+color: var(–orange);
+min-width: 16px;
+text-align: center;
+}
+.order-item-del {
+background: transparent;
+border: none;
+color: rgba(240,234,214,0.25);
+cursor: pointer;
+font-size: 14px;
+transition: color 0.15s;
+padding: 2px 4px;
+}
+.order-item-del:hover { color: #ff4444; }
+
+.order-divider {
+height: 1px;
+background: linear-gradient(to right, var(–orange), transparent);
+margin: 14px 0;
+opacity: 0.4;
+}
+
+.order-stats {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+margin-bottom: 16px;
+}
+.order-stat {
+background: var(–black5);
+border-radius: 6px;
+padding: 8px 10px;
+text-align: center;
+}
+.order-stat-val {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 18px;
+color: var(–orange);
+}
+.order-stat-label {
+font-size: 9px;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–white2);
+margin-top: 2px;
+}
+
+.notes-input {
+width: 100%;
+background: #1a1a1a !important;
+border: 1px solid var(–white3);
+border-radius: 6px;
+padding: 10px 12px;
+color: var(–white);
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 13px;
+resize: none;
+outline: none;
+height: 60px;
+margin-bottom: 14px;
+transition: border-color 0.2s;
+}
+.notes-input::placeholder { color: rgba(240,234,214,0.25); }
+.notes-input:focus { border-color: var(–orange); }
+
+.btn-fire {
+width: 100%;
+padding: 14px;
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 18px;
+letter-spacing: 0.2em;
+background: linear-gradient(135deg, var(–orange3), var(–orange2));
+color: #000;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+box-shadow: var(–glow);
+position: relative;
+overflow: hidden;
+}
+.btn-fire::before {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+transform: translateX(-100%);
+transition: transform 0.4s;
+}
+.btn-fire:hover::before { transform: translateX(100%); }
+.btn-fire:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(255,107,0,0.6); }
+.btn-fire:active { transform: scale(0.97); }
+.btn-fire:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-outline {
+width: 100%;
+padding: 10px;
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 13px;
+font-weight: 600;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+background: transparent;
+color: var(–white2);
+border: 1px solid var(–white3);
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.2s;
+margin-top: 8px;
+}
+.btn-outline:hover { border-color: var(–orange); color: var(–orange); }
+
+/* ═══════════════════════════════════
+VIEW 2 — ACTIVE ORDERS
+═══════════════════════════════════ */
+.orders-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 24px;
+flex-wrap: wrap;
+gap: 16px;
+}
+
+.live-dot {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–orange);
+letter-spacing: 0.15em;
+}
+.live-dot::before {
+content: ‘’;
+width: 8px; height: 8px;
+border-radius: 50%;
+background: var(–orange);
+animation: pulse 1.5s infinite;
+box-shadow: 0 0 8px var(–orange);
+}
+
+.orders-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+gap: 16px;
+}
+
+.order-ticket {
+background: var(–black3);
+border: 1px solid var(–white3);
+border-radius: 10px;
+overflow: hidden;
+transition: border-color 0.2s, transform 0.2s;
+animation: fadeUp 0.3s ease both;
+}
+.order-ticket:hover { border-color: rgba(255,107,0,0.4); transform: translateY(-2px); }
+
+.ticket-header {
+padding: 12px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+border-bottom: 1px solid var(–white4);
+}
+.ticket-num {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 20px;
+letter-spacing: 0.1em;
+color: var(–orange);
+}
+.ticket-status {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.1em;
+padding: 4px 10px;
+border-radius: 20px;
+border: 1px solid;
+}
+.status-pending { color: #FFB800; border-color: #FFB800; background: rgba(255,184,0,0.1); }
+.status-cooking { color: var(–orange); border-color: var(–orange); background: rgba(255,107,0,0.1); animation: pulse 2s infinite; }
+.status-ready { color: #00CC66; border-color: #00CC66; background: rgba(0,204,102,0.1); }
+
+.ticket-body { padding: 14px 16px; }
+.ticket-items { list-style: none; margin-bottom: 12px; }
+.ticket-items li {
+font-size: 13px;
+font-weight: 600;
+padding: 4px 0;
+display: flex;
+gap: 8px;
+align-items: center;
+border-bottom: 1px solid var(–white4);
+}
+.ticket-items li:last-child { border: none; }
+.t-qty {
+font-family: ‘Share Tech Mono’, monospace;
+color: var(–orange);
+font-size: 12px;
+min-width: 24px;
+}
+.ticket-note {
+font-size: 11px;
+color: var(–white2);
+font-style: italic;
+padding: 8px;
+background: var(–black5);
+border-radius: 4px;
+margin-bottom: 12px;
+border-left: 2px solid var(–orange);
+}
+.ticket-footer {
+display: flex;
+gap: 8px;
+}
+.ticket-btn {
+flex: 1;
+padding: 8px;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+font-size: 12px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+border-radius: 6px;
+border: 1px solid;
+cursor: pointer;
+transition: all 0.2s;
+background: transparent;
+}
+.ticket-btn-start { color: var(–orange); border-color: var(–orange); }
+.ticket-btn-start:hover { background: rgba(255,107,0,0.15); }
+.ticket-btn-ready { color: #00CC66; border-color: #00CC66; }
+.ticket-btn-ready:hover { background: rgba(0,204,102,0.1); }
+.ticket-btn-del { color: rgba(240,234,214,0.3); border-color: rgba(240,234,214,0.1); }
+.ticket-btn-del:hover { color: #ff4444; border-color: #ff4444; }
+
+.ticket-timer {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–white2);
+letter-spacing: 0.1em;
+text-align: right;
+padding: 6px 16px 10px;
+}
+
+.no-orders {
+grid-column: 1 / -1;
+text-align: center;
+padding: 80px 20px;
+color: var(–white2);
+}
+.no-orders-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.no-orders-text { font-size: 14px; letter-spacing: 0.1em; opacity: 0.5; }
+
+/* ═══════════════════════════════════
+VIEW 3 — INGREDIENT INVENTORY
+═══════════════════════════════════ */
+.inventory-controls {
+display: flex;
+gap: 12px;
+margin-bottom: 24px;
+flex-wrap: wrap;
+}
+
+.search-box {
+flex: 1;
+min-width: 200px;
+background: #1a1a1a !important;
+border: 1px solid var(–white3);
+border-radius: 8px;
+padding: 10px 16px;
+color: var(–white);
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 14px;
+outline: none;
+transition: border-color 0.2s;
+letter-spacing: 0.05em;
+}
+.search-box::placeholder { color: rgba(240,234,214,0.25); }
+.search-box:focus { border-color: var(–orange); box-shadow: 0 0 0 2px rgba(255,107,0,0.1); }
+
+.filter-btn {
+padding: 10px 16px;
+background: var(–black4);
+border: 1px solid var(–white3);
+border-radius: 8px;
+color: var(–white2);
+font-family: ‘Rajdhani’, sans-serif;
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+cursor: pointer;
+transition: all 0.2s;
+}
+.filter-btn:hover, .filter-btn.active { border-color: var(–orange); color: var(–orange); background: rgba(255,107,0,0.08); }
+
+.inventory-table {
+width: 100%;
+border-collapse: collapse;
+}
+.inventory-table th {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–orange);
+padding: 10px 16px;
+text-align: left;
+border-bottom: 1px solid rgba(255,107,0,0.3);
+cursor: pointer;
+user-select: none;
+transition: color 0.2s;
+}
+.inventory-table th:hover { color: var(–white); }
+.inventory-table td {
+padding: 11px 16px;
+font-size: 13px;
+border-bottom: 1px solid var(–white4);
+vertical-align: middle;
+transition: background 0.15s;
+}
+.inventory-table tr:hover td { background: var(–white4); }
+
+.stock-bar-wrap {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.stock-bar {
+height: 4px;
+border-radius: 2px;
+background: var(–black5);
+width: 80px;
+overflow: hidden;
+flex-shrink: 0;
+}
+.stock-fill {
+height: 100%;
+border-radius: 2px;
+transition: width 0.5s ease;
+}
+.stock-val {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–white2);
+}
+
+.stock-high .stock-fill { background: #00CC66; }
+.stock-med .stock-fill { background: var(–orange2); }
+.stock-low .stock-fill { background: #ff4444; animation: pulse 1.5s infinite; }
+
+.badge-cat {
+font-size: 10px;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+padding: 3px 8px;
+border-radius: 3px;
+background: var(–black5);
+border: 1px solid var(–white3);
+color: var(–white2);
+font-weight: 600;
+}
+
+.restock-btn {
+font-size: 11px;
+padding: 4px 10px;
+background: transparent;
+border: 1px solid rgba(255,107,0,0.3);
+border-radius: 4px;
+color: var(–orange);
+cursor: pointer;
+font-family: ‘Rajdhani’, sans-serif;
+font-weight: 600;
+letter-spacing: 0.1em;
+transition: all 0.2s;
+}
+.restock-btn:hover { background: rgba(255,107,0,0.15); border-color: var(–orange); }
+
+/* ═══════════════════════════════════
+VIEW 4 — MEAL PLANNER
+═══════════════════════════════════ */
+.planner-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 10px;
+}
+
+.day-col { display: flex; flex-direction: column; gap: 8px; }
+.day-label {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 16px;
+letter-spacing: 0.1em;
+color: var(–orange);
+text-align: center;
+padding: 8px;
+background: var(–black3);
+border-radius: 6px;
+border: 1px solid rgba(255,107,0,0.2);
+}
+
+.meal-slot {
+background: var(–black4);
+border: 1px solid var(–white4);
+border-radius: 8px;
+padding: 10px;
+min-height: 80px;
+cursor: pointer;
+transition: all 0.2s;
+font-size: 11px;
+}
+.meal-slot:hover { border-color: var(–orange); background: rgba(255,107,0,0.05); }
+.meal-slot.has-meal { border-color: rgba(255,107,0,0.3); }
+.meal-slot-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+letter-spacing: 0.2em;
+color: var(–white2);
+text-transform: uppercase;
+margin-bottom: 6px;
+}
+.meal-slot-content { font-size: 11px; color: var(–white); line-height: 1.4; }
+.meal-slot-empty { color: var(–white3); font-size: 10px; letter-spacing: 0.1em; text-align: center; margin-top: 16px; }
+
+/* ═══════════════════════════════════
+TOAST
+═══════════════════════════════════ */
+#toastContainer {
+position: fixed;
+bottom: 28px;
+right: 28px;
+z-index: 9999;
+display: flex;
+flex-direction: column;
+gap: 10px;
+pointer-events: none;
+}
+.toast-msg {
+background: var(–black3);
+border: 1px solid var(–orange);
+border-radius: 8px;
+padding: 12px 20px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 12px;
+letter-spacing: 0.08em;
+color: var(–white);
+box-shadow: var(–glow2);
+animation: slideIn 0.3s ease both, fadeOut 0.4s 2s ease forwards;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.toast-icon { font-size: 16px; }
+@keyframes fadeOut { to { opacity:0; transform: translateX(30px); } }
+
+/* ═══ MODAL ═══ */
+#modal {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.85);
+z-index: 500;
+display: none;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(4px);
+}
+#modal.open { display: flex; }
+.modal-box {
+background: var(–black3);
+border: 1px solid var(–orange);
+border-radius: 14px;
+padding: 32px;
+width: 90%;
+max-width: 480px;
+box-shadow: var(–glow2);
+animation: fadeUp 0.3s ease;
+}
+.modal-title {
+font-family: ‘Bebas Neue’, sans-serif;
+font-size: 28px;
+letter-spacing: 0.1em;
+color: var(–orange);
+margin-bottom: 16px;
+}
+.modal-close {
+float: right;
+background: transparent;
+border: none;
+color: var(–white2);
+font-size: 22px;
+cursor: pointer;
+transition: color 0.2s;
+}
+.modal-close:hover { color: var(–white); }
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(–orange); border-radius: 3px; }
+
+/* ═══════════════════════════════════
+VIEW 5 — RECIPES
+═══════════════════════════════════ */
+.recipe-card {
+background: #111;
+border: 1px solid rgba(240,234,214,0.1);
+border-radius: 10px;
+padding: 14px 16px;
+cursor: pointer;
+transition: all 0.2s;
+display: flex;
+align-items: center;
+gap: 14px;
+animation: fadeUp 0.3s ease both;
+}
+.recipe-card:hover { border-color: rgba(255,107,0,0.4); background: rgba(255,107,0,0.06); transform: translateX(4px); }
+.recipe-card.active { border-color: var(–orange); background: rgba(255,107,0,0.12); box-shadow: var(–glow); }
+.recipe-thumb { font-size: 34px; line-height: 1; flex-shrink: 0; }
+.recipe-card-info { flex: 1; }
+.recipe-card-name { font-family: “Bebas Neue”, sans-serif; font-size: 18px; letter-spacing: 0.06em; color: var(–white); line-height: 1; }
+.recipe-card-meta { font-size: 11px; color: var(–white2); margin-top: 3px; letter-spacing: 0.05em; }
+.recipe-card-diff {
+font-family: “Share Tech Mono”, monospace;
+font-size: 9px;
+letter-spacing: 0.15em;
+padding: 3px 8px;
+border-radius: 3px;
+border: 1px solid;
+flex-shrink: 0;
+}
+.diff-easy { color: #00cc66; border-color: #00cc66; background: rgba(0,204,102,0.08); }
+.diff-med  { color: var(–orange2); border-color: var(–orange2); background: rgba(255,149,0,0.08); }
+.diff-hard { color: #ff4444; border-color: #ff4444; background: rgba(255,68,68,0.08); }
+
+/* detail panel */
+.recipe-detail-header { display:flex; align-items:center; gap:18px; margin-bottom:22px; }
+.recipe-detail-emoji { font-size: 60px; line-height:1; }
+.recipe-detail-title { font-family:“Bebas Neue”,sans-serif; font-size:40px; letter-spacing:0.05em; line-height:0.9; color:var(–white); }
+.recipe-detail-sub { font-size:12px; color:var(–white2); margin-top:6px; letter-spacing:0.1em; }
+.recipe-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+.recipe-tag { font-size:10px; letter-spacing:0.1em; padding:3px 10px; border-radius:20px; background:rgba(255,107,0,0.1); border:1px solid rgba(255,107,0,0.3); color:var(–orange); font-family:“Share Tech Mono”,monospace; }
+.recipe-stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:22px; }
+.recipe-stat-box { background:#1a1a1a; border-radius:8px; padding:10px; text-align:center; border:1px solid rgba(240,234,214,0.06); }
+.recipe-stat-val { font-family:“Share Tech Mono”,monospace; font-size:20px; color:var(–orange); line-height:1; }
+.recipe-stat-lbl { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(–white2); margin-top:3px; }
+
+.ing-viewer-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px; margin-bottom:22px; }
+.ing-viewer-chip {
+display:flex; flex-direction:column; align-items:center; gap:4px;
+padding:10px 8px; border-radius:8px; border:1px solid rgba(240,234,214,0.1);
+background:#1a1a1a; cursor:pointer; transition:all 0.2s; text-align:center;
+position:relative;
+}
+.ing-viewer-chip:hover { border-color:rgba(255,107,0,0.5); transform:translateY(-2px); }
+.ing-viewer-chip.highlighted {
+border-color: var(–orange);
+background: rgba(255,107,0,0.18);
+box-shadow: 0 0 14px rgba(255,107,0,0.3);
+}
+.ing-viewer-chip.user-checked {
+border-color: #00cc66;
+background: rgba(0,204,102,0.12);
+box-shadow: 0 0 10px rgba(0,204,102,0.2);
+}
+.ing-viewer-chip.user-checked::after {
+content:“✓”;
+position:absolute;top:4px;right:6px;
+font-size:11px;color:#00cc66;font-weight:bold;
+}
+.chip-emoji { font-size:24px; }
+.chip-name { font-size:11px; font-weight:600; letter-spacing:0.03em; color:var(–white); line-height:1.2; }
+.chip-cal { font-family:“Share Tech Mono”,monospace; font-size:9px; color:var(–orange); }
+.chip-optional { font-size:8px; letter-spacing:0.1em; color:rgba(255,149,0,0.7); text-transform:uppercase; margin-top:1px; }
+
+.recipe-steps { margin-bottom:22px; }
+.step-row { display:flex; gap:14px; padding:10px 0; border-bottom:1px solid rgba(240,234,214,0.06); }
+.step-row:last-child { border:none; }
+.step-num { font-family:“Bebas Neue”,sans-serif; font-size:22px; color:var(–orange); min-width:28px; line-height:1.1; flex-shrink:0; }
+.step-text { font-size:13px; line-height:1.6; color:var(–white2); }
+.step-text strong { color:var(–orange); font-weight:600; }
+
+.recipe-action-row { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-recipe-order {
+flex:1; min-width:160px; padding:13px; font-family:“Bebas Neue”,sans-serif; font-size:17px;
+letter-spacing:0.15em; background:linear-gradient(135deg,#FF4500,#FF9500);
+color:#000; border:none; border-radius:8px; cursor:pointer;
+transition:all 0.2s; box-shadow:0 0 20px rgba(255,107,0,0.35);
+}
+.btn-recipe-order:hover { transform:translateY(-2px); box-shadow:0 0 40px rgba(255,107,0,0.6); }
+.btn-recipe-clear {
+padding:13px 20px; font-family:“Rajdhani”,sans-serif; font-weight:600; font-size:13px;
+letter-spacing:0.1em; text-transform:uppercase; background:transparent;
+color:var(–white2); border:1px solid rgba(240,234,214,0.15); border-radius:8px; cursor:pointer;
+transition:all 0.2s;
+}
+.btn-recipe-clear:hover { border-color:var(–orange); color:var(–orange); }
+
+.recipe-detail-empty {
+display:flex; flex-direction:column; align-items:center; justify-content:center;
+min-height:380px; color:rgba(240,234,214,0.2); text-align:center;
+}
+.recipe-detail-empty-icon { font-size:60px; margin-bottom:16px; opacity:0.4; }
+.recipe-detail-empty-txt { font-size:14px; letter-spacing:0.15em; }
+
+.legend-row { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(–white2); letter-spacing:0.05em; }
+.legend-dot { width:10px;height:10px;border-radius:3px;flex-shrink:0; }
+.legend-dot.orange { background:rgba(255,107,0,0.6); border:1px solid var(–orange); }
+.legend-dot.green  { background:rgba(0,204,102,0.5); border:1px solid #00cc66; }
+.legend-dot.dim    { background:#1a1a1a; border:1px solid rgba(240,234,214,0.1); }
+
+@media(max-width:860px){
+#recipesLayout { grid-template-columns:1fr; }
+}
+
+/* ══════════════════════════════════
+NUCLEAR BLACK OVERRIDE — NO WHITE
+══════════════════════════════════ */
+html { background: #000 !important; }
+body { background: #000 !important; }
+#app { background: #000 !important; }
+.view, .view.active { background: #000 !important; }
+#view-menu, #view-orders, #view-inventory, #view-planner { background: #000 !important; }
+nav { background: #000 !important; }
+#view-menu .layout { background: transparent !important; }
+.ingredients-grid { background: transparent !important; }
+.cat-tabs { background: transparent !important; }
+.orders-grid { background: transparent !important; }
+.inventory-controls { background: transparent !important; }
+.inventory-table { background: transparent !important; }
+.planner-grid { background: transparent !important; }
+.day-col { background: transparent !important; }
+.orders-header { background: transparent !important; }
+.stats-bar { background: transparent !important; }
+.toastContainer { background: transparent !important; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 860px) {
+#view-menu .layout { grid-template-columns: 1fr; }
+.order-panel { position: static; }
+.planner-grid { grid-template-columns: repeat(3, 1fr); }
+nav { padding: 12px 16px; flex-wrap: wrap; gap: 10px; }
+.view { padding: 20px 16px; }
+}
+@media (max-width: 540px) {
+.planner-grid { grid-template-columns: repeat(2, 1fr); }
+.nav-tabs { gap: 2px; }
+.nav-tab { font-size: 11px; padding: 6px 10px; }
+}
+</style>
+
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div id="cursor"></div>
+<div id="cursorRing"></div>
+<div id="toastContainer"></div>
+
+<div id="app">
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">🔥 Morning Fuel</div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchView('menu')">⚡ Build Order</button>
+      <button class="nav-tab" onclick="switchView('orders')">📋 Live Orders</button>
+      <button class="nav-tab" onclick="switchView('recipes')">🍽️ Recipes</button>
+      <button class="nav-tab" onclick="switchView('inventory')">📦 Inventory</button>
+      <button class="nav-tab" onclick="switchView('planner')">📅 Planner</button>
+    </div>
+    <div class="nav-right">
+      <div class="clock" id="clock">00:00:00</div>
+      <div class="order-badge" onclick="switchView('orders')" id="orderBadge">0 ORDERS</div>
+    </div>
+  </nav>
+
+  <!-- ════════════ VIEW: MENU BUILDER ════════════ -->
+
+  <div class="view active" id="view-menu">
+    <div class="page-title">Build Your <span>Order</span></div>
+    <div class="page-sub">Select ingredients · Adjust quantities · Fire the order</div>
+
+```
+<div class="layout">
+  <div>
+    <!-- Category filter tabs -->
+    <div class="sec-label">Category</div>
+    <div class="cat-tabs" id="catTabs"></div>
+
+    <!-- Ingredients grid -->
+    <div class="sec-label">Ingredients</div>
+    <div class="ingredients-grid" id="ingredientsGrid"></div>
+  </div>
+
+  <!-- Order panel -->
+  <div class="order-panel">
+    <div class="order-panel-title">Current Order</div>
+    <div class="order-time" id="orderTimestamp">Started: --:--</div>
+
+    <div class="sec-label" style="font-size:9px;">Selected Items</div>
+    <div class="order-items" id="orderItems">
+      <div class="order-empty">
+        <div class="order-empty-icon">🍳</div>
+        <div>No items selected yet</div>
+        <div style="font-size:10px;margin-top:4px;opacity:0.5">Tap ingredients to add</div>
+      </div>
+    </div>
+
+    <div class="order-divider"></div>
+    <div class="order-stats">
+      <div class="order-stat">
+        <div class="order-stat-val" id="statItems">0</div>
+        <div class="order-stat-label">Items</div>
+      </div>
+      <div class="order-stat">
+        <div class="order-stat-val" id="statCals">0</div>
+        <div class="order-stat-label">Est. Cal</div>
+      </div>
+      <div class="order-stat">
+        <div class="order-stat-val" id="statProteins">0</div>
+        <div class="order-stat-label">g Protein</div>
+      </div>
+      <div class="order-stat">
+        <div class="order-stat-val" id="statCarbs">0</div>
+        <div class="order-stat-label">g Carbs</div>
+      </div>
+    </div>
+    <div class="order-divider"></div>
+
+    <div class="sec-label" style="font-size:9px;">Special Notes</div>
+    <textarea class="notes-input" id="orderNotes" placeholder="e.g. extra crispy, no onions, egg whites only..."></textarea>
+
+    <button class="btn-fire" id="fireBtn" onclick="fireOrder()" disabled>🔥 Fire Order</button>
+    <button class="btn-outline" onclick="clearOrder()">Clear Selection</button>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ════════════ VIEW: LIVE ORDERS ════════════ -->
+
+  <div class="view" id="view-orders">
+    <div class="orders-header">
+      <div>
+        <div class="page-title">Live <span>Orders</span></div>
+        <div class="page-sub">Manage kitchen queue in real time</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="live-dot">LIVE KITCHEN</div>
+        <button class="filter-btn" onclick="clearAllOrders()">Clear All</button>
+      </div>
+    </div>
+    <div class="orders-grid" id="ordersGrid">
+      <div class="no-orders">
+        <div class="no-orders-icon">🍳</div>
+        <div class="no-orders-text">No active orders — build one in the Order Builder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ VIEW: INVENTORY ════════════ -->
+
+  <div class="view" id="view-inventory">
+    <div class="page-title">Ingredient <span>Inventory</span></div>
+    <div class="page-sub">Stock levels · Restocking · Filter by category</div>
+
+```
+<div class="inventory-controls">
+  <input class="search-box" id="searchBox" placeholder="🔍  Search ingredients..." oninput="filterInventory()">
+  <button class="filter-btn active" onclick="setStockFilter('all', this)">All</button>
+  <button class="filter-btn" onclick="setStockFilter('low', this)">Low Stock ⚠️</button>
+  <button class="filter-btn" onclick="setStockFilter('out', this)">Out of Stock 🔴</button>
+</div>
+
+<table class="inventory-table" id="inventoryTable">
+  <thead>
+    <tr>
+      <th onclick="sortInventory('name')">Ingredient ↕</th>
+      <th onclick="sortInventory('cat')">Category ↕</th>
+      <th onclick="sortInventory('stock')">Stock Level ↕</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="inventoryBody"></tbody>
+</table>
+```
+
+  </div>
+
+  <!-- ════════════ VIEW: RECIPES ════════════ -->
+
+  <div class="view" id="view-recipes">
+    <div class="page-title">Recipe <span>Viewer</span></div>
+    <div class="page-sub">Pick a dish · Ingredients auto-highlight · Click to check off · Order in one tap</div>
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start;" id="recipesLayout">
+      <div>
+        <div class="sec-label">Choose a Dish</div>
+        <div id="recipeList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+      <div id="recipeDetail">
+        <div class="recipe-detail-empty">
+          <div class="recipe-detail-empty-icon">🍽️</div>
+          <div class="recipe-detail-empty-txt">Select a recipe on the left<br>to see its ingredients</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ VIEW: MEAL PLANNER ════════════ -->
+
+  <div class="view" id="view-planner">
+    <div class="page-title">Weekly <span>Planner</span></div>
+    <div class="page-sub">Plan your breakfasts for the week — click any slot to assign</div>
+    <div class="planner-grid" id="plannerGrid"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+
+<div id="modal">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script>
+// ════════════════════════
+//  DATA
+// ════════════════════════
+const CATEGORIES = [
+  { id:'proteins',  label:'Proteins',      icon:'🥚' },
+  { id:'carbs',     label:'Carbs & Grains', icon:'🍞' },
+  { id:'fruits',    label:'Fruits',         icon:'🍓' },
+  { id:'veggies',   label:'Vegetables',     icon:'🥬' },
+  { id:'drinks',    label:'Drinks',         icon:'☕' },
+  { id:'extras',    label:'Extras',         icon:'🧂' },
+];
+
+const INGREDIENTS = [
+  // PROTEINS
+  { id:'eggs',       name:'Eggs',           emoji:'🥚', cat:'proteins', cal:70,  protein:6,  carbs:0  },
+  { id:'eggwhites',  name:'Egg Whites',     emoji:'🥛', cat:'proteins', cal:17,  protein:4,  carbs:0  },
+  { id:'bacon',      name:'Bacon',          emoji:'🥓', cat:'proteins', cal:130, protein:9,  carbs:0  },
+  { id:'tbackon',    name:'Turkey Bacon',   emoji:'🦃', cat:'proteins', cal:70,  protein:6,  carbs:1  },
+  { id:'sauslink',   name:'Sausage Links',  emoji:'🌭', cat:'proteins', cal:200, protein:8,  carbs:2  },
+  { id:'sauspat',    name:'Sausage Patty',  emoji:'🍖', cat:'proteins', cal:180, protein:7,  carbs:2  },
+  { id:'ham',        name:'Ham',            emoji:'🍗', cat:'proteins', cal:50,  protein:7,  carbs:1  },
+  { id:'salmon',     name:'Smoked Salmon',  emoji:'🐟', cat:'proteins', cal:80,  protein:11, carbs:0  },
+  { id:'steak',      name:'Steak Strips',   emoji:'🥩', cat:'proteins', cal:200, protein:20, carbs:0  },
+  { id:'tofu',       name:'Tofu Scramble',  emoji:'🟨', cat:'proteins', cal:80,  protein:9,  carbs:2  },
+  { id:'cottage',    name:'Cottage Cheese', emoji:'🫙', cat:'proteins', cal:90,  protein:12, carbs:4  },
+  { id:'greekyog',   name:'Greek Yogurt',   emoji:'🥄', cat:'proteins', cal:100, protein:10, carbs:7  },
+  // CARBS
+  { id:'wtoast',     name:'White Toast',    emoji:'🍞', cat:'carbs', cal:80,  protein:2, carbs:15 },
+  { id:'wheat',      name:'Wheat Toast',    emoji:'🌾', cat:'carbs', cal:70,  protein:3, carbs:13 },
+  { id:'sourdough',  name:'Sourdough',      emoji:'🥖', cat:'carbs', cal:90,  protein:3, carbs:18 },
+  { id:'bagel',      name:'Bagel',          emoji:'🥯', cat:'carbs', cal:270, protein:10,carbs:53 },
+  { id:'engmuf',     name:'English Muffin', emoji:'🧇', cat:'carbs', cal:130, protein:5, carbs:25 },
+  { id:'croissant',  name:'Croissant',      emoji:'🥐', cat:'carbs', cal:230, protein:5, carbs:27 },
+  { id:'pancake',    name:'Pancakes',       emoji:'🥞', cat:'carbs', cal:350, protein:8, carbs:52 },
+  { id:'waffles',    name:'Waffles',        emoji:'🧇', cat:'carbs', cal:310, protein:7, carbs:43 },
+  { id:'oatmeal',    name:'Oatmeal',        emoji:'🥣', cat:'carbs', cal:150, protein:5, carbs:27 },
+  { id:'hashbrown',  name:'Hash Browns',    emoji:'🥔', cat:'carbs', cal:150, protein:2, carbs:17 },
+  { id:'bfpotato',   name:'Bfast Potatoes', emoji:'🍟', cat:'carbs', cal:180, protein:3, carbs:28 },
+  { id:'tortilla',   name:'Tortillas',      emoji:'🫓', cat:'carbs', cal:140, protein:4, carbs:27 },
+  // FRUITS
+  { id:'strawberry', name:'Strawberries',   emoji:'🍓', cat:'fruits', cal:32, protein:1, carbs:8  },
+  { id:'blueberry',  name:'Blueberries',    emoji:'🫐', cat:'fruits', cal:45, protein:1, carbs:11 },
+  { id:'banana',     name:'Banana',         emoji:'🍌', cat:'fruits', cal:90, protein:1, carbs:23 },
+  { id:'raspberry',  name:'Raspberries',    emoji:'🍓', cat:'fruits', cal:35, protein:1, carbs:8  },
+  { id:'apple',      name:'Apple',          emoji:'🍎', cat:'fruits', cal:80, protein:0, carbs:21 },
+  { id:'orange',     name:'Orange',         emoji:'🍊', cat:'fruits', cal:60, protein:1, carbs:15 },
+  { id:'pineapple',  name:'Pineapple',      emoji:'🍍', cat:'fruits', cal:50, protein:1, carbs:13 },
+  { id:'mango',      name:'Mango',          emoji:'🥭', cat:'fruits', cal:60, protein:1, carbs:15 },
+  // VEGGIES
+  { id:'spinach',    name:'Spinach',        emoji:'🥬', cat:'veggies', cal:7,  protein:1, carbs:1 },
+  { id:'tomato',     name:'Tomatoes',       emoji:'🍅', cat:'veggies', cal:18, protein:1, carbs:4 },
+  { id:'mushroom',   name:'Mushrooms',      emoji:'🍄', cat:'veggies', cal:15, protein:2, carbs:2 },
+  { id:'onion',      name:'Onions',         emoji:'🧅', cat:'veggies', cal:20, protein:0, carbs:5 },
+  { id:'bellpepper', name:'Bell Peppers',   emoji:'🫑', cat:'veggies', cal:20, protein:1, carbs:5 },
+  { id:'avocado',    name:'Avocado',        emoji:'🥑', cat:'veggies', cal:80, protein:1, carbs:4 },
+  // DRINKS
+  { id:'oj',         name:'Orange Juice',   emoji:'🍊', cat:'drinks', cal:110, protein:2, carbs:26 },
+  { id:'coffee',     name:'Coffee',         emoji:'☕', cat:'drinks', cal:5,   protein:0, carbs:0  },
+  { id:'milk',       name:'Milk',           emoji:'🥛', cat:'drinks', cal:120, protein:8, carbs:12 },
+  { id:'smoothie',   name:'Smoothie',       emoji:'🥤', cat:'drinks', cal:200, protein:4, carbs:38 },
+  { id:'water',      name:'Water',          emoji:'💧', cat:'drinks', cal:0,   protein:0, carbs:0  },
+  { id:'tea',        name:'Green Tea',      emoji:'🍵', cat:'drinks', cal:2,   protein:0, carbs:0  },
+  // EXTRAS
+  { id:'butter',     name:'Butter',         emoji:'🧈', cat:'extras', cal:100, protein:0, carbs:0 },
+  { id:'maplesyrup', name:'Maple Syrup',    emoji:'🍯', cat:'extras', cal:52,  protein:0, carbs:13 },
+  { id:'hotsauce',   name:'Hot Sauce',      emoji:'🌶️', cat:'extras', cal:5,   protein:0, carbs:1  },
+  { id:'creamcheese',name:'Cream Cheese',   emoji:'🧀', cat:'extras', cal:100, protein:2, carbs:2  },
+  { id:'jam',        name:'Jam / Jelly',    emoji:'🍓', cat:'extras', cal:50,  protein:0, carbs:13 },
+  { id:'salsa',      name:'Salsa',          emoji:'🫙', cat:'extras', cal:20,  protein:1, carbs:4  },
+  { id:'honey',      name:'Honey',          emoji:'🍯', cat:'extras', cal:60,  protein:0, carbs:17 },
+  { id:'whipped',    name:'Whipped Cream',  emoji:'🍦', cat:'extras', cal:50,  protein:0, carbs:3  },
+];
+
+// Inventory stock (random for demo)
+const stock = {};
+INGREDIENTS.forEach(i => {
+  stock[i.id] = Math.floor(Math.random() * 100);
+});
+
+// State
+let currentCat = 'all';
+let currentOrder = {};   // id -> qty
+let orders = [];
+let orderCounter = 1;
+let stockFilter = 'all';
+let sortKey = 'name';
+let sortAsc = true;
+let timerMap = {};  // orderId -> setInterval
+
+// ════════════════════════
+//  INIT
+// ════════════════════════
+window.onload = () => {
+  buildCatTabs();
+  buildIngredients();
+  buildInventory();
+  buildPlanner();
+  startClock();
+  startBalls();
+  setupCursor();
+};
+
+// ════════════════════════
+//  VIEW SWITCHER
+// ════════════════════════
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const idx = { menu:0, orders:1, recipes:2, inventory:3, planner:4 };
+  tabs[idx[name]]?.classList.add('active');
+  if (name === 'orders') renderOrders();
+  if (name === 'recipes') buildRecipeList();
+  if (name === 'inventory') buildInventory();
+}
+
+// ════════════════════════
+//  CLOCK
+// ════════════════════════
+function startClock() {
+  const update = () => {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toTimeString().slice(0,8);
+  };
+  update();
+  setInterval(update, 1000);
+}
+
+// ════════════════════════
+//  MENU BUILDER
+// ════════════════════════
+function buildCatTabs() {
+  const el = document.getElementById('catTabs');
+  el.innerHTML = `<button class="cat-tab active" onclick="filterCat('all', this)">✦ All</button>`;
+  CATEGORIES.forEach(c => {
+    el.innerHTML += `<button class="cat-tab" onclick="filterCat('${c.id}', this)">${c.icon} ${c.label}</button>`;
+  });
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildIngredients();
+}
+
+function buildIngredients() {
+  const grid = document.getElementById('ingredientsGrid');
+  const filtered = currentCat === 'all' ? INGREDIENTS : INGREDIENTS.filter(i => i.cat === currentCat);
+  grid.innerHTML = '';
+  filtered.forEach((ing, idx) => {
+    const sel = currentOrder[ing.id] ? 'selected' : '';
+    const card = document.createElement('div');
+    card.className = `ing-card ${sel}`;
+    card.style.animationDelay = (idx * 0.03) + 's';
+    card.id = 'card-' + ing.id;
+    card.onclick = () => toggleIngredient(ing.id);
+    const stockPct = stock[ing.id];
+    const stockColor = stockPct > 60 ? '#00CC66' : stockPct > 25 ? 'var(--orange2)' : '#ff4444';
+    card.innerHTML = `
+      <div class="ing-check">✓</div>
+      <div class="ing-emoji">${ing.emoji}</div>
+      <div class="ing-name">${ing.name}</div>
+      <div class="ing-cal">${ing.cal} kcal</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+        <div style="flex:1;height:3px;background:#1a1a1a;border-radius:2px;">
+          <div style="width:${stockPct}%;height:100%;background:${stockColor};border-radius:2px;"></div>
+        </div>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${stockColor};">${stockPct}%</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function toggleIngredient(id) {
+  if (currentOrder[id]) {
+    currentOrder[id]++;
+  } else {
+    currentOrder[id] = 1;
+  }
+  // If already 1 and click again adds to order, first click selects
+  // Actually toggle: if exists remove, else add
+  // Let's refine: first click = add (select), click on order item to adjust
+  updateOrderPanel();
+  const card = document.getElementById('card-' + id);
+  if (card) {
+    card.classList.add('selected');
+    card.style.transform = 'scale(0.96)';
+    setTimeout(() => card.style.transform = '', 150);
+  }
+}
+
+function updateOrderPanel() {
+  const container = document.getElementById('orderItems');
+  const ids = Object.keys(currentOrder);
+
+  if (ids.length === 0) {
+    container.innerHTML = `<div class="order-empty"><div class="order-empty-icon">🍳</div><div>No items selected yet</div><div style="font-size:10px;margin-top:4px;opacity:0.5">Tap ingredients to add</div></div>`;
+    document.getElementById('fireBtn').disabled = true;
+    document.getElementById('orderTimestamp').textContent = 'Started: --:--';
+  } else {
+    if (document.getElementById('orderTimestamp').textContent === 'Started: --:--') {
+      const now = new Date();
+      document.getElementById('orderTimestamp').textContent = 'Started: ' + now.toTimeString().slice(0,5);
+    }
+    document.getElementById('fireBtn').disabled = false;
+    container.innerHTML = '';
+    ids.forEach(id => {
+      const ing = INGREDIENTS.find(i => i.id === id);
+      if (!ing) return;
+      const div = document.createElement('div');
+      div.className = 'order-item';
+      div.innerHTML = `
+        <span class="order-item-emoji">${ing.emoji}</span>
+        <span class="order-item-name">${ing.name}</span>
+        <div class="order-item-qty">
+          <button class="qty-btn" onclick="changeQty('${id}',-1)">−</button>
+          <span class="qty-num">${currentOrder[id]}</span>
+          <button class="qty-btn" onclick="changeQty('${id}',1)">+</button>
+        </div>
+        <button class="order-item-del" onclick="removeItem('${id}')">✕</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // Stats
+  let totalCal = 0, totalProtein = 0, totalCarbs = 0, totalItems = 0;
+  ids.forEach(id => {
+    const ing = INGREDIENTS.find(i => i.id === id);
+    if (!ing) return;
+    const qty = currentOrder[id];
+    totalCal += ing.cal * qty;
+    totalProtein += ing.protein * qty;
+    totalCarbs += ing.carbs * qty;
+    totalItems += qty;
+  });
+  document.getElementById('statItems').textContent = totalItems;
+  document.getElementById('statCals').textContent = totalCal;
+  document.getElementById('statProteins').textContent = totalProtein;
+  document.getElementById('statCarbs').textContent = totalCarbs;
+}
+
+function changeQty(id, delta) {
+  currentOrder[id] = (currentOrder[id] || 0) + delta;
+  if (currentOrder[id] <= 0) {
+    delete currentOrder[id];
+    const card = document.getElementById('card-' + id);
+    if (card) card.classList.remove('selected');
+  }
+  updateOrderPanel();
+}
+
+function removeItem(id) {
+  delete currentOrder[id];
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.remove('selected');
+  updateOrderPanel();
+}
+
+function clearOrder() {
+  currentOrder = {};
+  document.querySelectorAll('.ing-card').forEach(c => c.classList.remove('selected'));
+  updateOrderPanel();
+  toast('🧹', 'Selection cleared');
+}
+
+function fireOrder() {
+  const ids = Object.keys(currentOrder);
+  if (!ids.length) return;
+
+  const notes = document.getElementById('orderNotes').value.trim();
+  const items = ids.map(id => ({
+    ing: INGREDIENTS.find(i => i.id === id),
+    qty: currentOrder[id]
+  })).filter(x => x.ing);
+
+  const order = {
+    id: orderCounter++,
+    items,
+    notes,
+    status: 'pending',
+    time: new Date(),
+    elapsed: 0
+  };
+
+  orders.push(order);
+  updateOrderBadge();
+  clearOrder();
+  document.getElementById('orderNotes').value = '';
+
+  toast('🔥', `Order #${order.id} fired to kitchen!`);
+  switchView('orders');
+  renderOrders();
+
+  // Start timer for this order
+  timerMap[order.id] = setInterval(() => {
+    order.elapsed++;
+    const el = document.getElementById('timer-' + order.id);
+    if (el) el.textContent = `⏱ ${formatElapsed(order.elapsed)}`;
+  }, 1000);
+}
+
+function formatElapsed(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function updateOrderBadge() {
+  const active = orders.filter(o => o.status !== 'done').length;
+  document.getElementById('orderBadge').textContent = active + ' ORDER' + (active !== 1 ? 'S' : '');
+}
+
+// ════════════════════════
+//  LIVE ORDERS
+// ════════════════════════
+function renderOrders() {
+  const grid = document.getElementById('ordersGrid');
+  const active = orders.filter(o => o.status !== 'done');
+
+  if (active.length === 0) {
+    grid.innerHTML = `<div class="no-orders"><div class="no-orders-icon">🍳</div><div class="no-orders-text">No active orders — build one in the Order Builder</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  active.forEach((order, idx) => {
+    const ticket = document.createElement('div');
+    ticket.className = 'order-ticket';
+    ticket.id = 'ticket-' + order.id;
+    ticket.style.animationDelay = (idx * 0.07) + 's';
+
+    const statusLabel = { pending:'PENDING', cooking:'COOKING…', ready:'READY ✓' }[order.status];
+    const statusClass = { pending:'status-pending', cooking:'status-cooking', ready:'status-ready' }[order.status];
+    const timeStr = order.time.toTimeString().slice(0,5);
+
+    let actionBtns = '';
+    if (order.status === 'pending') {
+      actionBtns = `<button class="ticket-btn ticket-btn-start" onclick="updateOrderStatus(${order.id},'cooking')">Start Cooking</button>`;
+    } else if (order.status === 'cooking') {
+      actionBtns = `<button class="ticket-btn ticket-btn-ready" onclick="updateOrderStatus(${order.id},'ready')">Mark Ready</button>`;
+    } else if (order.status === 'ready') {
+      actionBtns = `<button class="ticket-btn ticket-btn-start" onclick="updateOrderStatus(${order.id},'done')">Complete ✓</button>`;
+    }
+
+    ticket.innerHTML = `
+      <div class="ticket-header">
+        <span class="ticket-num">#${String(order.id).padStart(3,'0')} · ${timeStr}</span>
+        <span class="ticket-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="ticket-body">
+        <ul class="ticket-items">
+          ${order.items.map(i => `<li><span class="t-qty">${i.qty}×</span>${i.ing.emoji} ${i.ing.name}</li>`).join('')}
+        </ul>
+        ${order.notes ? `<div class="ticket-note">📝 ${order.notes}</div>` : ''}
+        <div class="ticket-footer">
+          ${actionBtns}
+          <button class="ticket-btn ticket-btn-del" onclick="deleteOrder(${order.id})">Remove</button>
+        </div>
+      </div>
+      <div class="ticket-timer" id="timer-${order.id}">⏱ ${formatElapsed(order.elapsed)}</div>
+    `;
+    grid.appendChild(ticket);
+  });
+}
+
+function updateOrderStatus(id, status) {
+  const order = orders.find(o => o.id === id);
+  if (!order) return;
+  order.status = status;
+  if (status === 'done') {
+    clearInterval(timerMap[id]);
+    delete timerMap[id];
+    orders = orders.filter(o => o.id !== id);
+    toast('✅', `Order #${id} completed!`);
+  } else {
+    const msgs = { cooking:'🍳 Cooking started!', ready:'✅ Order ready for pickup!' };
+    toast('📋', msgs[status] || '');
+  }
+  updateOrderBadge();
+  renderOrders();
+}
+
+function deleteOrder(id) {
+  clearInterval(timerMap[id]);
+  delete timerMap[id];
+  orders = orders.filter(o => o.id !== id);
+  updateOrderBadge();
+  renderOrders();
+  toast('🗑️', 'Order removed');
+}
+
+function clearAllOrders() {
+  Object.values(timerMap).forEach(clearInterval);
+  timerMap = {};
+  orders = [];
+  updateOrderBadge();
+  renderOrders();
+  toast('🧹', 'All orders cleared');
+}
+
+// ════════════════════════
+//  INVENTORY
+// ════════════════════════
+function buildInventory() {
+  filterInventory();
+}
+
+function filterInventory() {
+  const search = document.getElementById('searchBox')?.value.toLowerCase() || '';
+  let list = [...INGREDIENTS];
+
+  if (search) list = list.filter(i => i.name.toLowerCase().includes(search));
+  if (stockFilter === 'low') list = list.filter(i => stock[i.id] > 0 && stock[i.id] < 30);
+  if (stockFilter === 'out') list = list.filter(i => stock[i.id] === 0);
+
+  // Sort
+  list.sort((a,b) => {
+    let av = sortKey === 'stock' ? stock[a.id] : sortKey === 'cat' ? a.cat : a.name;
+    let bv = sortKey === 'stock' ? stock[b.id] : sortKey === 'cat' ? b.cat : b.name;
+    if (typeof av === 'string') return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+    return sortAsc ? av - bv : bv - av;
+  });
+
+  renderInventoryRows(list);
+}
+
+function renderInventoryRows(list) {
+  const tbody = document.getElementById('inventoryBody');
+  tbody.innerHTML = '';
+  list.forEach((ing, idx) => {
+    const s = stock[ing.id];
+    const cls = s > 60 ? 'stock-high' : s > 25 ? 'stock-med' : 'stock-low';
+    const cat = CATEGORIES.find(c => c.id === ing.cat);
+    const tr = document.createElement('tr');
+    tr.style.animationDelay = (idx * 0.02) + 's';
+    tr.innerHTML = `
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:20px;">${ing.emoji}</span>
+          <div>
+            <div style="font-weight:600;font-size:13px;">${ing.name}</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--white2);">${ing.cal} kcal · ${ing.protein}g prot · ${ing.carbs}g carbs</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge-cat">${cat ? cat.icon + ' ' + cat.label : ''}</span></td>
+      <td>
+        <div class="stock-bar-wrap ${cls}">
+          <div class="stock-bar"><div class="stock-fill" style="width:${s}%"></div></div>
+          <span class="stock-val">${s}%</span>
+          ${s === 0 ? '<span style="color:#ff4444;font-size:10px;letter-spacing:0.1em;font-family:\'Share Tech Mono\',monospace;">OUT</span>' : ''}
+        </div>
+      </td>
+      <td>
+        <button class="restock-btn" onclick="restock('${ing.id}')">+ Restock</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function setStockFilter(filter, btn) {
+  stockFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterInventory();
+}
+
+function sortInventory(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = true; }
+  filterInventory();
+}
+
+function restock(id) {
+  stock[id] = Math.min(100, stock[id] + 40);
+  filterInventory();
+  buildIngredients();
+  const ing = INGREDIENTS.find(i => i.id === id);
+  toast('📦', `${ing.name} restocked!`);
+}
+
+
+// ════════════════════════
+//  RECIPES DATA
+// ════════════════════════
+const RECIPES = [
+  {
+    id: 'full_english',
+    name: 'Full English Breakfast',
+    emoji: '🍳',
+    diff: 'med',
+    time: '25 min',
+    servings: 2,
+    cal: 820, protein: 42, carbs: 38, fat: 52,
+    tags: ['Classic','High Protein','British'],
+    description: 'The legendary British fry-up — a heaping plate of eggs, bacon, sausage, beans, toast and more.',
+    required: ['eggs','bacon','sauslink','wtoast','tomato','mushroom','butter'],
+    optional: ['hotsauce','tea'],
+    steps: [
+      { text: 'Heat a large skillet over medium-high. Add <strong>butter</strong> and let it foam.' },
+      { text: 'Fry <strong>bacon</strong> until crisp, about 4 min each side. Set aside on a warm plate.' },
+      { text: 'In the same pan, fry <strong>sausage links</strong> turning every 2 min for 10 min total.' },
+      { text: 'Add <strong>mushrooms</strong> and halved <strong>tomatoes</strong> cut-side down. Cook 3–4 min.' },
+      { text: 'Push everything to the side. Crack <strong>eggs</strong> in and fry sunny-side or over easy.' },
+      { text: 'Toast <strong>white toast</strong>, spread with butter. Plate everything together and serve hot.' },
+    ]
+  },
+  {
+    id: 'avocado_toast',
+    name: 'Smashed Avo Toast',
+    emoji: '🥑',
+    diff: 'easy',
+    time: '10 min',
+    servings: 1,
+    cal: 420, protein: 12, carbs: 38, fat: 24,
+    tags: ['Trendy','Vegetarian','Quick'],
+    description: 'Creamy smashed avocado on thick sourdough, topped with a poached egg and chilli flakes.',
+    required: ['avocado','sourdough','eggs','tomato'],
+    optional: ['hotsauce','spinach','onion'],
+    steps: [
+      { text: 'Toast thick slices of <strong>sourdough</strong> until golden and crunchy.' },
+      { text: 'Halve <strong>avocado</strong>, remove pit. Scoop into a bowl and mash with a fork. Season with salt and pepper.' },
+      { text: 'Bring a small pan of water to a gentle simmer. Crack <strong>eggs</strong> in and poach 3 min.' },
+      { text: 'Spread smashed avocado generously on toast. Layer sliced <strong>tomatoes</strong> on top.' },
+      { text: 'Place poached egg on top. Drizzle with <strong>hot sauce</strong> if desired.' },
+    ]
+  },
+  {
+    id: 'pancake_stack',
+    name: 'Fluffy Pancake Stack',
+    emoji: '🥞',
+    diff: 'med',
+    time: '20 min',
+    servings: 2,
+    cal: 680, protein: 16, carbs: 92, fat: 22,
+    tags: ['Sweet','Weekend','Classic'],
+    description: 'Tall, fluffy buttermilk pancakes stacked high with maple syrup, berries and whipped cream.',
+    required: ['pancake','butter','maplesyrup','blueberry','strawberry'],
+    optional: ['whipped','banana','honey'],
+    steps: [
+      { text: 'Prepare <strong>pancake mix</strong> according to package. Rest batter 5 min for fluffier results.' },
+      { text: 'Melt <strong>butter</strong> in a non-stick pan over medium heat.' },
+      { text: 'Pour ¼ cup batter per pancake. Cook until bubbles form on surface (~2 min), then flip for 1 min.' },
+      { text: 'Stack pancakes and top generously with <strong>maple syrup</strong>.' },
+      { text: 'Scatter <strong>blueberries</strong> and sliced <strong>strawberries</strong> over the stack.' },
+      { text: 'Finish with a dollop of <strong>whipped cream</strong> and serve immediately.' },
+    ]
+  },
+  {
+    id: 'breakfast_burrito',
+    name: 'Breakfast Burrito',
+    emoji: '🌯',
+    diff: 'med',
+    time: '18 min',
+    servings: 2,
+    cal: 740, protein: 38, carbs: 62, fat: 30,
+    tags: ['Mexican','High Protein','Filling'],
+    description: 'Loaded flour tortilla packed with scrambled eggs, sausage, peppers, cheese and hot salsa.',
+    required: ['tortilla','eggs','sauspat','bellpepper','onion','salsa'],
+    optional: ['avocado','hotsauce','creamcheese'],
+    steps: [
+      { text: 'Brown <strong>sausage patties</strong> in a pan, breaking into crumbles. Set aside.' },
+      { text: 'Sauté diced <strong>bell peppers</strong> and <strong>onions</strong> in the same pan until soft, ~4 min.' },
+      { text: 'Whisk <strong>eggs</strong>, pour into pan with veggies. Scramble over medium heat until just set.' },
+      { text: 'Warm <strong>tortillas</strong> directly on the burner for 20 sec each side.' },
+      { text: 'Layer eggs, sausage crumbles, and a spoonful of <strong>salsa</strong> down the centre of each tortilla.' },
+      { text: 'Add sliced <strong>avocado</strong> if using. Fold sides, roll tight and serve with extra salsa.' },
+    ]
+  },
+  {
+    id: 'smoothie_bowl',
+    name: 'Açaí Smoothie Bowl',
+    emoji: '🫐',
+    diff: 'easy',
+    time: '8 min',
+    servings: 1,
+    cal: 380, protein: 14, carbs: 58, fat: 10,
+    tags: ['Healthy','Vegan','No Cook'],
+    description: 'Thick blended smoothie base loaded with colourful fresh fruit toppings and granola.',
+    required: ['smoothie','blueberry','banana','strawberry','honey'],
+    optional: ['mango','raspberry','greekyog'],
+    steps: [
+      { text: 'Blend <strong>smoothie</strong> base with half a frozen <strong>banana</strong> until very thick. If too thin, add ice.' },
+      { text: 'Pour into a wide shallow bowl.' },
+      { text: 'Slice remaining <strong>banana</strong> and arrange on top.' },
+      { text: 'Add <strong>blueberries</strong>, <strong>strawberries</strong>, and <strong>raspberries</strong> in sections.' },
+      { text: 'Drizzle <strong>honey</strong> over the top. Add a spoonful of <strong>Greek yogurt</strong> if desired.' },
+    ]
+  },
+  {
+    id: 'eggs_benedict',
+    name: 'Eggs Benedict',
+    emoji: '🍳',
+    diff: 'hard',
+    time: '35 min',
+    servings: 2,
+    cal: 620, protein: 28, carbs: 30, fat: 40,
+    tags: ['Brunch','Classic','Impressive'],
+    description: 'Toasted English muffin topped with Canadian ham, poached eggs, and rich hollandaise.',
+    required: ['engmuf','eggs','ham','butter','eggwhites'],
+    optional: ['spinach','salmon'],
+    steps: [
+      { text: 'Make hollandaise: whisk <strong>egg whites</strong> in a double boiler, slowly drizzle in melted <strong>butter</strong>, whisking constantly.' },
+      { text: 'Split and toast <strong>English muffins</strong> until golden.' },
+      { text: 'Warm <strong>ham</strong> slices in a pan with a touch of <strong>butter</strong>.' },
+      { text: 'Poach <strong>eggs</strong> in simmering water with a splash of vinegar for exactly 3 minutes.' },
+      { text: 'Layer: muffin half → ham → poached egg → generous drizzle of hollandaise.' },
+      { text: 'Serve immediately while egg yolk is still runny.' },
+    ]
+  },
+  {
+    id: 'veggie_scramble',
+    name: 'Garden Veggie Scramble',
+    emoji: '🥬',
+    diff: 'easy',
+    time: '12 min',
+    servings: 2,
+    cal: 310, protein: 18, carbs: 14, fat: 18,
+    tags: ['Vegetarian','Low Carb','Healthy'],
+    description: 'Fluffy scrambled eggs loaded with fresh spinach, mushrooms, peppers and tomato.',
+    required: ['eggs','spinach','mushroom','bellpepper','tomato','butter'],
+    optional: ['onion','avocado','hotsauce'],
+    steps: [
+      { text: 'Melt <strong>butter</strong> in a non-stick pan over medium heat.' },
+      { text: 'Sauté sliced <strong>mushrooms</strong> and diced <strong>bell peppers</strong> for 3–4 min.' },
+      { text: 'Add <strong>spinach</strong> and stir until wilted, ~1 min.' },
+      { text: 'Add diced <strong>tomatoes</strong> and stir briefly.' },
+      { text: 'Push veggies to side. Whisk <strong>eggs</strong> with salt, pour in and scramble gently over low heat.' },
+      { text: 'Fold veggies into eggs. Serve immediately with <strong>hot sauce</strong> on the side.' },
+    ]
+  },
+  {
+    id: 'waffle_plate',
+    name: 'Belgian Waffle Plate',
+    emoji: '🧇',
+    diff: 'med',
+    time: '22 min',
+    servings: 2,
+    cal: 750, protein: 14, carbs: 88, fat: 32,
+    tags: ['Sweet','Belgian','Weekend'],
+    description: 'Deep-pocketed Belgian waffles crisp on the outside, fluffy inside, drowning in maple and berries.',
+    required: ['waffles','butter','maplesyrup','strawberry','whipped'],
+    optional: ['blueberry','banana','honey'],
+    steps: [
+      { text: 'Preheat waffle iron. Prepare <strong>waffle mix</strong> according to instructions — do not overmix.' },
+      { text: 'Brush iron generously with melted <strong>butter</strong>.' },
+      { text: 'Pour batter into iron, close, and cook until steam stops (~4–5 min).' },
+      { text: 'Transfer to oven at 200°F to keep warm while cooking remaining waffles.' },
+      { text: 'Slice <strong>strawberries</strong> and warm <strong>maple syrup</strong> briefly in microwave.' },
+      { text: 'Plate waffles, top with berries, drizzle warm maple syrup, and pile on <strong>whipped cream</strong>.' },
+    ]
+  },
+  {
+    id: 'salmon_bagel',
+    name: 'Smoked Salmon Bagel',
+    emoji: '🥯',
+    diff: 'easy',
+    time: '8 min',
+    servings: 1,
+    cal: 520, protein: 32, carbs: 54, fat: 18,
+    tags: ['NYC Style','No Cook','High Protein'],
+    description: 'New York deli classic — toasted bagel slathered in cream cheese, piled with smoked salmon.',
+    required: ['bagel','salmon','creamcheese','tomato','onion'],
+    optional: ['spinach','avocado','eggwhites'],
+    steps: [
+      { text: 'Slice <strong>bagel</strong> in half and toast until golden brown and crispy.' },
+      { text: 'Spread a thick layer of <strong>cream cheese</strong> on both halves.' },
+      { text: 'Layer thin slices of <strong>smoked salmon</strong> generously over the cream cheese.' },
+      { text: 'Add thinly sliced <strong>tomato</strong> and rings of <strong>onion</strong>.' },
+      { text: 'Optionally add a handful of <strong>spinach</strong> or sliced <strong>avocado</strong>.' },
+      { text: 'Press the top half on lightly. Serve open-faced or closed with a squeeze of lemon.' },
+    ]
+  },
+  {
+    id: 'oatmeal_bowl',
+    name: 'Power Oatmeal Bowl',
+    emoji: '🥣',
+    diff: 'easy',
+    time: '10 min',
+    servings: 1,
+    cal: 450, protein: 18, carbs: 68, fat: 10,
+    tags: ['Healthy','Slow Release','Vegan Option'],
+    description: 'Creamy steel-cut oats loaded with protein, fresh fruit, nuts and a drizzle of honey.',
+    required: ['oatmeal','milk','banana','blueberry','honey'],
+    optional: ['greekyog','strawberry','raspberry','maplesyrup'],
+    steps: [
+      { text: 'Combine <strong>oatmeal</strong> and <strong>milk</strong> (or water) in a pot. Bring to boil, reduce and simmer 5 min stirring often.' },
+      { text: 'Pour into a bowl. The oats will thicken as they cool — add more milk if too thick.' },
+      { text: 'Slice <strong>banana</strong> and arrange on top along with <strong>blueberries</strong>.' },
+      { text: 'Add a large spoonful of <strong>Greek yogurt</strong> on the side.' },
+      { text: 'Drizzle generously with <strong>honey</strong> or <strong>maple syrup</strong>.' },
+      { text: 'Optional: add a sprinkle of cinnamon and a handful of nuts for extra crunch.' },
+    ]
+  },
+];
+
+let activeRecipeId = null;
+let checkedChips = new Set();
+
+function buildRecipeList() {
+  const list = document.getElementById('recipeList');
+  list.innerHTML = '';
+  RECIPES.forEach((r, idx) => {
+    const card = document.createElement('div');
+    card.className = 'recipe-card' + (activeRecipeId === r.id ? ' active' : '');
+    card.style.animationDelay = (idx * 0.05) + 's';
+    card.onclick = () => selectRecipe(r.id);
+    const diffClass = { easy:'diff-easy', med:'diff-med', hard:'diff-hard' }[r.diff];
+    const diffLabel = { easy:'EASY', med:'MED', hard:'HARD' }[r.diff];
+    card.innerHTML = `
+      <div class="recipe-thumb">${r.emoji}</div>
+      <div class="recipe-card-info">
+        <div class="recipe-card-name">${r.name}</div>
+        <div class="recipe-card-meta">⏱ ${r.time} &nbsp;·&nbsp; ${r.cal} kcal &nbsp;·&nbsp; ${r.protein}g protein</div>
+      </div>
+      <span class="recipe-card-diff ${diffClass}">${diffLabel}</span>
+    `;
+    list.appendChild(card);
+  });
+  if (activeRecipeId) renderRecipeDetail(activeRecipeId);
+}
+
+function selectRecipe(id) {
+  activeRecipeId = id;
+  checkedChips = new Set();
+  document.querySelectorAll('.recipe-card').forEach(c => {
+    c.classList.toggle('active', c.querySelector('.recipe-card-name')?.textContent === RECIPES.find(r=>r.id===id)?.name);
+  });
+  renderRecipeDetail(id);
+}
+
+function renderRecipeDetail(id) {
+  const r = RECIPES.find(x => x.id === id);
+  if (!r) return;
+  const panel = document.getElementById('recipeDetail');
+  panel.style.background = '#111';
+  panel.style.border = '1px solid rgba(255,107,0,0.2)';
+  panel.style.borderRadius = '14px';
+  panel.style.padding = '28px';
+
+  const totalIngIds = [...r.required, ...(r.optional||[])];
+  const totalChecked = totalIngIds.filter(id => checkedChips.has(id)).length;
+  const pct = Math.round(totalChecked / totalIngIds.length * 100);
+
+  panel.innerHTML = `
+    <div class="recipe-detail-header">
+      <div class="recipe-detail-emoji">${r.emoji}</div>
+      <div>
+        <div class="recipe-detail-title">${r.name}</div>
+        <div class="recipe-detail-sub">⏱ ${r.time} &nbsp;·&nbsp; ${r.servings} servings &nbsp;·&nbsp; <span style="color:var(--orange)">${pct}% ready</span></div>
+      </div>
+    </div>
+    <div class="recipe-tags">${r.tags.map(t=>`<span class="recipe-tag">${t}</span>`).join('')}</div>
+    <p style="font-size:13px;color:rgba(240,234,214,0.6);margin-bottom:18px;line-height:1.6;">${r.description}</p>
+    <div class="recipe-stats-row">
+      <div class="recipe-stat-box"><div class="recipe-stat-val">${r.cal}</div><div class="recipe-stat-lbl">Calories</div></div>
+      <div class="recipe-stat-box"><div class="recipe-stat-val">${r.protein}g</div><div class="recipe-stat-lbl">Protein</div></div>
+      <div class="recipe-stat-box"><div class="recipe-stat-val">${r.carbs}g</div><div class="recipe-stat-lbl">Carbs</div></div>
+      <div class="recipe-stat-box"><div class="recipe-stat-val">${r.fat}g</div><div class="recipe-stat-lbl">Fat</div></div>
+    </div>
+
+    <div class="sec-label">Ingredients — click to check off</div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-dot orange"></div> Required</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(255,149,0,0.15);border:1px dashed rgba(255,149,0,0.5);"></div> Optional</div>
+      <div class="legend-item"><div class="legend-dot green"></div> Checked / Have It</div>
+    </div>
+
+    <div class="ing-viewer-grid" id="ingViewerGrid">
+      ${buildIngViewerChips(r)}
+    </div>
+
+    <div class="sec-label">Method</div>
+    <div class="recipe-steps">
+      ${r.steps.map((s,i)=>`<div class="step-row"><span class="step-num">${i+1}</span><span class="step-text">${s.text}</span></div>`).join('')}
+    </div>
+
+    <div class="recipe-action-row">
+      <button class="btn-recipe-order" onclick="orderFromRecipe('${r.id}')">🔥 Add to Order</button>
+      <button class="btn-recipe-clear" onclick="clearChecks()">Clear Checks</button>
+    </div>
+  `;
+}
+
+function buildIngViewerChips(r) {
+  let html = '';
+  const makeChip = (ingId, isOptional) => {
+    const ing = INGREDIENTS.find(i => i.id === ingId);
+    if (!ing) return '';
+    const isChecked = checkedChips.has(ingId);
+    let cls = 'ing-viewer-chip';
+    if (isChecked) cls += ' user-checked';
+    else if (!isOptional) cls += ' highlighted';
+    return `
+      <div class="${cls}" id="chip-${ingId}" onclick="toggleChip('${ingId}','${r.id}')">
+        <div class="chip-emoji">${ing.emoji}</div>
+        <div class="chip-name">${ing.name}</div>
+        <div class="chip-cal">${ing.cal} kcal</div>
+        ${isOptional ? '<div class="chip-optional">optional</div>' : ''}
+      </div>
+    `;
+  };
+  r.required.forEach(id => html += makeChip(id, false));
+  if (r.optional && r.optional.length) r.optional.forEach(id => html += makeChip(id, true));
+  return html;
+}
+
+function toggleChip(ingId, recipeId) {
+  if (checkedChips.has(ingId)) checkedChips.delete(ingId);
+  else checkedChips.add(ingId);
+  renderRecipeDetail(recipeId);
+}
+
+function clearChecks() {
+  checkedChips = new Set();
+  if (activeRecipeId) renderRecipeDetail(activeRecipeId);
+}
+
+function orderFromRecipe(recipeId) {
+  const r = RECIPES.find(x => x.id === recipeId);
+  if (!r) return;
+  r.required.forEach(id => {
+    currentOrder[id] = (currentOrder[id] || 0) + 1;
+  });
+  updateOrderPanel();
+  toast('🔥', `${r.name} ingredients added to order!`);
+  switchView('menu');
+}
+
+// ════════════════════════
+//  MEAL PLANNER
+// ════════════════════════
+const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const MEALS = ['Breakfast','Brunch','Snack'];
+const plannerData = {};
+
+function buildPlanner() {
+  const grid = document.getElementById('plannerGrid');
+  grid.innerHTML = '';
+  DAYS.forEach(day => {
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.innerHTML = `<div class="day-label">${day}</div>`;
+    MEALS.forEach(meal => {
+      const key = day + '-' + meal;
+      const slot = document.createElement('div');
+      slot.className = `meal-slot ${plannerData[key] ? 'has-meal' : ''}`;
+      slot.onclick = () => openPlannerModal(day, meal, key);
+      slot.innerHTML = `
+        <div class="meal-slot-label">${meal}</div>
+        ${plannerData[key]
+          ? `<div class="meal-slot-content">${plannerData[key]}</div>`
+          : `<div class="meal-slot-empty">+ Add</div>`}
+      `;
+      col.appendChild(slot);
+    });
+    grid.appendChild(col);
+  });
+}
+
+function openPlannerModal(day, meal, key) {
+  const modal = document.getElementById('modal');
+  const box = document.getElementById('modalBox');
+  const existing = plannerData[key] || '';
+
+  // Quick options
+  const suggestions = [
+    '🥚 Eggs + Bacon', '🥞 Pancakes + OJ', '🥣 Oatmeal + Berries',
+    '🥯 Bagel + Cream Cheese', '🥑 Avocado Toast', '🍳 Full English',
+    '🥤 Smoothie Bowl', '🧇 Waffles + Maple', '🥗 Veggie Scramble'
+  ];
+
+  box.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">${day} — ${meal}</div>
+    <div class="sec-label" style="margin-bottom:10px;">Quick Select</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;">
+      ${suggestions.map(s => `<button onclick="setPlannerSlot('${key}','${s}')" style="background:var(--black5);border:1px solid var(--white3);border-radius:6px;padding:6px 12px;color:var(--white);font-family:'Rajdhani',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--white3)'">${s}</button>`).join('')}
+    </div>
+    <div class="sec-label" style="margin-bottom:8px;">Custom Entry</div>
+    <textarea id="plannerInput" style="width:100%;background:var(--black5);border:1px solid var(--white3);border-radius:6px;padding:10px;color:var(--white);font-family:'Rajdhani',sans-serif;font-size:13px;resize:none;outline:none;height:70px;" placeholder="Describe your meal...">${existing}</textarea>
+
+```
+<div style="display:flex;gap:10px;margin-top:14px;">
+  <button onclick="savePlannerSlot('${key}')" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--orange3),var(--orange2));color:#000;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;cursor:pointer;">Save</button>
+  ${existing ? `<button onclick="clearPlannerSlot('${key}')" style="padding:12px 16px;background:transparent;border:1px solid rgba(240,234,214,0.15);border-radius:8px;color:var(--white2);font-family:'Rajdhani',sans-serif;font-size:12px;cursor:pointer;">Clear</button>` : ''}
+</div>
+```
+
+`;
+modal.classList.add(‘open’);
+}
+
+function setPlannerSlot(key, val) {
+plannerData[key] = val;
+buildPlanner();
+closeModal();
+toast(‘📅’, ‘Meal planned!’);
+}
+function savePlannerSlot(key) {
+const val = document.getElementById(‘plannerInput’).value.trim();
+if (val) { plannerData[key] = val; toast(‘📅’, ‘Meal saved!’); }
+else { delete plannerData[key]; }
+buildPlanner();
+closeModal();
+}
+function clearPlannerSlot(key) {
+delete plannerData[key];
+buildPlanner();
+closeModal();
+toast(‘🗑️’, ‘Slot cleared’);
+}
+function closeModal() {
+document.getElementById(‘modal’).classList.remove(‘open’);
+}
+document.getElementById(‘modal’).onclick = (e) => {
+if (e.target === document.getElementById(‘modal’)) closeModal();
+};
+
+// ════════════════════════
+//  TOAST
+// ════════════════════════
+function toast(icon, msg) {
+const container = document.getElementById(‘toastContainer’);
+const el = document.createElement(‘div’);
+el.className = ‘toast-msg’;
+el.innerHTML = `<span class="toast-icon">${icon}</span> ${msg}`;
+container.appendChild(el);
+setTimeout(() => el.remove(), 2800);
+}
+
+// ════════════════════════
+//  ANIMATED BALLS
+// ════════════════════════
+function startBalls() {
+const canvas = document.getElementById(‘bgCanvas’);
+const ctx = canvas.getContext(‘2d’);
+
+const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+resize();
+window.addEventListener(‘resize’, resize);
+
+const COUNT = 70;
+const balls = [];
+const palette = [
+[255,107,0], [255,149,0], [255,69,0],
+[240,234,214], [200,160,80], [180,60,0]
+];
+
+for (let i = 0; i < COUNT; i++) {
+const [r,g,b] = palette[Math.floor(Math.random() * palette.length)];
+const isWhite = r > 200 && g > 180;
+const rad = Math.random() * 12 + 2;
+balls.push({
+x: Math.random() * window.innerWidth,
+y: Math.random() * window.innerHeight,
+r: rad,
+vx: (Math.random() - 0.5) * 0.6,
+vy: (Math.random() - 0.5) * 0.6,
+cr: r, cg: g, cb: b,
+alpha: isWhite ? (Math.random() * 0.08 + 0.02) : (Math.random() * 0.18 + 0.03),
+pulse: Math.random() * Math.PI * 2,
+ps: 0.01 + Math.random() * 0.025,
+glowMult: 2.5 + Math.random() * 3,
+});
+}
+
+let mx = -1e5, my = -1e5;
+window.addEventListener(‘mousemove’, e => { mx = e.clientX; my = e.clientY; });
+
+const draw = () => {
+requestAnimationFrame(draw);
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+```
+balls.forEach(b => {
+  b.pulse += b.ps;
+  const scale = 1 + Math.sin(b.pulse) * 0.15;
+  const dr = b.r * scale;
+  const gr = dr * b.glowMult;
+
+  // Mouse repel
+  const dx = b.x - mx, dy = b.y - my;
+  const d = Math.sqrt(dx*dx + dy*dy);
+  if (d < 100 && d > 0.1) {
+    const f = (100 - d) / 100 * 0.9;
+    b.vx += dx/d * f;
+    b.vy += dy/d * f;
+  }
+
+  // Speed cap + damping
+  const sp = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
+  if (sp > 2.5) { b.vx = b.vx/sp*2.5; b.vy = b.vy/sp*2.5; }
+  b.vx *= 0.993; b.vy *= 0.993;
+
+  b.x += b.vx; b.y += b.vy;
+
+  const w = canvas.width, h = canvas.height;
+  if (b.x < -gr*2) b.x = w + gr; else if (b.x > w + gr*2) b.x = -gr;
+  if (b.y < -gr*2) b.y = h + gr; else if (b.y > h + gr*2) b.y = -gr;
+
+  // Glow halo
+  const grd = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, gr);
+  grd.addColorStop(0, `rgba(${b.cr},${b.cg},${b.cb},${b.alpha * 2.5})`);
+  grd.addColorStop(0.4, `rgba(${b.cr},${b.cg},${b.cb},${b.alpha * 0.8})`);
+  grd.addColorStop(1, `rgba(${b.cr},${b.cg},${b.cb},0)`);
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, gr, 0, Math.PI*2);
+  ctx.fillStyle = grd;
+  ctx.fill();
+
+  // Core
+  ctx.beginPath();
+  ctx.arc(b.x, b.y, dr, 0, Math.PI*2);
+  ctx.fillStyle = `rgba(${b.cr},${b.cg},${b.cb},${b.alpha * 4})`;
+  ctx.fill();
+});
+```
+
+};
+draw();
+}
+
+// ════════════════════════
+//  CUSTOM CURSOR
+// ════════════════════════
+function setupCursor() {
+const dot = document.getElementById(‘cursor’);
+const ring = document.getElementById(‘cursorRing’);
+let rx = 0, ry = 0;
+
+document.addEventListener(‘mousemove’, e => {
+dot.style.left = e.clientX + ‘px’;
+dot.style.top = e.clientY + ‘px’;
+rx += (e.clientX - rx) * 0.15;
+ry += (e.clientY - ry) * 0.15;
+ring.style.left = rx + ‘px’;
+ring.style.top = ry + ‘px’;
+});
+
+const updateRing = () => {
+ring.style.left = rx + ‘px’;
+ring.style.top = ry + ‘px’;
+requestAnimationFrame(updateRing);
+};
+updateRing();
+
+document.querySelectorAll(‘button, .ing-card, .meal-slot, .order-item, .nav-tab’).forEach(el => {
+el.addEventListener(‘mouseenter’, () => {
+dot.style.width = ‘16px’; dot.style.height = ‘16px’;
+ring.style.width = ‘46px’; ring.style.height = ‘46px’;
+ring.style.borderColor = ‘rgba(255,107,0,0.7)’;
+});
+el.addEventListener(‘mouseleave’, () => {
+dot.style.width = ‘10px’; dot.style.height = ‘10px’;
+ring.style.width = ‘32px’; ring.style.height = ‘32px’;
+ring.style.borderColor = ‘rgba(255,107,0,0.4)’;
+});
+});
+}
+</script>
+
+</body>
+</html>
