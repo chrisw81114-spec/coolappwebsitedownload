@@ -25,31 +25,63 @@
 
     .error-box {
         background: rgba(0, 0, 0, 0.35);
-        padding: 30px 40px;
+        padding: 35px 45px;
         border-radius: 14px;
         border: 1px solid rgba(255, 0, 0, 0.5);
         box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
         backdrop-filter: blur(10px);
         text-align: center;
-        max-width: 600px;
+        max-width: 650px;
         font-size: 22px;
         line-height: 1.5;
+        animation: fadeIn 1.5s ease forwards;
+        opacity: 0;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .title {
-        font-size: 32px;
+        font-size: 34px;
         font-weight: bold;
         margin-bottom: 15px;
-        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+        text-shadow: 0 0 12px rgba(255, 0, 0, 0.7);
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 28px;
+        font-size: 20px;
+        color: white;
+        background: rgba(255, 0, 0, 0.4);
+        border: 1px solid rgba(255, 0, 0, 0.6);
+        border-radius: 10px;
+        text-decoration: none;
+        backdrop-filter: blur(4px);
+        transition: 0.25s ease;
+    }
+
+    .btn:hover {
+        background: rgba(255, 0, 0, 0.7);
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        transform: scale(1.05);
     }
 </style>
 </head>
 <body>
 
 <div class="error-box">
-    <div class="title">⚠️ ERROR</div>
-    Payment link status has been detected and is no longer available for you.<br>
-    Access to this page has been restricted.
+    <div class="title">⚠️ PAYMENT ERROR</div>
+    Payment link status has been verified and access to this page is no longer available.<br>
+    Your session has been restricted for security reasons.
+    
+    <br><br>
+    <a class="btn" href="https://chrisw81114-spec.github.io/coolappwebsitedownload/Ayohacking.html">
+        ⬅ Go Back to Website
+    </a>
 </div>
 
 </body>
