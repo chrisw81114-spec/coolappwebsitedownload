@@ -58,9 +58,9 @@
         user-select: all;
     }
 
-    .btn {
+    .btn, .copy-btn {
         display: inline-block;
-        margin-top: 30px;
+        margin-top: 25px;
         padding: 12px 28px;
         font-size: 20px;
         color: white;
@@ -70,12 +70,21 @@
         text-decoration: none;
         backdrop-filter: blur(4px);
         transition: 0.25s ease;
+        cursor: pointer;
     }
 
-    .btn:hover {
+    .btn:hover, .copy-btn:hover {
         background: rgba(0, 255, 120, 0.6);
         box-shadow: 0 0 15px rgba(0, 255, 120, 0.7);
         transform: scale(1.05);
+    }
+
+    .copied {
+        margin-top: 10px;
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        color: #aaffaa;
     }
 </style>
 </head>
@@ -83,15 +92,29 @@
 
 <div class="box">
     <div class="title">✅ SUCCESS!</div>
-    <div>Your payment has been verified and access has been granted.</div>
+    <div>Your payment is done and now we are giving your key below. (THIS SITE WILL EXPIRE SOON)</div>
 
     <div class="label">Permission Key:</div>
-    <div class="key">PK-ALPHA-92X7-CHRIS</div>
+    <div class="key" id="permKey">PK-ALPHA-92X7-CHRIS</div>
+
+    <button class="copy-btn" onclick="copyKey()">📋 Copy Key</button>
+    <div class="copied" id="copiedMsg">Copied!</div>
 
     <a class="btn" href="https://chrisw81114-spec.github.io/coolappwebsitedownload/Ayohacking.html">
         ⬅ Go Back to Website
     </a>
 </div>
+
+<script>
+function copyKey() {
+    const keyText = document.getElementById("permKey").innerText;
+    navigator.clipboard.writeText(keyText).then(() => {
+        const msg = document.getElementById("copiedMsg");
+        msg.style.opacity = "1";
+        setTimeout(() => msg.style.opacity = "0", 1500);
+    });
+}
+</script>
 
 </body>
 </html>
