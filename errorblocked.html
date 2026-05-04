@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Error – Breathe In, Breathe Out</title>
+<title>Payment Error</title>
 <style>
     body {
         margin: 0;
@@ -10,78 +10,47 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: radial-gradient(circle at center, #1a1a1a, #000);
         font-family: Arial, sans-serif;
         color: white;
         overflow: hidden;
-    }
-
-    .circle {
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
         animation: breathe 6s ease-in-out infinite;
+        background: #8b0000;
     }
 
     @keyframes breathe {
-        0% { transform: scale(0.7); opacity: 0.6; }
-        50% { transform: scale(1.15); opacity: 1; }
-        100% { transform: scale(0.7); opacity: 0.6; }
-    }
-
-    .text {
-        position: absolute;
-        top: 65%;
-        text-align: center;
-        font-size: 22px;
-        opacity: 0;
-        animation: fadeText 6s ease-in-out infinite;
-    }
-
-    @keyframes fadeText {
-        0% { opacity: 0; }
-        20% { opacity: 1; content: "Inhale"; }
-        50% { opacity: 1; }
-        80% { opacity: 1; }
-        100% { opacity: 0; }
+        0% { transform: scale(1); background-color: #5a0000; }
+        50% { transform: scale(1.05); background-color: #b30000; }
+        100% { transform: scale(1); background-color: #5a0000; }
     }
 
     .error-box {
-        position: absolute;
-        top: 10%;
-        background: rgba(255, 0, 0, 0.15);
-        padding: 20px 30px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 0, 0, 0.4);
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-        backdrop-filter: blur(6px);
-        font-size: 20px;
+        background: rgba(0, 0, 0, 0.35);
+        padding: 30px 40px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 0, 0, 0.5);
+        box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        text-align: center;
+        max-width: 600px;
+        font-size: 22px;
+        line-height: 1.5;
     }
 
-    .exhale {
-        animation: exhaleText 6s ease-in-out infinite;
-    }
-
-    @keyframes exhaleText {
-        0% { opacity: 0; }
-        50% { opacity: 0; }
-        60% { opacity: 1; }
-        100% { opacity: 0; }
+    .title {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
     }
 </style>
 </head>
 <body>
 
 <div class="error-box">
-    ⚠️ Error: Something went wrong
+    <div class="title">⚠️ ERROR</div>
+    Payment link status has been detected and is no longer available for you.<br>
+    Access to this page has been restricted.
 </div>
-
-<div class="circle"></div>
-
-<div class="text">Inhale…</div>
-<div class="text exhale" style="top: 75%;">Exhale…</div>
 
 </body>
 </html>
