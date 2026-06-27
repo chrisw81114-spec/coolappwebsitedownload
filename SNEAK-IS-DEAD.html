@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Virus Remover</title>
 
+<style>
+body{
+    background:#111;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    margin-top:100px;
+}
+
+button{
+    padding:15px 30px;
+    font-size:20px;
+    cursor:pointer;
+}
+
+#progressContainer{
+    width:500px;
+    margin:auto;
+    border:2px solid white;
+    display:none;
+}
+
+#progressBar{
+    width:0%;
+    height:30px;
+    background:lime;
+}
+
+#videoContainer,
+#imageContainer,
+#finalMessage{
+    display:none;
+}
+
+img{
+    max-width:80%;
+    margin-top:20px;
+}
+
+video{
+    width:800px;
+    max-width:90%;
+}
+</style>
+</head>
+<body>
+
+<div id="startScreen">
+    <h1>⚠ Oops, Your PC has a virus! ⚠</h1>
+    <p>Don't panic. Click below to remove it.</p>
+    <button onclick="startRemoval()">Remove Virus</button>
+</div>
+
+<div id="fixingScreen" style="display:none;">
+    <h2>Removing Virus...</h2>
+
+    <div id="progressContainer">
+        <div id="progressBar"></div>
+    </div>
+
+    <h3 id="percentText">0%</h3>
+</div>
+
+<div id="videoContainer">
+    <h2>Virus Removal FAILED!</h2>
+
+    <video id="virusVideo" autoplay muted loop>
+        <source src="VIDS/0627.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div id="imageContainer">
+    <img id="slideshowImage" src="">
+</div>
+
+<div id="finalMessage">
+    <h1 style="color:red;">
+        Virus is not removed!<br>
+        Please close tab.
+    </h1>
+</div>
+
+<script>
+function startRemoval(){
+
+    document.getElementById("startScreen").style.display="none";
+    document.getElementById("fixingScreen").style.display="block";
+    document.getElementById("progressContainer").style.display="block";
+
+    let progress=0;
+
+    let interval=setInterval(function(){
+
+        progress++;
+
+        document.getElementById("progressBar").style.width=progress+"%";
+        document.getElementById("percentText").innerText=progress+"%";
+
+        if(progress>=100){
+            clearInterval(interval);
+
+            document.getElementById("fixingScreen").style.display="none";
+            startVideo();
+        }
+
+    },100); // 10 seconds total
+}
+
+function startVideo(){
+
+    document.getElementById("videoContainer").style.display="block";
+
+    setTimeout(function(){
+
+        document.getElementById("videoContainer").style.display="none";
+        startImages();
+
+    },300000); // 5 minutes
+}
+
+function startImages(){
+
+    let img=document.getElementById("slideshowImage");
+
+    document.getElementById("imageContainer").style.display="block";
+
+    img.src="VIDS/Screenshot1.png";
+
+    setTimeout(function(){
+
+        img.src="VIDS/Screenshot2.png";
+
+        setTimeout(function(){
+
+            document.getElementById("imageContainer").style.display="none";
+            document.getElementById("finalMessage").style.display="block";
+
+        },5000);
+
+    },5000);
+}
+</script>
+
+</body>
+</html>
