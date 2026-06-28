@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>McAfee Security Scan</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#111;
+    color:white;
+}
+
+.header{
+    background:#c00000;
+    padding:20px;
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:900px;
+    margin:30px auto;
+    background:#1d1d1d;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(255,0,0,.3);
+}
+
+.status{
+    font-size:24px;
+    margin-bottom:20px;
+}
+
+.progress-container{
+    width:100%;
+    height:35px;
+    background:#333;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress{
+    width:0%;
+    height:100%;
+    background:limegreen;
+    transition:.2s;
+}
+
+.log{
+    margin-top:20px;
+    background:black;
+    padding:15px;
+    height:300px;
+    overflow-y:auto;
+    border:1px solid #444;
+    font-family:Consolas, monospace;
+}
+
+button{
+    margin-top:20px;
+    padding:15px 30px;
+    border:none;
+    border-radius:8px;
+    background:#c00000;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#ff0000;
+}
+
+.warning{
+    margin-top:20px;
+    color:#ff4d4d;
+    font-weight:bold;
+    font-size:20px;
+}
+
+.hidden{
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+McAfee Total Protection
+</div>
+
+<div class="container">
+
+<div class="status" id="status">
+Ready to Scan
+</div>
+
+<div class="progress-container">
+    <div class="progress" id="progress"></div>
+</div>
+
+<div class="log" id="log"></div>
+
+<button id="scanBtn">Start Full System Scan</button>
+
+<button id="removeBtn" class="hidden">
+Remove Threats
+</button>
+
+<div class="warning" id="warning"></div>
+
+</div>
+
+<script>
+
+const log = document.getElementById("log");
+const progress = document.getElementById("progress");
+const statusText = document.getElementById("status");
+const scanBtn = document.getElementById("scanBtn");
+const removeBtn = document.getElementById("removeBtn");
+const warning = document.getElementById("warning");
+
+function addLog(text){
+    log.innerHTML += text + "<br>";
+    log.scrollTop = log.scrollHeight;
+}
+
+scanBtn.onclick = function(){
+
+    scanBtn.disabled = true;
+    warning.innerHTML = "";
+    log.innerHTML = "";
+
+    let percent = 0;
+
+    statusText.innerHTML = "Scanning System...";
+
+    const files = [
+        "Checking Windows System32...",
+        "Scanning Startup Applications...",
+        "Checking Browser Extensions...",
+        "Scanning Downloads Folder...",
+        "Checking Temporary Files...",
+        "Analyzing Network Activity...",
+        "Checking Registry Entries...",
+        "Scanning User Documents...",
+        "Checking Running Processes...",
+        "Analyzing Security Settings...",
+        "Inspecting Driver Files...",
+        "Checking Memory Usage...",
+        "Scanning Cloud Sync Files...",
+        "Checking System Restore Points...",
+        "Analyzing USB Device History...",
+        "Scanning Program Files...",
+        "Checking Application Data...",
+        "Searching For Malware Signatures...",
+        "Inspecting Executable Files...",
+        "Performing Deep Threat Analysis..."
+    ];
+
+    let index = 0;
+
+    const interval = setInterval(() => {
+
+        percent++;
+
+        progress.style.width = percent + "%";
+
+        if(percent % 5 === 0 && index < files.length){
+            addLog(files[index]);
+            index++;
+        }
+
+        if(percent >= 100){
+
+            clearInterval(interval);
+
+            statusText.innerHTML =
+            "SCAN COMPLETE - 7 CRITICAL THREATS FOUND";
+
+            addLog("<br><span style='color:red'>Threat Found: Trojan.Win32.Generic</span>");
+            addLog("<span style='color:red'>Threat Found: Spyware.Agent.A</span>");
+            addLog("<span style='color:red'>Threat Found: Keylogger.Hidden</span>");
+            addLog("<span style='color:red'>Threat Found: Browser.Hijacker</span>");
+            addLog("<span style='color:red'>Threat Found: Worm.NetworkX</span>");
+            addLog("<span style='color:red'>Threat Found: CryptoMiner.X</span>");
+            addLog("<span style='color:red'>Threat Found: Rootkit.HiddenKernel</span>");
+
+            removeBtn.classList.remove("hidden");
+        }
+
+    }, 150);
+};
+
+removeBtn.onclick = function(){
+
+    removeBtn.disabled = true;
+    warning.innerHTML = "";
+    progress.style.width = "0%";
+
+    statusText.innerHTML = "Removing Threats...";
+
+    let percent = 0;
+
+    log.innerHTML += "<br><br>Starting threat removal process...<br>";
+
+    const removeInterval = setInterval(() => {
+
+        percent++;
+
+        progress.style.width = percent + "%";
+
+        if(percent === 20)
+            addLog("Removing Trojan.Win32.Generic...");
+
+        if(percent === 40)
+            addLog("Removing Spyware.Agent.A...");
+
+        if(percent === 60)
+            addLog("Removing Rootkit.HiddenKernel...");
+
+        if(percent === 80)
+            addLog("Finalizing cleanup...");
+
+        if(percent >= 100){
+
+            clearInterval(removeInterval);
+
+            statusText.innerHTML =
+            "REMOVAL FAILED";
+
+            warning.innerHTML =
+            "⚠ Threats could not be removed. Please try again.";
+
+            addLog("<span style='color:red'>ERROR: Threats are currently active.</span>");
+            addLog("<span style='color:red'>ERROR CODE: 0x0000FAKE</span>");
+            addLog("<span style='color:red'>Cleanup unsuccessful.</span>");
+
+            removeBtn.disabled = false;
+        }
+
+    }, 80);
+
+};
+
+</script>
+
+</body>
+</html>
