@@ -1,0 +1,399 @@
+/* ===========================
+   CYBERSHIELD SECURITY THEME
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
+
+body{
+    overflow:hidden;
+    background:
+        radial-gradient(circle at top, #380000 0%, #170000 20%, #0a0a0a 60%),
+        linear-gradient(135deg,#050505,#101010);
+    color:white;
+    height:100vh;
+}
+
+/* Animated background */
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 100px,
+            rgba(255,0,0,.03) 101px
+        );
+    animation:gridMove 15s linear infinite;
+    pointer-events:none;
+}
+
+@keyframes gridMove{
+    from{
+        transform:translateX(0);
+    }
+    to{
+        transform:translateX(-100px);
+    }
+}
+
+/* Main window */
+.antivirus-window{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:1000px;
+    height:700px;
+
+    background:rgba(18,18,18,.75);
+    backdrop-filter:blur(20px);
+
+    border-radius:25px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 0 50px rgba(255,0,0,.2),
+        inset 0 0 50px rgba(255,255,255,.02);
+}
+
+/* Top bar */
+.topbar{
+    height:85px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+/* Logo */
+.logo{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+.logo span{
+    color:#ff3030;
+    text-shadow:
+        0 0 10px red,
+        0 0 25px red;
+}
+
+/* Threat banner */
+.threat-banner{
+    margin:25px;
+    padding:18px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            90deg,
+            #5a0000,
+            #8b0000,
+            #5a0000
+        );
+
+    background-size:300% 100%;
+
+    animation:
+        bannerFlow 4s linear infinite,
+        dangerPulse 1.2s infinite;
+}
+
+@keyframes bannerFlow{
+    from{
+        background-position:0%;
+    }
+    to{
+        background-position:300%;
+    }
+}
+
+@keyframes dangerPulse{
+    0%{
+        box-shadow:0 0 10px rgba(255,0,0,.4);
+    }
+
+    50%{
+        box-shadow:
+            0 0 30px rgba(255,0,0,.9),
+            0 0 80px rgba(255,0,0,.5);
+    }
+
+    100%{
+        box-shadow:0 0 10px rgba(255,0,0,.4);
+    }
+}
+
+/* Scan percentage */
+.scan-percent{
+    font-size:70px;
+    font-weight:800;
+    text-align:center;
+
+    margin-top:25px;
+
+    text-shadow:
+        0 0 15px rgba(255,255,255,.3);
+}
+
+/* Progress bar */
+.progress-wrapper{
+    width:90%;
+    height:35px;
+
+    margin:25px auto;
+
+    background:#111;
+
+    border-radius:100px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.05);
+}
+
+.progress-bar{
+    height:100%;
+    width:50%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ff0000,
+            #ff6600,
+            #ff0000
+        );
+
+    background-size:300% 100%;
+
+    animation:progressMove 2s linear infinite;
+
+    box-shadow:
+        0 0 20px red,
+        0 0 40px rgba(255,0,0,.4);
+}
+
+@keyframes progressMove{
+    from{
+        background-position:0%;
+    }
+    to{
+        background-position:300%;
+    }
+}
+
+/* Threat cards */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    padding:25px;
+}
+
+.card{
+    background:rgba(255,255,255,.03);
+
+    border:1px solid rgba(255,255,255,.05);
+
+    border-radius:15px;
+
+    padding:20px;
+
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 10px 30px rgba(255,0,0,.25);
+}
+
+.card h3{
+    color:#ff5555;
+    margin-bottom:10px;
+}
+
+/* Log panel */
+.log-panel{
+    margin:25px;
+
+    height:180px;
+
+    overflow-y:auto;
+
+    background:black;
+
+    border-radius:15px;
+
+    border:1px solid rgba(255,255,255,.05);
+
+    padding:15px;
+
+    font-family:Consolas,monospace;
+
+    color:#6dff6d;
+}
+
+/* Buttons */
+.button-row{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+button{
+    padding:16px 35px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    transition:.3s;
+}
+
+.scan-btn{
+    background:#1f6fff;
+    color:white;
+}
+
+.scan-btn:hover{
+    transform:scale(1.05);
+}
+
+.remove-btn{
+    background:#ff2d2d;
+    color:white;
+
+    box-shadow:
+        0 0 20px rgba(255,0,0,.4);
+}
+
+.remove-btn:hover{
+    transform:scale(1.05);
+
+    box-shadow:
+        0 0 35px rgba(255,0,0,.8);
+}
+
+/* Failure popup */
+.failure-popup{
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:600px;
+
+    padding:30px;
+
+    text-align:center;
+
+    border-radius:20px;
+
+    background:rgba(80,0,0,.95);
+
+    border:2px solid red;
+
+    box-shadow:
+        0 0 40px red,
+        0 0 100px rgba(255,0,0,.5);
+
+    animation:popupAppear .4s ease;
+}
+
+@keyframes popupAppear{
+    from{
+        opacity:0;
+        transform:
+            translate(-50%,-50%)
+            scale(.8);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+}
+
+.failure-popup h1{
+    font-size:40px;
+    color:#ff5555;
+    margin-bottom:15px;
+}
+
+.failure-popup p{
+    font-size:18px;
+    line-height:1.6;
+}
+
+/* Screen flash */
+.screen-flash{
+    position:fixed;
+    inset:0;
+
+    background:red;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    animation:flash 0.5s ease;
+}
+
+@keyframes flash{
+    0%{
+        opacity:0;
+    }
+
+    50%{
+        opacity:.35;
+    }
+
+    100%{
+        opacity:0;
+    }
+}
+
+/* Shake effect */
+.shake{
+    animation:shake .5s linear;
+}
+
+@keyframes shake{
+    0%{transform:translate(-50%,-50%)}
+    20%{transform:translate(-48%,-50%)}
+    40%{transform:translate(-52%,-50%)}
+    60%{transform:translate(-48%,-50%)}
+    80%{transform:translate(-52%,-50%)}
+    100%{transform:translate(-50%,-50%)}
+}
